@@ -1,3 +1,6 @@
+# Copyright (c) Simon Niederberger.
+# Distributed under the terms of the Modified BSD License.
+
 import matplotlib.dates as mdates
 import matplotlib.ticker as mticker
 import numpy as np
