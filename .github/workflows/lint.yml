@@ -1,16 +1,9 @@
-name: Lint
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+name: Prek checks
+on: [push, pull_request]
 
 jobs:
-  lint:
+  prek:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: j178/prek@v0
-        with:
-          args: run --all-files
+      - uses: actions/checkout@v6
+      - uses: j178/prek-action@v1
