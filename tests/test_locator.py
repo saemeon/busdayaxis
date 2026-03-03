@@ -10,6 +10,7 @@ def test_busday_locator_import():
 
 def test_busday_locator_with_axis():
     import matplotlib.pyplot as plt
+
     from busdayaxis._locator import BusdayLocator
 
     fig, ax = plt.subplots()

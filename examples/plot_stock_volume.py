@@ -11,11 +11,12 @@ Business axis:
 """
 
 # %%
-import busdayaxis
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+import busdayaxis
 
 busdayaxis.register_scale()
 
