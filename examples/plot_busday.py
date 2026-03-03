@@ -9,6 +9,16 @@ values = range(len(dates))
 
 
 # %%
+# Linear Scale Example
+fig, ax = plt.subplots()
+
+ax.plot(dates, values)
+ax.set_xscale("linear")
+ax.tick_params(axis="x", rotation=90)
+
+plt.show()
+
+# %%
 # Business Day Scale Example
 fig, ax = plt.subplots()
 
