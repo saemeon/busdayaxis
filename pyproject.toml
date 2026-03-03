@@ -1,11 +1,8 @@
-[build-system]
-requires = ["setuptools>=61.0", "wheel"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "busdayaxis"
-version = "0.1.0"
-description = "Matplotlib business day axis scale"
+dynamic = ["version"]
+description = "Business day axis scale for matplotlib"
+keywords = ["matplotlib", "business day", "busday", "matplotlib-scale"]
 classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
@@ -14,10 +11,14 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
     "Framework :: Matplotlib",
+    "Operating System :: OS Independent",
 ]
 readme = "README.md"
 license = "BSD-3-Clause"
 authors = [
+    {name = "Simon Niederberger", email = "s.niederberger@hotmail.com"}
+]
+maintainers = [
     {name = "Simon Niederberger", email = "s.niederberger@hotmail.com"}
 ]
 requires-python = ">=3.9"
@@ -54,6 +55,18 @@ dev = [
     "mkdocstrings[python]",
     "mike",
 ]
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "setuptools-scm>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+write_to = "src/busdayaxis/_version.py"
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools.dynamic]
+version = { attr = "busdayaxis._version.__version__" }
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
