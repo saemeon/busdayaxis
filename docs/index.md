@@ -14,6 +14,7 @@ pip install mplbusdayaxis
 import matplotlib.pyplot as plt
 import pandas as pd
 import mplbusdayaxis as bda
+import numpy as np
 
 dates = pd.date_range("2024-01-01", periods=252, freq="D")
 prices = 100 + np.cumsum(np.random.randn(252) * 2)
@@ -29,7 +30,3 @@ plt.show()
 - **Business Day Scale**: X-axis scales based on business days only, skipping weekends
 - **Holiday Support**: Specify custom holidays to exclude from the scale
 - **Compatible with Matplotlib**: Works seamlessly with matplotlib's date handling
-
-## Examples
-
-See the [Examples](examples.md) page for more detailed usage examples.

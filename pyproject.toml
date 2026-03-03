@@ -27,17 +27,18 @@ test = [
 doc = [
     "mkdocs",
     "mkdocs-material",
+    "mkdocs-gallery",
     "mkdocstrings[python]",
-    "mdx-triple-link",
 ]
 dev = [
     "ruff",
+    "pre-commit",
     "pytest",
     "pytest-mpl",
     "mkdocs",
     "mkdocs-material",
+    "mkdocs-gallery",
     "mkdocstrings[python]",
-    "mdx-triple-link",
 ]
 
 [tool.pytest.ini_options]
@@ -53,3 +54,10 @@ ignore = ["E501"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.pre-commit]
+default_stages = ["pre-commit"]
+
+[tool.pre-commit.hooks]
+ruff = {args = ["check", "--fix"]}
+ruff-format = {args = ["format"]}
