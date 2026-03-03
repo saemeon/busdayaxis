@@ -1,11 +1,11 @@
-# mplbusdayaxis
+# busdayaxis
 
 A matplotlib scale for business days that skips weekends and holidays.
 
 ## Installation
 
 ```bash
-pip install mplbusdayaxis
+pip install busdayaxis
 ```
 
 ## Quick Start
@@ -13,7 +13,7 @@ pip install mplbusdayaxis
 ```python
 import matplotlib.pyplot as plt
 import pandas as pd
-import mplbusdayaxis as bda
+import busdayaxis as bda
 import numpy as np
 
 dates = pd.date_range("2024-01-01", periods=252, freq="D")

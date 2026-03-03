@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "mplbusdayaxis"
+name = "busdayaxis"
 version = "0.1.0"
 description = "Matplotlib business day axis scale"
 readme = "README.md"
@@ -19,8 +19,8 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://saemeon.github.io/mplbusdayaxis/"
-Repository = "https://github.com/saemeon/mplbusdayaxis"
+Homepage = "https://saemeon.github.io/busdayaxis/"
+Repository = "https://github.com/saemeon/busdayaxis"
 
 [project.optional-dependencies]
 test = [

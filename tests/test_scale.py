@@ -2,16 +2,16 @@ import pytest  # noqa
 
 
 def test_import():
-    import mplbusdayaxis
+    import busdayaxis
 
-    assert hasattr(mplbusdayaxis, "BusdayScale")
-    assert hasattr(mplbusdayaxis, "BusdayLocator")
+    assert hasattr(busdayaxis, "BusdayScale")
+    assert hasattr(busdayaxis, "BusdayLocator")
 
 
 def test_busday_scale_registration():
-    import mplbusdayaxis as mplbusdayaxis
+    import busdayaxis as busdayaxis
 
-    mplbusdayaxis.register_scale()
+    busdayaxis.register_scale()
 
 
 def test_busday_scale_with_holidays():

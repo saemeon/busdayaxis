@@ -3,28 +3,28 @@ Contributing
 ============
 
 Thanks for thinking of a way to help improve this library! Remember that contributions come in all
-shapes and sizes beyond writing bug fixes. Contributing to documentation, opening new `issues <https://github.com//mplbusdayaxis/issues>`_,
+shapes and sizes beyond writing bug fixes. Contributing to documentation, opening new `issues <https://github.com//busdayaxis/issues>`_,
 asking for clarification on things you find unclear, and requesting new features, are all super valuable contributions.
 
 Code Improvements
 -----------------
 
-All development for this library happens at https://github.com//mplbusdayaxis,
+All development for this library happens at https://github.com//busdayaxis,
 
 First set up a dev environment. The instructions here use `mamba <https://github.com/mamba-org/mamba#mamba>`_ which is open source
 implementation of `conda` that offers significant speed ups. You can substitute ``conda`` for ``mamba`` or use ``venv`` without any ill-effects.
 
 .. code-block:: bash
 
-    mamba create -n mplbusdayaxis-dev python
-    conda activate mplbusdayaxis-dev
+    mamba create -n busdayaxis-dev python
+    conda activate busdayaxis-dev
 
 Now clone your fork of the Git repository and make an editable (``-e``) install.
 
 .. code-block:: bash
 
    git clone <your fork>
-   cd mplbusdayaxis
+   cd busdayaxis
    pip install -e ".[dev]"
 
 
@@ -35,7 +35,7 @@ Using Git/Github can confusing (https://xkcd.com/1597/) so if you're new to Git,
 it helpful to use a program like `Github Desktop <desktop.github.com>`_ and to follow
 a `guide <https://github.com/firstcontributions/first-contributions#first-contributions>`_.
 
-Also feel free to ask for help/advice on the relevant Github `issue <https://github.com//mplbusdayaxis/issues>`_.
+Also feel free to ask for help/advice on the relevant Github `issue <https://github.com//busdayaxis/issues>`_.
 
 Documentation
 -------------
@@ -46,7 +46,7 @@ Following changes to the source files, you can view recent adjustments by buildi
 
 .. code-block:: bash
 
-    cd mplbusdayaxis
+    cd busdayaxis
     pip install -e ".[doc]"
 
 2. Run the following commands:

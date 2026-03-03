@@ -1,11 +1,11 @@
-# mplbusdayaxis
+# busdayaxis
 
-[![PyPI](https://img.shields.io/pypi/v/mplbusdayaxis)](https://pypi.org/project/mplbusdayaxis/)
+[![PyPI](https://img.shields.io/pypi/v/busdayaxis)](https://pypi.org/project/busdayaxis/)
 [![License](https://img.shields.io/badge/License-BSD--3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 ## Business-day axis support for Matplotlib.
 
-`mplbusdayaxis` provides a custom Matplotlib scale that compresses non-business days and displays time in continuous business-day space.
+`busdayaxis` provides a custom Matplotlib scale that compresses non-business days and displays time in continuous business-day space.
 - Useful when your data has no weekend activity and is naturally defined in business-day units.
 - Integrates directly with Matplotlib’s transformation and autoscaling machinery.
 - No data preprocessing is required.
@@ -20,22 +20,22 @@ Many time series evolve in business time rather than calendar time:
 - Operational KPIs
 
 When plotted on a standard calendar axis, weekends introduce artificial gaps that visually distort slopes and compress active trading periods.
-`mplbusdayaxis` removes these inactive periods by mapping calendar datetimes to continuous business-day units.
+`busdayaxis` removes these inactive periods by mapping calendar datetimes to continuous business-day units.
 
 ## Installation
 You can install using `pip`:
 
 ```bash
-pip install mplbusdayaxis
+pip install busdayaxis
 ```
 
 ## Quick Start
 
 ```python
 import matplotlib.pyplot as plt
-import mplbusdayaxis
+import busdayaxis
 
-mplbusdayaxis.register_scale()
+busdayaxis.register_scale()
 
 ax.plot(dates, values)
 ax.set_xscale("busday")

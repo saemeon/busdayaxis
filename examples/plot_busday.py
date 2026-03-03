@@ -6,10 +6,9 @@ This example demonstrates how to use the business day scale in matplotlib.
 """
 
 # %%
+import busdayaxis as bda
 import matplotlib.pyplot as plt
 import pandas as pd
-
-import mplbusdayaxis as bda
 
 dates = pd.date_range("2026-01-01", periods=25, freq="D")
 values = range(len(dates))

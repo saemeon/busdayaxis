@@ -1,10 +1,10 @@
-site_name: mplbusdayaxis
+site_name: busdayaxis
 site_description: Matplotlib Business Day Axis Scale
 site_author: Simon Niederberger
-site_url: https://mplbusdayaxis.readthedocs.io
+site_url: https://busdayaxis.readthedocs.io
 
-repo_url: https://github.com/saemeon/mplbusdayaxis
-repo_name: saemeon/mplbusdayaxis
+repo_url: https://github.com/saemeon/busdayaxis
+repo_name: saemeon/busdayaxis
 
 copyright: "Copyright &copy; 2026 Simon Niederberger"
 
@@ -111,4 +111,4 @@ extra:
     default: latest
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/saemeon/mplbusdayaxis
+      link: https://github.com/saemeon/busdayaxis

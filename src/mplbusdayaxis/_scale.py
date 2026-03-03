@@ -6,9 +6,8 @@ import matplotlib.scale as mscale
 import matplotlib.transforms as mtransforms
 import numpy as np
 import pandas as pd
+from busdayaxis._locator import BusdayLocator
 from pandas.core.dtypes.common import is_nested_list_like
-
-from mplbusdayaxis._locator import BusdayLocator
 
 EPOCH = np.datetime64("1970-01-01", "D")
 
