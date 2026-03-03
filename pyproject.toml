@@ -6,6 +6,15 @@ build-backend = "setuptools.build_meta"
 name = "busdayaxis"
 version = "0.1.0"
 description = "Matplotlib business day axis scale"
+classifiers = [
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Framework :: Matplotlib",
+]
 readme = "README.md"
 license = "BSD-3-Clause"
 authors = [
@@ -51,7 +60,6 @@ testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 88
-target-version = "py39"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP"]
