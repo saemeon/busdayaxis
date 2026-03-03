@@ -130,3 +130,7 @@ class BusdayScale(mscale.ScaleBase):
 
     def limit_range_for_scale(self, vmin, vmax, minpos):
         return vmin, vmax
+
+
+def register_scale():
+    mscale.register_scale(BusdayScale)
