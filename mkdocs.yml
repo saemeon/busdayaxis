@@ -1,56 +1,114 @@
 site_name: mplbusdayaxis
-site_description: Matplotlib business day axis scale
+site_description: Matplotlib Business Day Axis Scale
 site_author: Simon Niederberger
 site_url: https://mplbusdayaxis.readthedocs.io
 
-repo_url: https://github.com/simon-niederberger/mplbusdayaxis
-repo_name: simon-niederberger/mplbusdayaxis
+repo_url: https://github.com/saemeon/mplbusdayaxis
+repo_name: saemeon/mplbusdayaxis
 
 copyright: "Copyright &copy; 2026 Simon Niederberger"
 
-theme:
-  name: material
-  palette:
-    - scheme: default
-      primary: blue
-      accent: blue
-    - scheme: slate
-      primary: blue
-      accent: blue
-  features:
-    - navigation.instant
-    - navigation.tracking
-    - navigation.tabs
-    - navigation.sections
 
 nav:
-  - Home: index.md
-  - API Reference: api.md
-  - Examples: generated/gallery/index.md
+  - Overview: "index.md"
+  - API: "api.md"
+  - Examples: "generated/gallery"
+
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.top
+    - navigation.tracking
+    - navigation.expand
+    - content.code.annotate
+    - content.code.copy
+    - content.tabs.link
+    - content.action.edit
+    - search.highlight
+    - search.suggest
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/eye
+  favicon: assets/favicon.ico
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
 
 markdown_extensions:
-  - pymdownx.highlight:
-      anchor_linenums: true
-      line_nums: true
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+  - pymdownx.tilde
+  - pymdownx.tabbed:
+      alternate_style: true
 
 plugins:
+  - search
   - mkdocstrings:
       handlers:
         python:
+          paths: [src]
           options:
+            docstring_style: numpy
+            docstring_section_style: list
+            show_if_no_docstring: true
+            show_root_toc_entry: false
             show_source: true
-            members-order: source
-  - mkdocs_gallery:
-      examples_dirs: ../examples
-      gallery_dirs: generated/gallery
-      reference_url:
-        mplbusdayaxis: null
-      thumbnail_size: (400, 280)
+            show_bases: true
+            heading_level: 3
+            show_symbol_type_heading: true
+            show_symbol_type_toc: false
+            merge_init_into_class: true
+            show_signature: true
+            separate_signature: true
+            show_signature_annotations: true
+            annotations_path: source
+  - mike:
+      canonical_version: latest
+      alias_type: redirect
+      redirect_template: null
+      deploy_prefix: ""
+      version_selector: true
+      css_dir: css
+      javascript_dir: js
+  - gallery:
+      examples_dirs: examples
+      gallery_dirs: docs/generated/gallery
+      within_subsection_order: "FileNameSortKey"
+
+watch:
+  - src
+
+remote_branch: documentation
 
 extra:
+  version:
+    provider: mike
+    alias: true
+    default: latest
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/simon-niederberger/mplbusdayaxis
+      link: https://github.com/saemeon/mplbusdayaxis

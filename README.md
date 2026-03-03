@@ -1,7 +1,7 @@
 # mplbusdayaxis
 
 [![PyPI](https://img.shields.io/pypi/v/mplbusdayaxis)](https://pypi.org/project/mplbusdayaxis/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-BSD--3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 
 ## Business-day axis support for Matplotlib.
 
@@ -67,4 +67,4 @@ This makes it possible to model exchange holidays or company-specific calendars.
 
 ## License
 
-MIT
+BSD 3-Clause

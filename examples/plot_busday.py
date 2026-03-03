@@ -1,3 +1,10 @@
+"""
+Business Day Scale Example
+==========================
+
+This example demonstrates how to use the business day scale in matplotlib.
+"""
+
 # %%
 import matplotlib.pyplot as plt
 import pandas as pd

@@ -122,6 +122,8 @@ venv.bak/
 
 # mkdocs documentation
 /site
+docs/generated
+
 
 # mypy
 .mypy_cache/
@@ -153,3 +155,4 @@ cython_debug/
 
 ## vscode
 .vscode
+.python-version

@@ -32,7 +32,7 @@ prices = 100 * (1 + pd.Series(returns, index=dates)).cumprod()
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 7), sharey=True)
 
 fig.suptitle(
-    "Comparison of Calendar Time vs Business-Day Scale", fontsize=14, fontweight="bold"
+    "Comparison of scale='linear' vs scale='busday'", fontsize=14, fontweight="bold"
 )
 
 

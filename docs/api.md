@@ -3,4 +3,4 @@
 ::: mplbusdayaxis
     options:
       show_source: true
-      members-order: source
+      members_order: source
