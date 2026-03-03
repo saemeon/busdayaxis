@@ -21,7 +21,6 @@ dependencies = [
 [project.optional-dependencies]
 test = [
     "pytest",
-    "pytest-mpl",
     "pytest-cov",
 ]
 doc = [
@@ -32,9 +31,9 @@ doc = [
 ]
 dev = [
     "ruff",
-    "pre-commit",
+    "prek",
     "pytest",
-    "pytest-mpl",
+    "pytest-cov",
     "mkdocs",
     "mkdocs-material",
     "mkdocs-gallery",
@@ -42,7 +41,7 @@ dev = [
 ]
 
 [tool.pytest.ini_options]
-testpaths = ["src/mplbusdayaxis/tests"]
+testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 88
@@ -54,10 +53,3 @@ ignore = ["E501"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
-
-[tool.pre-commit]
-default_stages = ["pre-commit"]
-
-[tool.pre-commit.hooks]
-ruff = {args = ["check", "--fix"]}
-ruff-format = {args = ["format"]}
