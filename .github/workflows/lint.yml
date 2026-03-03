@@ -11,13 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: j178/prek@v0
         with:
-          python-version: "3.x"
-          cache: "pip"
-      - name: Install ruff
-        run: pip install ruff
-      - name: Run ruff
-        run: ruff check .
-      - name: Check formatting
-        run: ruff format --check .
+          args: run --all-files
