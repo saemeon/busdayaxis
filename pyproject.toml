@@ -1,11 +1,55 @@
-[tool.black]
-skip-string-normalization = true
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
 
-[tool.pytest.ini_options]
-testpaths = [
-    "mplbusdayaxis/tests"
+[project]
+name = "mplbusdayaxis"
+version = "0.1.0"
+description = "Matplotlib business day axis scale"
+readme = "README.md"
+license = {text = "BSD-3-Clause"}
+authors = [
+    {name = "Simon Niederberger", email = "s.niederberger@hotmail.com"}
+]
+requires-python = ">=3.9"
+dependencies = [
+    "matplotlib",
+    "numpy",
+    "pandas",
 ]
 
-[build-system]
-requires = ["setuptools>=42", "wheel"]
-build-backend = "setuptools.build_meta"
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-mpl",
+    "pytest-cov",
+]
+doc = [
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "mdx-triple-link",
+]
+dev = [
+    "ruff",
+    "pytest",
+    "pytest-mpl",
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings[python]",
+    "mdx-triple-link",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["src/mplbusdayaxis/tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

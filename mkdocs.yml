@@ -1,0 +1,51 @@
+site_name: mplbusdayaxis
+site_description: Matplotlib business day axis scale
+site_author: Simon Niederberger
+site_url: https://mplbusdayaxis.readthedocs.io
+
+repo_url: https://github.com/simon-niederberger/mplbusdayaxis
+repo_name: simon-niederberger/mplbusdayaxis
+
+copyright: "Copyright &copy; 2026 Simon Niederberger"
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: blue
+      accent: blue
+    - scheme: slate
+      primary: blue
+      accent: blue
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+
+nav:
+  - Home: index.md
+  - API Reference: api.md
+  - Examples: examples.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_nums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+
+plugins:
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: true
+            members-order: source
+  - mdx_triple_link
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/simon-niederberger/mplbusdayaxis
