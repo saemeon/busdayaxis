@@ -11,14 +11,13 @@ Business axis:
 """
 
 # %%
+import busdayaxis
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-import mplbusdayaxis
-
-mplbusdayaxis.register_scale()
+busdayaxis.register_scale()
 
 num_days = 20
 dates = pd.date_range("2025-01-01", periods=num_days * 24, freq="h")
