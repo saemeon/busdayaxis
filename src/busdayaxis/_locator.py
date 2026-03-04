@@ -54,6 +54,7 @@ class BusdayLocator(mticker.Locator):
         bushour_start = bushours[0] / 24
         bushour_end = bushours[1] / 24
 
-        bushour_mask = (frac >= bushour_start) & (frac < bushour_end)
+        # Keep ticks that fall within business hours, additionally keeping day start (00:00)
+        bushour_mask = ((frac >= bushour_start) & (frac < bushour_end)) | (frac == 0)
 
         return np.asarray(ticks)[busday_mask & bushour_mask]
