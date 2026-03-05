@@ -1,13 +1,24 @@
-"""
-Hourly random walk with zero weekend returns.
+"""# Remove Weekends
+
+Weekends (Sat–Sun) are collapsed to zero width on the business axis.
+The price line jumps directly from Friday close to Monday open,
+eliminating the flat segments visible on the calendar axis.
+
+Core code:
+
+```python
+ax.set_xscale("busday")
+```
 
 Calendar axis:
-    - Daily ticks
-    - Weekend shading
-    - Flat weekend segments
+
+- Daily ticks
+- Weekend shading
+- Flat weekend segments
 
 Business axis:
-    - Weekends compressed
+
+- Weekends compressed
 """
 
 # %%
@@ -58,6 +69,8 @@ ax2.plot(dates, prices.values, linewidth=1.3)
 ax2.set_xscale("busday")
 ax2.set_title("Business Time (scale='busday')")
 ax2.set_ylabel("Price")
+ax2.xaxis.set_major_locator(busdayaxis.BusdayLocator(mdates.DayLocator()))
+ax2.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
 ax2.tick_params(axis="x", rotation=90)
 
 # Mark weekend boundaries

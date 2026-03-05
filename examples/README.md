@@ -1,1 +1,3 @@
 # Examples
+
+## Core Functionality

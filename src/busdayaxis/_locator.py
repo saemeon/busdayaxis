@@ -38,7 +38,7 @@ class BusdayLocator(mticker.Locator):
 
         ax.set_xscale("busday", bushours=(9, 17))
         ax.xaxis.set_major_locator(
-            BusdayLocator(mdates.HourLocator(byhour=range(9, 18)))
+            BusdayLocator(mdates.HourLocator())
         )
 
     Daily ticks on business days only::
