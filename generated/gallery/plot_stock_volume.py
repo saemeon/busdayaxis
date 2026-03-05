@@ -1,5 +1,5 @@
 """
-Hourly random walk with zero weekend returns.
+Remove Weekends
 
 Calendar axis:
     - Daily ticks
@@ -11,11 +11,12 @@ Business axis:
 """
 
 # %%
-import busdayaxis
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+import busdayaxis
 
 busdayaxis.register_scale()
 
@@ -57,6 +58,8 @@ ax2.plot(dates, prices.values, linewidth=1.3)
 ax2.set_xscale("busday")
 ax2.set_title("Business Time (scale='busday')")
 ax2.set_ylabel("Price")
+ax2.xaxis.set_major_locator(busdayaxis.BusdayLocator(mdates.DayLocator()))
+ax2.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
 ax2.tick_params(axis="x", rotation=90)
 
 # Mark weekend boundaries

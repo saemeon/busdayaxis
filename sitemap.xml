@@ -1,27 +1,135 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://busdayaxis.readthedocs.io/</loc>
-         <lastmod>2026-03-03</lastmod>
+         <loc>https://saemeon.github.io/busdayaxis/</loc>
+         <lastmod>2026-03-05</lastmod>
     </url>
     <url>
-         <loc>https://busdayaxis.readthedocs.io/api/</loc>
-         <lastmod>2026-03-03</lastmod>
+         <loc>https://saemeon.github.io/busdayaxis/api/</loc>
+         <lastmod>2026-03-05</lastmod>
     </url>
     <url>
-         <loc>https://busdayaxis.readthedocs.io/generated/gallery/</loc>
-         <lastmod>2026-03-03</lastmod>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/</loc>
+         <lastmod>2026-03-05</lastmod>
     </url>
     <url>
-         <loc>https://busdayaxis.readthedocs.io/generated/gallery/mg_execution_times/</loc>
-         <lastmod>2026-03-03</lastmod>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/mg_execution_times/</loc>
+         <lastmod>2026-03-05</lastmod>
     </url>
     <url>
-         <loc>https://busdayaxis.readthedocs.io/generated/gallery/plot_busday/</loc>
-         <lastmod>2026-03-03</lastmod>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_artists/</loc>
+         <lastmod>2026-03-05</lastmod>
     </url>
     <url>
-         <loc>https://busdayaxis.readthedocs.io/generated/gallery/plot_stock_volume/</loc>
-         <lastmod>2026-03-03</lastmod>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_bollinger/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_busday/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_bushours/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_candles/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_candles_lines/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_candles_volume/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_drawdown/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_fx_trading/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_per_day_bushours/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_remove_weekend/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_stock_bollinger/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_stock_macd/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_stock_multipane/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_stock_rsi/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_stock_stochastic/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_stock_volume/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_trend/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_weekmask/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/financial_plots/mg_execution_times/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/financial_plots/plot_candles/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/financial_plots/plot_candles_volume/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/financial_plots/plot_dark_theme/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/financial_plots/plot_drawdown/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/financial_plots/plot_stock_bollinger/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/financial_plots/plot_stock_macd/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/financial_plots/plot_stock_multipane/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/financial_plots/plot_stock_rsi/</loc>
+         <lastmod>2026-03-05</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/financial_plots/plot_stock_stochastic/</loc>
+         <lastmod>2026-03-05</lastmod>
     </url>
 </urlset>
