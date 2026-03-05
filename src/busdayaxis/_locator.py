@@ -5,6 +5,8 @@ import matplotlib.dates as mdates
 import matplotlib.ticker as mticker
 import numpy as np
 
+_DEFAULT_BUSHOURS = {i: (0, 24) for i in range(7)}
+
 
 class BusdayLocator(mticker.Locator):
     """
@@ -33,28 +35,31 @@ class BusdayLocator(mticker.Locator):
         if len(ticks) == 0:
             return ticks
 
-        dts = np.asarray(mdates.num2date(ticks))
-        dts = np.array([dt.replace(tzinfo=None) for dt in dts])
+        dts = np.array([mdates.num2date(t).replace(tzinfo=None) for t in ticks])
 
-        days = np.array(dts, dtype="datetime64[D]")
+        days = dts.astype("datetime64[D]")
 
         busday_kwargs = getattr(self.axis, "_busday_kwargs", {})
         busday_mask = np.is_busday(days, **busday_kwargs)
 
-        # Business hour mask using full timestamp precision
-        frac = np.array(
-            [
-                (dt.hour * 3600 + dt.minute * 60 + dt.second + dt.microsecond / 1e6)
-                / 86400.0
-                for dt in dts
-            ]
+        weekday = (days.view("int64") + 3) % 7  # epoch (1970-01-01) was Thursday = 3
+        intraday_s = (dts.astype("datetime64[s]") - days.astype("datetime64[s]")).view(
+            "int64"
         )
+        frac = intraday_s / 86400.0
 
-        bushours = getattr(self.axis, "_bushours", (0, 24))
-        bushour_start = bushours[0] / 24
-        bushour_end = bushours[1] / 24
+        bushours_dict = getattr(self.axis, "_bushours", _DEFAULT_BUSHOURS)
 
-        # Keep ticks that fall within business hours, additionally keeping day start (00:00)
-        bushour_mask = ((frac >= bushour_start) & (frac < bushour_end)) | (frac == 0)
+        _starts = np.array([bushours_dict[i][0] for i in range(7)]) / 24
+        _ends = np.array([bushours_dict[i][1] for i in range(7)]) / 24
+        bushour_starts = _starts[weekday]
+        bushour_ends = _ends[weekday]
+
+        within_hours = (frac >= bushour_starts) & (frac <= bushour_ends)
+        # allow midnight ticks through so daily-granularity ticks (placed at 00:00
+        # by AutoDateLocator) are not filtered by the business-hours check
+        day_start = frac == 0
+
+        bushour_mask = within_hours | day_start
 
         return np.asarray(ticks)[busday_mask & bushour_mask]
