@@ -55,7 +55,7 @@ class BusdayLocator(mticker.Locator):
         bushour_starts = _starts[weekday]
         bushour_ends = _ends[weekday]
 
-        within_hours = (frac >= bushour_starts) & (frac <= bushour_ends)
+        within_hours = (frac >= bushour_starts) & (frac < bushour_ends)
         # allow midnight ticks through so daily-granularity ticks (placed at 00:00
         # by AutoDateLocator) are not filtered by the business-hours check
         day_start = frac == 0

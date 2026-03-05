@@ -25,7 +25,6 @@ requires-python = ">=3.9"
 dependencies = [
     "matplotlib",
     "numpy",
-    "pandas",
 ]
 
 [project.urls]
@@ -34,6 +33,7 @@ Repository = "https://github.com/saemeon/busdayaxis"
 
 [project.optional-dependencies]
 test = [
+    "pandas",
     "pytest",
     "pytest-cov",
 ]
@@ -46,6 +46,7 @@ doc = [
 ]
 dev = [
     "ruff",
+    "pandas",
     "prek",
     "pytest",
     "pytest-cov",
