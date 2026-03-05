@@ -1,13 +1,12 @@
 site_name: busdayaxis
 site_description: Matplotlib Business Day Axis Scale
 site_author: Simon Niederberger
-site_url: https://busdayaxis.readthedocs.io
+site_url: https://saemeon.github.io/busdayaxis/
 
 repo_url: https://github.com/saemeon/busdayaxis
 repo_name: saemeon/busdayaxis
 
 copyright: "Copyright &copy; 2026 Simon Niederberger"
-
 
 nav:
   - Overview: "index.md"
@@ -16,37 +15,53 @@ nav:
 
 theme:
   name: material
+  # this parameter defines where to find HTML that will overwrite or complement the pages from the theme
   features:
-    - navigation.instant
+    - content.width.wide
+    # enables annotations, see https://squidfunk.github.io/mkdocs-material/reference/code-blocks/#code-annotations
+    - content.code.annotate
+    # add a button to copy code snippets
+    - content.code.copy
+    # link tabs within a page
+    - content.tabs.link
+    # for navigation features see https://squidfunk.github.io/mkdocs-material/setup/setting-up-navigation/
     - navigation.top
     - navigation.tracking
+    # keep all sections in the navigation expanded by default
     - navigation.expand
-    - content.code.annotate
-    - content.code.copy
-    - content.tabs.link
+    # add icon and link to the document on gihub for each page
     - content.action.edit
+    # add highlighting of search words
     - search.highlight
+    # add autocomplete to the search bar
     - search.suggest
   icon:
     repo: fontawesome/brands/github
     edit: material/eye
   favicon: assets/favicon.ico
   palette:
+    # light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
+      # definition of the  header icon for this mode
       toggle:
         icon: material/weather-sunny
         name: Switch to dark mode
+    # dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
+      # definition of the  header icon for this mode
       toggle:
         icon: material/weather-night
         name: Switch to light mode
 
+# use a long list of recommended extensions from https://squidfunk.github.io/mkdocs-material/setup/extensions/?h=pymdownx#recommended-configuration
 markdown_extensions:
+  # Python Markdown
   - admonition
   - toc:
       permalink: true
+  # Python Markdown Extensions
   - pymdownx.betterem:
       smart_enable: all
   - pymdownx.caret
@@ -62,6 +77,7 @@ markdown_extensions:
         - name: mermaid
           class: mermaid
   - pymdownx.tilde
+  # tabbed content (e.g. variants of code)
   - pymdownx.tabbed:
       alternate_style: true
 
@@ -70,34 +86,39 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
+          # where to look for python modules. not strictly required, but helps, if building from an arbitrary folder
           paths: [src]
           options:
             docstring_style: numpy
-            docstring_section_style: list
-            show_if_no_docstring: true
-            show_root_toc_entry: false
-            show_source: true
-            show_bases: true
-            heading_level: 3
-            show_symbol_type_heading: true
-            show_symbol_type_toc: false
-            merge_init_into_class: true
-            show_signature: true
-            separate_signature: true
-            show_signature_annotations: true
+            docstring_section_style: spacy
+            show_if_no_docstring: False
+            show_root_toc_entry: False
+            show_source: False
+            # show if an element is an attribute/class or function in the headers, but not in the ToC on the right
+            show_symbol_type_heading: True
+            show_symbol_type_toc: False
+            # merge doc of __init__ into class doc
+            merge_init_into_class: True
+            show_signature: True
+            separate_signature: True
+            # decide in the code how verbose the type hints should be
             annotations_path: source
+            filters: ["!^_[^_]"]
   - mike:
       canonical_version: latest
-      alias_type: redirect
+      alias_type: redirect # symlink seems not to work out-of-the-box on expo; redirect leads to missing .../latest/... links, but seems to be ok
+      # the rest of setting below are the defaults according to the `mike` docs
       redirect_template: null
       deploy_prefix: ""
-      version_selector: true
+      version_selector: True
       css_dir: css
       javascript_dir: js
   - gallery:
       examples_dirs: examples
       gallery_dirs: docs/generated/gallery
-      within_subsection_order: "FileNameSortKey"
+
+extra_css:
+  - assets/extra.css
 
 watch:
   - src

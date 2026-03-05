@@ -1,10 +1,15 @@
 # Copyright (c) Simon Niederberger.
 # Distributed under the terms of the Modified BSD License.
 
+from __future__ import annotations
+
+from typing import Any
+
 import matplotlib.dates as mdates
 import matplotlib.scale as mscale
 import matplotlib.transforms as mtransforms
 import numpy as np
+from matplotlib.axis import Axis
 
 from busdayaxis._locator import BusdayLocator
 
@@ -16,12 +21,19 @@ WEEKDAYS_MAP = {name: i for i, name in enumerate(WEEKDAYS)}
 #####################################################################
 
 
-def _validate_hours(start, end, label="hours"):
+def _validate_hours(start: float, end: float, label: str = "hours") -> None:
     if not (0 <= start <= end <= 24):
         raise ValueError(f"{label} must satisfy 0 <= start <= end <= 24")
 
 
-def _normalize_bushours(bushours):
+_BushoursInput = (
+    tuple[float, float]
+    | list[tuple[float, float]]
+    | dict[str | int, tuple[float, float]]
+)
+
+
+def _normalize_bushours(bushours: _BushoursInput) -> dict[int, tuple[float, float]]:
     """Return a dict ``{0..6: (start, end)}`` from any supported bushours form."""
     if isinstance(bushours, dict):
         int_dict = {}
@@ -55,7 +67,9 @@ def _normalize_bushours(bushours):
     )
 
 
-def _bushours_bounds(bushours_dict):
+def _bushours_bounds(
+    bushours_dict: dict[int, tuple[float, float]],
+) -> tuple[np.ndarray, np.ndarray]:
     """Return (starts, ends) as numpy arrays of day-fractions (0–1) for all 7 weekdays."""
     starts = np.array([bushours_dict[i][0] for i in range(7)]) / 24
     ends = np.array([bushours_dict[i][1] for i in range(7)]) / 24
@@ -72,7 +86,9 @@ def _weekday_from_days(days_d64: np.ndarray) -> np.ndarray:
     return ((days_d64.view("int64") + 3) % 7).astype(int)
 
 
-def _build_weighted_calendar(weights, **busday_kwargs):
+def _build_weighted_calendar(
+    weights: np.ndarray, **busday_kwargs: Any
+) -> tuple[np.ndarray, np.ndarray]:
     """Construct a lookup table mapping calendar days to cumulative
     weighted business-day coordinates."""
 
@@ -92,8 +108,13 @@ def _build_weighted_calendar(weights, **busday_kwargs):
 
 
 def _datetime_to_busday_float(
-    values, bushours_dict, calendar_days, cumulative, weights, **busday_kwargs
-):
+    values: Any,
+    bushours_dict: dict[int, tuple[float, float]],
+    calendar_days: np.ndarray,
+    cumulative: np.ndarray,
+    weights: np.ndarray,
+    **busday_kwargs: Any,
+) -> np.ndarray:
     """Convert datetime-like values to business-day floats.
 
     Mapping:
@@ -138,8 +159,12 @@ def _datetime_to_busday_float(
 
 
 def _busday_float_to_datetime(
-    values, bushours_dict, calendar_days, cumulative, weights
-):
+    values: Any,
+    bushours_dict: dict[int, tuple[float, float]],
+    calendar_days: np.ndarray,
+    cumulative: np.ndarray,
+    weights: np.ndarray,
+) -> np.ndarray:
     """Convert business-day floats back to datetime values.
 
     Note that the transform is not perfectly invertible because
@@ -195,8 +220,13 @@ class _BusdayTransformBase(mtransforms.Transform):
     is_separable = True
 
     def __init__(
-        self, bushours_dict, calendar_days, cumulative, weights, **busday_kwargs
-    ):
+        self,
+        bushours_dict: dict[int, tuple[float, float]],
+        calendar_days: np.ndarray,
+        cumulative: np.ndarray,
+        weights: np.ndarray,
+        **busday_kwargs: Any,
+    ) -> None:
         self._bushours_dict = bushours_dict
         self._calendar_days = calendar_days
         self._calendar_cumulative = cumulative
@@ -278,33 +308,77 @@ class BusdayScale(mscale.ScaleBase):
     axis : matplotlib.axis.Axis
         The axis this scale is attached to.
     bushours : tuple, list of 7 tuples, or dict, optional
-        Active hours per weekday (hours as floats, 0–24). Three forms:
+        Active hours per weekday (hours as floats, 0–24).
 
-        ``(start, end)``
+        Three forms:
+
+        - ``(start, end)``:
             Same session for all days (e.g. ``(9, 17)``). The weekmask still
             applies, so off-days (Sat/Sun by default) are collapsed regardless.
             Default ``(0, 24)``.
 
-        list of 7 ``(start, end)``
-            One pair per weekday Mon–Sun, fully explicit.
+            Example:
 
-        dict ``{weekday: (start, end)}``
+            ```python
+            bushours=(9, 17)  # 9 AM to 5 PM every day, excluding weekends
+            ```
+
+            To apply also on weekends, use:
+
+            ```python
+            bushours=(9, 17), weekmask="1111111"  # Mon–Sun
+            ```
+
+        - list of 7 ``(start, end)`` tuples:
+            One tuple per weekday Monday–Sunday, fully explicit.
+
+            Example:
+
+            ```python
+            bushours=[
+                (9, 17),  # Mon
+                (9, 17),  # Tue
+                (9, 17),  # Wed
+                (9, 17),  # Thu
+                (9, 17),  # Fri
+                (0, 0),   # Sat
+                (0, 0),   # Sun
+            ]
+            ```
+
+        - dict ``{weekday: (start, end)}``:
             Per-day overrides; keys are integers 0–6 or names
-            ``"Mon"``–``"Sun"``. Defaults for unspecified days::
+            ``"Mon"``–``"Sun"``. Defaults for unspecified days:
 
-                | Day  | Key  | Default |
-                | ---- | ---- | ------- |
-                | Mon  | 0    | ``(0, 24)`` |
-                | Tue  | 1    | ``(0, 24)`` |
-                | Wed  | 2    | ``(0, 24)`` |
-                | Thu  | 3    | ``(0, 24)`` |
-                | Fri  | 4    | ``(0, 24)`` |
-                | Sat  | 5    | ``(0, 0)``  |
-                | Sun  | 6    | ``(0, 0)``  |
+            | Day  | Key  | Default |
+            |------|------|---------|
+            | Mon  | 0    | `(0, 24)` |
+            | Tue  | 1    | `(0, 24)` |
+            | Wed  | 2    | `(0, 24)` |
+            | Thu  | 3    | `(0, 24)` |
+            | Fri  | 4    | `(0, 24)` |
+            | Sat  | 5    | `(0, 0)`  |
+            | Sun  | 6    | `(0, 0)`  |
 
             The weekmask is derived automatically: days with non-zero hours
             are treated as business days, so passing ``{"Sun": (10, 18)}``
             will show Sundays without a separate *weekmask* override.
+
+            Example:
+
+            ```python
+            bushours={"Sun": (10, 18)}  # Show Sundays with custom hours, Weekdays 00-24
+            ```
+
+            FX Trading Hours:
+
+            ```python
+            bushours={
+                "Sun": (22, 24),
+                # Monday - Thursday 00:00-24:00
+                "Fri": (0, 22),
+            }
+            ```
 
     weekmask : str, array-like, or None, optional
         Which weekdays are business days (``"1"`` = on, ``"0"`` = off).
@@ -314,43 +388,104 @@ class BusdayScale(mscale.ScaleBase):
           non-zero hours become business days.
         - For uniform ``(start, end)`` *bushours*: ``"1111100"`` (Mon–Fri).
 
+        Use a string of 7 characters (Mon–Sun), a space-separated list of
+        three-letter day names, or any format accepted by ``numpy.is_busday``:
+
+        ```python
+        weekmask="1111100"              # Mon–Fri (default)
+        weekmask="Mon Tue Wed Thu Fri"  # equivalent
+        weekmask="Sun Mon Tue Wed Thu"  # Middle-Eastern work week
+        weekmask="1111111"              # every day is a business day
+        ```
+
     holidays : array-like or None, optional
-        Extra non-business dates, regardless of *weekmask*. Passed to numpy
-        busday functions. Default ``None``.
+        Extra non-business dates, regardless of *weekmask*. Dates on these
+        days are collapsed to zero width on the axis, identical to weekends.
+        Accepts any format understood by :func:`numpy.is_busday` (ISO strings,
+        ``datetime.date``, ``numpy.datetime64``). Default ``None``.
+
+        ```python
+        holidays=["2025-01-01", "2025-12-25"]
+        ```
+
     busdaycal : numpy.busdaycalendar or None, optional
-        Pre-built calendar. When set, *weekmask* and *holidays* are ignored.
-        Default ``None``.
+        Pre-built calendar combining a weekmask and holiday list. When set,
+        *weekmask* and *holidays* are ignored. Useful when reusing the same
+        calendar across multiple axes. Default ``None``.
+
+        ```python
+        cal = np.busdaycalendar(weekmask="Mon Tue Wed Thu Fri",
+                                holidays=["2025-01-01"])
+        ax.set_xscale("busday", busdaycal=cal)
+        ```
 
     Examples
     --------
-    Compress weekends only (default)::
+    Compress weekends only (Mon–Fri default):
 
-        ax.set_xscale("busday")
+    ```python
+    ax.set_xscale("busday")
+    ```
 
-    Compress overnight gaps as well::
+    Compress overnight gaps as well as weekends:
 
-        ax.set_xscale("busday", bushours=(9, 17))
+    ```python
+    ax.set_xscale("busday", bushours=(9, 17))
+    ```
 
-    Show Sundays with custom hours, hide Saturdays::
+    Per-day hours — Friday early close at 16:00, weekends closed:
 
-        ax.set_xscale("busday", bushours={"Sun": (10, 18)})
+    ```python
+    ax.set_xscale("busday", bushours={"Mon": (9, 17), "Fri": (9, 16)})
+    ```
 
-    Custom work-week with a holiday::
+    Show Sundays with custom hours; weekmask derived automatically (Sat excluded):
 
-        ax.set_xscale("busday", weekmask="Sun Mon Tue Wed Thu",
-                      holidays=["2025-01-01"])
+    ```python
+    ax.set_xscale("busday", bushours={"Sun": (10, 18)})
+    ```
+
+    FX-style session: Sunday open 22:00, Friday close 22:00, full days otherwise:
+
+    ```python
+    ax.set_xscale("busday", bushours={"Sun": (22, 24), "Fri": (0, 22)})
+    ```
+
+    Middle-Eastern work week (Sun–Thu) with a holiday:
+
+    ```python
+    ax.set_xscale("busday", weekmask="Sun Mon Tue Wed Thu",
+                  holidays=["2025-01-01"])
+    ```
+
+    Reuse a pre-built ``numpy.busdaycalendar``:
+
+    ```python
+    cal = np.busdaycalendar(weekmask="1111100", holidays=["2025-12-25"])
+    ax.set_xscale("busday", busdaycal=cal)
+    ```
+
+    Custom tick placement with ``BusdayLocator``:
+
+    ```python
+    import matplotlib.dates as mdates
+    ax.set_xscale("busday", bushours=(9, 17))
+    ax.xaxis.set_major_locator(
+        BusdayLocator(mdates.HourLocator(byhour=range(9, 18)))
+    )
+    ```
     """
 
     name = "busday"
 
     def __init__(
         self,
-        axis,
-        bushours=(0, 24),
-        weekmask=None,
-        holidays=None,
-        busdaycal=None,
-    ):
+        axis: Axis,
+        bushours: _BushoursInput = (0, 24),
+        weekmask: str | None = None,
+        holidays: list[str] | None = None,
+        busdaycal: np.busdaycalendar | None = None,
+    ) -> None:
         self._bushours_dict = _normalize_bushours(bushours)
         starts, ends = _bushours_bounds(self._bushours_dict)
         self._weights = ends - starts
@@ -388,7 +523,7 @@ class BusdayScale(mscale.ScaleBase):
 
         super().__init__(axis)
 
-    def get_transform(self):
+    def get_transform(self) -> BusdayTransform:
         return BusdayTransform(
             self._bushours_dict,
             self._calendar_days,
@@ -397,7 +532,7 @@ class BusdayScale(mscale.ScaleBase):
             **self._busday_kwargs,
         )
 
-    def set_default_locators_and_formatters(self, axis):
+    def set_default_locators_and_formatters(self, axis: Any) -> None:
         axis._busday_kwargs = self._busday_kwargs.copy()
         axis._bushours = self._bushours_dict.copy()
 
@@ -409,9 +544,35 @@ class BusdayScale(mscale.ScaleBase):
         axis.set_major_locator(majloc)
         axis.set_major_formatter(majfmt)
 
-    def limit_range_for_scale(self, vmin, vmax, minpos):
+    def limit_range_for_scale(
+        self, vmin: float, vmax: float, minpos: float
+    ) -> tuple[float, float]:
         return vmin, vmax
 
 
-def register_scale():
+def register_scale() -> None:
+    """Register the ``"busday"`` scale with Matplotlib.
+
+    Call once at the start of your script before using
+    ``ax.set_xscale("busday")``.
+
+    Examples
+    --------
+
+    ```python
+    import busdayaxis
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    busdayaxis.register_scale()
+
+    dates = pd.date_range("2025-01-01", periods=10, freq="D")
+    values = range(10)
+
+    fig, ax = plt.subplots()
+    ax.plot(dates, values)
+    ax.set_xscale("busday", bushours=(9, 17))
+    plt.show()
+    ```
+    """
     mscale.register_scale(BusdayScale)
