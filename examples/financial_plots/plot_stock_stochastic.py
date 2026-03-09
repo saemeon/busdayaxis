@@ -98,8 +98,7 @@ ax_stoch.legend(loc="upper left", fontsize=9)
 ax_price.tick_params(axis="x", labelbottom=False)
 
 # Set locators BEFORE scale to avoid AutoDateLocator generating too many ticks
-hour_locator = busdayaxis.BusdayLocator(mdates.HourLocator(byhour=range(9, 17, 2)))
-ax_stoch.xaxis.set_major_locator(hour_locator)
+ax_stoch.xaxis.set_major_locator(busdayaxis.HourLocator(byhour=range(9, 17, 2)))
 ax_stoch.xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
 
 # Apply busday scale

@@ -1,16 +1,6 @@
-"""# Multiple Artists
+"""# Multiple Different Artists
 
-All standard Matplotlib artists work transparently on the busday scale.
-Volume bars use ``twinx`` with the same busday scale applied to the
-secondary axis.
-
-Core code:
-
-```python
-ax.set_xscale("busday")
-ax_vol = ax.twinx()
-ax_vol.set_xscale("busday")  # twin must match parent
-```
+Most standard Matplotlib artists work on the busday scale.
 """
 
 # %%
@@ -107,7 +97,7 @@ for d in full_days:
 _draw(ax2, ax2_vol, busday=True)
 ax2.set_xscale("busday")
 ax2.set_title("Business Time (scale='busday')")
-ax2.xaxis.set_major_locator(busdayaxis.BusdayLocator(mdates.DayLocator()))
+ax2.xaxis.set_major_locator(busdayaxis.DayLocator())
 ax2.xaxis.set_major_formatter(mdates.DateFormatter("%a %d %b"))
 ax2.tick_params(axis="x", rotation=90)
 
@@ -116,7 +106,4 @@ for d in full_days:
         ax2.axvline(d, linestyle="--", linewidth=0.8, alpha=0.6)
         ax2.axvline(d + pd.Timedelta(days=2), linestyle="--", linewidth=0.8, alpha=0.6)
 
-plt.tight_layout(rect=[0, 0, 1, 0.96])
-plt.show()
-
-# %%
+_ = plt.tight_layout(rect=[0, 0, 1, 0.96])

@@ -1,8 +1,10 @@
-"""# Uniform Business Hours
+"""# Uniform Business Hours For All Busdays
 
-Overnight gaps and pre/post-market time are compressed by setting a uniform
-``bushours`` tuple. All weekdays use the same session; the standard Mon–Fri
-weekmask still applies so weekends remain collapsed.
+If the business of interest is only active during the same hours each day, such as with
+overnight gaps and pre/post-market time, pass a ``bushours`` tuple to collapse all off-hours.
+
+- All weekdays use the same bushours.
+- The standard Mon–Fri weekmask still applies so weekends remain collapsed.
 
 Core code:
 
@@ -10,6 +12,10 @@ Core code:
 ax.set_xscale("busday", bushours=(9, 17))
 ```
 
+See Also:
+
+- []()  for a specification of differing bushours per day
+- []()
 """
 
 # %%
@@ -25,27 +31,37 @@ busdayaxis.register_scale()
 OPEN = 9
 CLOSE = 17
 
-num_days = 5
-dates = pd.date_range("2025-01-06", periods=num_days * 24, freq="h")  # Mon–Fri
-
+num_days = 3
+dates = pd.date_range("2025-01-06", periods=num_days * 24, freq="h")
 returns = np.random.normal(0, 0.002, len(dates))
 returns[(dates.hour < OPEN) | (dates.hour >= CLOSE)] = 0.0
 returns[dates.weekday >= 5] = 0.0
-
 prices = 100 * (1 + pd.Series(returns, index=dates)).cumprod()
+full_days = pd.date_range(dates.min().normalize(), dates.max().normalize(), freq="D")
+
 
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 7), sharey=True)
 fig.suptitle(f"Business Hours ({OPEN}:00–{CLOSE}:00)", fontsize=14, fontweight="bold")
 
-full_days = pd.date_range(dates.min().normalize(), dates.max().normalize(), freq="D")
-
 # --- Calendar axis ---
 ax1.plot(dates, prices.values, linewidth=1.3)
-ax1.set_title("Calendar Time (scale='linear')")
+ax1.set_title("default linear matplotlib scale")
 ax1.set_ylabel("Price")
 ax1.xaxis.set_major_locator(mdates.HourLocator())
 ax1.xaxis.set_major_formatter(mdates.DateFormatter("%a %H:%M"))
 ax1.tick_params(axis="x", rotation=90)
+
+
+# --- Business axis ---
+ax2.plot(dates, prices.values, linewidth=1.3)
+
+# Set locators BEFORE scale to avoid AutoDateLocator generating too many ticks
+ax2.set_xscale("busday", bushours=(OPEN, CLOSE))
+ax2.xaxis.set_major_locator(busdayaxis.HourLocator())
+ax2.xaxis.set_major_formatter(mdates.DateFormatter("%a %H:%M"))
+ax2.set_title(f"using `.set_xscale(('busday', bushours=({OPEN}, {CLOSE}))`")
+ax2.set_ylabel("Price")
+ax2.tick_params(axis="x", rotation=90)
 
 # Shade pre/post-market
 for d in full_days:
@@ -57,18 +73,6 @@ for d in full_days:
         alpha=0.15,
         linewidth=0,
     )
-
-# --- Business axis ---
-ax2.plot(dates, prices.values, linewidth=1.3)
-
-# Set locators BEFORE scale to avoid AutoDateLocator generating too many ticks
-ax2.set_xscale("busday", bushours=(OPEN, CLOSE))
-ax2.xaxis.set_major_locator(busdayaxis.BusdayLocator(mdates.HourLocator()))
-ax2.xaxis.set_major_formatter(mdates.DateFormatter("%a %H:%M"))
-ax2.set_title(f"Business Time (scale='busday', bushours=({OPEN}, {CLOSE}))")
-ax2.set_ylabel("Price")
-ax2.tick_params(axis="x", rotation=90)
-
 # Mark open/close boundaries
 for d in full_days:
     ax2.axvline(d + pd.Timedelta(hours=OPEN), linestyle="--", linewidth=0.8, alpha=0.6)
@@ -76,5 +80,3 @@ for d in full_days:
 
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 plt.show()
-
-# %%

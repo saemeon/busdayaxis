@@ -113,7 +113,7 @@ for d in full_days:
 # --- Business axis ---
 _draw(ax2, ax2_vol)
 ax2.set_title("Business Time (scale='busday')")
-ax2.xaxis.set_major_locator(busdayaxis.BusdayLocator(mdates.DayLocator()))
+ax2.xaxis.set_major_locator(busdayaxis.DayLocator())
 ax2.xaxis.set_major_formatter(mdates.DateFormatter("%a %d %b"))
 ax2.tick_params(axis="x", rotation=90)
 

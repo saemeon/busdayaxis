@@ -1,26 +1,20 @@
 """# Per-Day Business Hours
 
 Each weekday can have a different session via a ``bushours`` dict.
-On the business axis, days are scaled proportionally to their session
-length — Thursday (13 h) is visibly wider than Wednesday or Friday (3 h each).
+On the business axis, days are scaled proportionally to their total bushours
+length — i.e. days with less bushours will appear narrower.
 
 Core code:
 
 ```python
 ax.set_xscale("busday", bushours={
-    "Mon": (9, 17), "Tue": (9, 17),
-    "Wed": (9, 12), "Thu": (9, 22), "Fri": (9, 12),
+    "Mon": (9, 17),
+    "Tue": (9, 17),
+    "Wed": (9, 12),
+    "Thu": (9, 22),
+    "Fri": (9, 12),
 })
 ```
-
-Calendar axis:
-
-- Hourly ticks
-- Per-day inactive period shading
-
-Business axis:
-
-- Each day proportional to its session length
 """
 
 # %%
@@ -34,15 +28,12 @@ import busdayaxis
 busdayaxis.register_scale()
 
 OPEN = 9
-CLOSE_REGULAR = 17
-CLOSE_MIDDAY = 12
-CLOSE_LATE = 22
 bushours = {
-    "Mon": (OPEN, CLOSE_REGULAR),
-    "Tue": (OPEN, CLOSE_REGULAR),
-    "Wed": (OPEN, CLOSE_MIDDAY),
-    "Thu": (OPEN, CLOSE_LATE),
-    "Fri": (OPEN, CLOSE_MIDDAY),
+    "Mon": (OPEN, 17),
+    "Tue": (OPEN, 17),
+    "Wed": (OPEN, 12),
+    "Thu": (OPEN, 22),
+    "Fri": (OPEN, 12),
 }
 
 # Derive close hour per weekday (Mon=0..Sun=6) directly from bushours
@@ -66,14 +57,13 @@ fig.suptitle(
 )
 
 full_days = pd.date_range(dates.min().normalize(), dates.max().normalize(), freq="D")
-tick_hours = range(OPEN, int(close_per_wd.max()) + 1, 2)
 
 # --- Calendar axis ---
 ax1.plot(dates, prices.values, linewidth=1.3)
 ax1.set_title("Calendar Time (scale='linear')")
 ax1.set_ylabel("Price")
 ax1.xaxis.set_major_locator(mdates.HourLocator())
-ax1.xaxis.set_major_formatter(mdates.DateFormatter("%a %H:%M"))
+ax1.xaxis.set_major_formatter(mdates.DateFormatter("%a %Hh"))
 ax1.tick_params(axis="x", rotation=90)
 
 # Shade inactive periods per day
@@ -91,11 +81,9 @@ for d in full_days:
 # --- Business axis ---
 ax2.plot(dates, prices.values, linewidth=1.3)
 
-# Set locators BEFORE scale to avoid AutoDateLocator generating too many ticks
-ax2.xaxis.set_major_locator(busdayaxis.BusdayLocator(mdates.HourLocator()))
-ax2.xaxis.set_major_formatter(mdates.DateFormatter("%a %H:%M"))
-
 ax2.set_xscale("busday", bushours=bushours)
+ax2.xaxis.set_major_locator(busdayaxis.HourLocator())
+ax2.xaxis.set_major_formatter(mdates.DateFormatter("%a %Hh"))
 ax2.set_title("Business Time (scale='busday', bushours={per-day})")
 ax2.set_ylabel("Price")
 ax2.tick_params(axis="x", rotation=90)
@@ -108,5 +96,3 @@ for d in full_days:
 
 plt.tight_layout(rect=[0, 0, 1, 0.96])
 plt.show()
-
-# %%

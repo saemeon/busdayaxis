@@ -11,7 +11,7 @@ import matplotlib.transforms as mtransforms
 import numpy as np
 from matplotlib.axis import Axis
 
-from busdayaxis._locator import BusdayLocator
+from busdayaxis._locator import AutoDateLocator
 
 WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 WEEKDAYS_MAP = {name: i for i, name in enumerate(WEEKDAYS)}
@@ -536,7 +536,7 @@ class BusdayScale(mscale.ScaleBase):
         axis._busday_kwargs = self._busday_kwargs.copy()
         axis._bushours = self._bushours_dict.copy()
 
-        majloc = BusdayLocator(base_locator=mdates.AutoDateLocator())
+        majloc = AutoDateLocator()
         majloc.set_axis(axis)
 
         majfmt = mdates.AutoDateFormatter(majloc.base_locator)

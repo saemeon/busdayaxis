@@ -1,6 +1,8 @@
 """# Custom Work Week
 
 A ``weekmask`` string defines which days are business days.
+The string must be compatible with ``np.is_busday``.
+
 This example uses the Middle-Eastern Sun–Thu work week; Friday and Saturday
 are collapsed, while Sunday is treated as a normal business day.
 
@@ -9,15 +11,6 @@ Core code:
 ```python
 ax.set_xscale("busday", weekmask="Sun Mon Tue Wed Thu")
 ```
-
-Calendar axis:
-
-- Daily ticks
-- Fri–Sat shading (Middle-Eastern weekend)
-
-Business axis:
-
-- Sun–Thu work week (Fri–Sat compressed)
 """
 
 # %%
@@ -56,19 +49,19 @@ ax1.xaxis.set_major_locator(mdates.DayLocator())
 ax1.xaxis.set_major_formatter(mdates.DateFormatter("%a %d %b"))
 ax1.tick_params(axis="x", rotation=90)
 
-# Shade Fri–Sat (Middle-Eastern weekend)
-for d in full_days:
-    if d.weekday() == 4:  # Friday
-        ax1.axvspan(d, d + pd.Timedelta(days=2), color="grey", alpha=0.15, linewidth=0)
-
 # --- Business axis ---
 ax2.plot(dates, prices.values, linewidth=1.3)
 ax2.set_xscale("busday", weekmask=WEEKMASK)
 ax2.set_title(f"Business Time (scale='busday', weekmask='{WEEKMASK}')")
 ax2.set_ylabel("Price")
-ax2.xaxis.set_major_locator(busdayaxis.BusdayLocator(mdates.DayLocator()))
+ax2.xaxis.set_major_locator(busdayaxis.DayLocator())
 ax2.xaxis.set_major_formatter(mdates.DateFormatter("%a %d %b"))
 ax2.tick_params(axis="x", rotation=90)
+
+# Shade Fri–Sat (Middle-Eastern weekend)
+for d in full_days:
+    if d.weekday() == 4:  # Friday
+        ax1.axvspan(d, d + pd.Timedelta(days=2), color="grey", alpha=0.15, linewidth=0)
 
 # Mark Fri–Sat boundaries
 for d in full_days:

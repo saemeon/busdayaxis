@@ -94,8 +94,7 @@ ax.grid(True, alpha=0.2, color="white")
 ax.set_xscale("busday", bushours=(9, 17))
 
 # Better locators/formatters
-hour_locator = busdayaxis.BusdayLocator(mdates.HourLocator(byhour=range(9, 17, 2)))
-ax.xaxis.set_major_locator(hour_locator)
+ax.xaxis.set_major_locator(busdayaxis.HourLocator())
 ax.xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
 ax.tick_params(axis="x", rotation=45, colors="white")
 

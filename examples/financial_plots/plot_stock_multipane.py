@@ -93,9 +93,8 @@ ax_sma.plot(bar_idx, sma.values, color="blue", linewidth=1.2)
 ax_sma.set_ylabel("SMA(5)", fontsize=9)
 
 # Set locators BEFORE scale to avoid AutoDateLocator generating too many ticks
-hour_locator = busdayaxis.BusdayLocator(mdates.HourLocator(byhour=range(9, 18, 2)))
 for ax in [ax_price, ax_vol, ax_sma]:
-    ax.xaxis.set_major_locator(hour_locator)
+    ax.xaxis.set_major_locator(busdayaxis.HourLocator(byhour=range(9, 18, 2)))
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%a %H:%M"))
 
 # --- Set busday scale on all panels ---

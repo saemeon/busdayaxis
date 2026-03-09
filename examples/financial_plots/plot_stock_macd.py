@@ -137,8 +137,7 @@ ax_vol.bar(bar_idx, volume, color=colors, alpha=0.6, width=bar_width)
 ax_vol.set_ylabel("Volume")
 
 # Set locators BEFORE scale to avoid AutoDateLocator generating too many ticks
-hour_locator = busdayaxis.BusdayLocator(mdates.HourLocator())
-ax_vol.xaxis.set_major_locator(hour_locator)
+ax_vol.xaxis.set_major_locator(busdayaxis.HourLocator())
 ax_vol.xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
 
 # --- Apply busday scale ---

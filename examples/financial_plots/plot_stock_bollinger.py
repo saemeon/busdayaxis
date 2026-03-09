@@ -93,7 +93,7 @@ ax.legend(loc="upper left", fontsize=9)
 ax.set_title("Bollinger Bands (20, 2)", fontsize=14, fontweight="bold")
 
 # Set locators BEFORE scale to avoid AutoDateLocator generating too many ticks
-hour_locator = busdayaxis.BusdayLocator(mdates.HourLocator(byhour=range(9, 17, 2)))
+hour_locator = busdayaxis.HourLocator(byhour=range(9, 17, 2))
 ax.xaxis.set_major_locator(hour_locator)
 ax.xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
 
