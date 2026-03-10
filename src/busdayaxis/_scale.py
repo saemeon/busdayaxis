@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Dict, List, Tuple, Union  # noqa: UP006, UP035
 
 import matplotlib.dates as mdates
 import matplotlib.scale as mscale
@@ -26,11 +26,11 @@ def _validate_hours(start: float, end: float, label: str = "hours") -> None:
         raise ValueError(f"{label} must satisfy 0 <= start <= end <= 24")
 
 
-_BushoursInput = (
-    tuple[float, float]
-    | list[tuple[float, float]]
-    | dict[str | int, tuple[float, float]]
-)
+_BushoursInput = Union[
+    Tuple[float, float],  # noqa: UP006, UP007
+    List[Tuple[float, float]],  # noqa: UP006, UP007
+    Dict[Union[str, int], Tuple[float, float]],  # noqa: UP006, UP007
+]
 
 
 def _normalize_bushours(bushours: _BushoursInput) -> dict[int, tuple[float, float]]:
