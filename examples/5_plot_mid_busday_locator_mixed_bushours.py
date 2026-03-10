@@ -27,6 +27,7 @@ import busdayaxis
 
 busdayaxis.register_scale()
 
+# define dummy data
 OPEN = 9
 bushours = {
     "Mon": (OPEN, 17),
@@ -35,19 +36,16 @@ bushours = {
     "Thu": (OPEN, 22),
     "Fri": (OPEN, 12),
 }
-
-# Derive close hour per weekday (Mon=0..Sun=6) directly from bushours
 _day_names = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 close_per_wd = np.array([bushours.get(name, (0, 0))[1] for name in _day_names])
-
 num_days = 5
 dates = pd.date_range("2025-01-06", periods=num_days * 24, freq="h")  # Mon–Fri
 
 returns = np.random.normal(0, 0.002, len(dates))
 close_hours = close_per_wd[dates.weekday]
-returns[(dates.hour < OPEN) | (dates.hour >= close_hours)] = 0.0
-
-prices = 100 * (1 + pd.Series(returns, index=dates)).cumprod()
+returns[(dates.hour <= OPEN) | (dates.hour > close_hours)] = 0.0
+returns[~np.is_busday(np.array(dates, dtype="datetime64[D]"))] = 0.0
+prices = (1 + pd.Series(returns, index=dates)).cumprod()
 
 
 fig, ax = plt.subplots()
@@ -61,5 +59,5 @@ ax.xaxis.grid(True, which="major")
 ax.xaxis.grid(False, which="minor")
 ax.set_title("Business Time (scale='busday', bushours={per-day})")
 ax.set_ylabel("Price")
-plt.tight_layout(rect=[0, 0, 1, 0.96])
-plt.show()
+
+_ = plt.tight_layout(rect=[0, 0, 1, 0.96])

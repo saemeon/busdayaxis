@@ -1,20 +1,4 @@
-"""# Financial Chart with Stochastic Oscillator
-
-Price chart with Stochastic Oscillator (%K and %D lines).
-Shows overbought (>80) and oversold (<20) conditions.
-
-Core code:
-
-```python
-ax_price.set_xscale("busday", bushours=(9, 17))
-ax_stoch.set_xscale("busday", bushours=(9, 17))
-```
-
-Panels:
-
-- **Price**: Candlesticks
-- **Stochastic**: %K (fast) and %D (slow) lines with overbought/oversold zones
-"""
+"""# Financial Chart with Stochastic Oscillator"""
 
 # %%
 import matplotlib.dates as mdates
@@ -69,7 +53,7 @@ gs = fig.add_gridspec(2, 1, height_ratios=[3, 1], hspace=0.05)
 ax_price = fig.add_subplot(gs[0])
 ax_stoch = fig.add_subplot(gs[1], sharex=ax_price)
 
-fig.suptitle("Stochastic Oscillator (14, 3, 3)", fontsize=14, fontweight="bold")
+fig.suptitle("Stochastic Oscillator (14, 3, 3)", fontsize=14)
 
 bar_width = pd.Timedelta(minutes=55)
 
@@ -94,20 +78,10 @@ ax_stoch.set_ylabel("Stoch")
 ax_stoch.set_ylim(0, 100)
 ax_stoch.legend(loc="upper left", fontsize=9)
 
-# Hide x-axis labels on top panel
 ax_price.tick_params(axis="x", labelbottom=False)
-
-# Set locators BEFORE scale to avoid AutoDateLocator generating too many ticks
-ax_stoch.xaxis.set_major_locator(busdayaxis.HourLocator(byhour=range(9, 17, 2)))
+ax_stoch.xaxis.set_major_locator(busdayaxis.DayLocator())
 ax_stoch.xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
+ax_price.set_xscale("busday", bushours=(9, 17))
+ax_stoch.set_xscale("busday", bushours=(9, 17))
 
-# Apply busday scale
-for ax in [ax_price, ax_stoch]:
-    ax.set_xscale("busday", bushours=(9, 17))
-
-ax_stoch.tick_params(axis="x", rotation=45)
-
-plt.tight_layout(rect=[0, 0, 1, 0.96])
-plt.show()
-
-# %%
+_ = plt.tight_layout(rect=[0, 0, 1, 0.96])

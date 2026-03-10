@@ -1,13 +1,6 @@
 """# Dark Theme Example
 
 A candlestick chart with dark background - typical of trading platforms.
-
-Core code:
-
-```python
-plt.style.use("dark_background")
-ax.set_xscale("busday", bushours=(9, 17))
-```
 """
 
 # %%
@@ -63,25 +56,16 @@ ax.set_facecolor("#1e1e1e")
 
 bar_width = pd.Timedelta(minutes=55)
 
-# Wicks
 ax.vlines(bar_idx, low, high, linewidth=0.6, color="white", zorder=3)
-# Bodies
 ax.bar(
-    bar_idx,
-    body_height,
-    bottom=body_bottom,
-    width=bar_width,
-    color=colors,
-    zorder=4,
+    bar_idx, body_height, bottom=body_bottom, width=bar_width, color=colors, zorder=4
 )
-# SMA
 ax.plot(bar_idx, sma.values, color="yellow", linewidth=1.2, label="SMA(20)")
 
 # Styling for dark background
 ax.set_ylabel("Price", color="white")
-ax.set_title("Dark Theme - Candlesticks", fontsize=12, fontweight="bold", color="white")
+ax.set_title("Dark Theme - Candlesticks", fontsize=12, color="white")
 ax.legend(loc="upper left", fontsize=9, facecolor="#2b2b2b", edgecolor="white")
-ax.tick_params(colors="white")
 ax.spines["top"].set_color("white")
 ax.spines["bottom"].set_color("white")
 ax.spines["left"].set_color("white")
@@ -90,15 +74,8 @@ ax.xaxis.label.set_color("white")
 ax.yaxis.label.set_color("white")
 ax.grid(True, alpha=0.2, color="white")
 
-# Apply busday scale
 ax.set_xscale("busday", bushours=(9, 17))
+ax.xaxis.set_major_locator(busdayaxis.DayLocator())
+ax.xaxis.set_major_formatter(mdates.DateFormatter("%d"))
 
-# Better locators/formatters
-ax.xaxis.set_major_locator(busdayaxis.HourLocator())
-ax.xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
-ax.tick_params(axis="x", rotation=45, colors="white")
-
-plt.tight_layout()
-plt.show()
-
-# %%
+_ = plt.tight_layout()

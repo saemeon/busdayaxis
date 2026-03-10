@@ -1,29 +1,4 @@
-"""# Candlestick Chart with Volume Overlay
-
-Volume bars are placed in the background of the same axis using ``twinx``.
-Both the price and volume axes carry the same busday scale so the bars
-line up correctly.
-
-Core code:
-
-```python
-ax_price.set_xscale("busday")
-ax_vol = ax_price.twinx()
-ax_vol.set_xscale("busday")  # twin must match parent
-# Push volume behind price
-ax_price.set_zorder(ax_vol.get_zorder() + 1)
-ax_price.patch.set_visible(False)
-```
-
-Calendar axis:
-
-- Candlestick price (vlines wicks + bar bodies)
-- Volume bars overlaid in background (bar, very transparent)
-
-Business axis:
-
-- Same artists, weekends compressed
-"""
+"""# Candlestick Chart with Volume Overlay"""
 
 # %%
 import matplotlib.dates as mdates
@@ -56,17 +31,11 @@ full_days = pd.date_range(dates.min().normalize(), dates.max().normalize(), freq
 bar_width = pd.Timedelta(hours=14)
 
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5), sharey=True)
-fig.suptitle(
-    "Candlestick with Volume Overlay on busday Scale", fontsize=14, fontweight="bold"
-)
+fig.suptitle("Candlestick with Volume Overlay on busday Scale", fontsize=14)
 
 # Create twin axes for volume background
 ax1_vol = ax1.twinx()
 ax2_vol = ax2.twinx()
-
-# Set busday scale BEFORE plotting; both twins must carry the same scale
-ax2.set_xscale("busday")
-ax2_vol.set_xscale("busday")
 
 
 def _draw(ax_price, ax_vol):
@@ -99,7 +68,7 @@ def _draw(ax_price, ax_vol):
     ax_price.patch.set_visible(False)
 
 
-# --- Calendar axis ---
+# axis with default linear scale
 _draw(ax1, ax1_vol)
 ax1.set_title("Calendar Time (scale='linear')")
 ax1.xaxis.set_major_locator(mdates.DayLocator())
@@ -110,7 +79,7 @@ for d in full_days:
     if d.weekday() == 5:  # Saturday
         ax1.axvspan(d, d + pd.Timedelta(days=2), color="grey", alpha=0.12, linewidth=0)
 
-# --- Business axis ---
+# axis with busday scale
 _draw(ax2, ax2_vol)
 ax2.set_title("Business Time (scale='busday')")
 ax2.xaxis.set_major_locator(busdayaxis.DayLocator())
@@ -122,4 +91,5 @@ for d in full_days:
         ax2.axvline(d, linestyle="--", linewidth=0.8, alpha=0.5)
         ax2.axvline(d + pd.Timedelta(days=2), linestyle="--", linewidth=0.8, alpha=0.5)
 
-# %%
+ax2.set_xscale("busday")
+ax2_vol.set_xscale("busday")

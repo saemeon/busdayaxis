@@ -13,31 +13,22 @@ import busdayaxis
 
 busdayaxis.register_scale()
 
+# define dummy data
 num_days = 20
 dates = pd.date_range("2025-01-01", periods=num_days * 24, freq="h")
-
 returns = np.random.normal(0, 0.002, len(dates))
-returns[dates.weekday >= 5] = 0.0
-
+returns[~np.is_busday(np.array(dates, dtype="datetime64[D]"))] = 0.0
 prices = 100 * (1 + pd.Series(returns, index=dates)).cumprod()
-
-# End-of-day snapshots at 16:00 on each weekday
 eod = prices[(dates.hour == 16) & (dates.weekday < 5)]
-
-# Synthetic daily high/low for vlines
 rng = np.random.default_rng(0)
 eod_high = eod + rng.uniform(0.1, 0.6, len(eod))
 eod_low = eod - rng.uniform(0.1, 0.6, len(eod))
-
-# Random volume
 volume = pd.Series(rng.integers(1_000, 10_000, len(eod)), index=eod.index)
-
 price_min = prices.values.min()
 
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 7), sharey=True)
-fig.suptitle("Multiple Artists on busday Scale", fontsize=14, fontweight="bold")
+fig.suptitle("Multiple Artists on busday Scale", fontsize=14)
 
-# Twin axes for volume bars (secondary y-axis)
 ax1_vol = ax1.twinx()
 ax2_vol = ax2.twinx()
 
