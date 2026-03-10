@@ -11,7 +11,7 @@ import matplotlib.transforms as mtransforms
 import numpy as np
 from matplotlib.axis import Axis
 
-from busdayaxis._locator import AutoDateLocator
+from busdayaxis._locator import AutoDateLocator, BusdayLocator
 
 WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 WEEKDAYS_MAP = {name: i for i, name in enumerate(WEEKDAYS)}
@@ -532,17 +532,18 @@ class BusdayScale(mscale.ScaleBase):
             **self._busday_kwargs,
         )
 
-    def set_default_locators_and_formatters(self, axis: Any) -> None:
+    def set_default_locators_and_formatters(self, axis: Axis) -> None:
         axis._busday_kwargs = self._busday_kwargs.copy()
         axis._bushours = self._bushours_dict.copy()
 
-        majloc = AutoDateLocator()
-        majloc.set_axis(axis)
+        if not isinstance(axis.get_major_locator(), BusdayLocator):
+            majloc = AutoDateLocator()
+            majloc.set_axis(axis)
+            axis.set_major_locator(majloc)
 
-        majfmt = mdates.AutoDateFormatter(majloc.base_locator)
-
-        axis.set_major_locator(majloc)
-        axis.set_major_formatter(majfmt)
+        if not isinstance(axis.get_major_formatter(), mdates.DateFormatter):
+            majfmt = mdates.AutoDateFormatter(axis.get_major_locator().base_locator)
+            axis.set_major_formatter(majfmt)
 
     def limit_range_for_scale(
         self, vmin: float, vmax: float, minpos: float

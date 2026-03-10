@@ -25,6 +25,8 @@ ax.set_xscale("busday")  # compress weekends (Mon–Fri default)
 
 See the [API reference](api.md) for full parameter documentation and the [Examples](generated/gallery) for practical use cases.
 
+## Usage
+
 There are two equivalent ways to apply the scale:
 
 ### String-based
@@ -87,14 +89,54 @@ The default `BusdayScale(ax.xaxis)` is equivalent to `ax.set_xscale("busday")`: 
 
 ### Custom tick placement
 
-Use `BusdayLocator` to control which ticks are shown. It wraps any Matplotlib
-date locator and discards ticks that fall outside the active session.
+`busdayaxis` provides business-day-aware wrappers for every standard Matplotlib date locator. Each wrapper delegates tick placement to the underlying locator and then filters out any ticks that fall on non-business days or outside active business hours.
+
+| `busdayaxis` locator | Wraps                       |
+|----------------------|-----------------------------|
+| `AutoDateLocator`    | `mdates.AutoDateLocator`    |
+| `YearLocator`        | `mdates.YearLocator`        |
+| `MonthLocator`       | `mdates.MonthLocator`       |
+| `WeekdayLocator`     | `mdates.WeekdayLocator`     |
+| `DayLocator`         | `mdates.DayLocator`         |
+| `HourLocator`        | `mdates.HourLocator`        |
+| `MinuteLocator`      | `mdates.MinuteLocator`      |
+| `SecondLocator`      | `mdates.SecondLocator`      |
+| `MicrosecondLocator` | `mdates.MicrosecondLocator` |
+| `MidBusdayLocator`   | *(custom — see below)*      |
+
+All locators read the `weekmask`, `holidays`, and `bushours` configuration directly from the axis, so they automatically stay in sync with the active `BusdayScale`.
+
+You can also wrap any third-party or custom locator with the base `BusdayLocator`:
 
 ```python
 import matplotlib.dates as mdates
+import busdayaxis
 
 ax.set_xscale("busday", bushours=(9, 17))
-ax.xaxis.set_major_locator(
-    busdayaxis.BusdayLocator(mdates.HourLocator(byhour=range(9, 18)))
-)
+
+# Hourly ticks only within business hours
+ax.xaxis.set_major_locator(busdayaxis.HourLocator())
+
+# Every other business day
+ax.xaxis.set_major_locator(busdayaxis.DayLocator(interval=2))
+
+# Every Monday that is a business day
+ax.xaxis.set_major_locator(busdayaxis.WeekdayLocator(byweekday=mdates.MO))
+
+# Wrap a custom locator
+ax.xaxis.set_major_locator(busdayaxis.BusdayLocator(my_custom_locator))
+```
+
+#### MidBusdayLocator
+
+`MidBusdayLocator` is a special locator that places one tick at the midpoint of the business session for each business day. It is not a filter wrapper — it computes midpoints directly from the `bushours` configuration, including per-day schedules.
+
+Its primary use is centering day labels inside each session:
+
+```python
+ax.set_xscale("busday", bushours=(9, 17))
+
+# Major ticks at session boundaries, minor ticks centred for day labels
+ax.xaxis.set_minor_locator(busdayaxis.MidBusdayLocator())
+ax.xaxis.set_minor_formatter(mdates.DateFormatter("%a"))
 ```

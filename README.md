@@ -5,7 +5,7 @@
 
 A Matplotlib scale that compresses non-business days and off-hours. Every visible unit on the axis corresponds to active time — no gaps for weekends, holidays, or overnight periods. No data preprocessing needed.
 
-**→ Full documentation at [saemeon.github.io/busdayaxis](https://saemeon.github.io/busdayaxis/)**
+**Full documentation at [saemeon.github.io/busdayaxis](https://saemeon.github.io/busdayaxis/)**
 
 ## Why
 
@@ -14,10 +14,12 @@ Time series that only evolve on business days — prices, signals, operational m
 ## What it provides
 
 - Compress weekends, holidays, and overnight gaps with a single `set_xscale("busday")` call
+- Implemented as a proper `ScaleBase` subclass — autoscaling, shared axes, and all standard artists work without any changes to your plotting code
 - Per-day session hours (`bushours`) — uniform, per-weekday list, or dict with sensible defaults
 - Custom weekmasks and holiday lists, compatible with NumPy's busday calendar
-- `BusdayLocator` to filter ticks to business hours and days only
-- Implemented as a proper `ScaleBase` subclass — autoscaling, shared axes, and all standard artists work without any changes to your plotting code
+- Business-day-aware wrappers for all standard Matplotlib date locators — each filters ticks to business days and hours automatically
+- `MidBusdayLocator` to place a tick at the midpoint of each business session, useful for centering day labels
+- `BusdayLocator` base class to wrap any custom or third-party locator
 
 ## Installation
 

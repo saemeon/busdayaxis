@@ -11,11 +11,6 @@ Core code:
 ```python
 ax.set_xscale("busday", bushours=(9, 17))
 ```
-
-See Also:
-
-- []()  for a specification of differing bushours per day
-- []()
 """
 
 # %%
