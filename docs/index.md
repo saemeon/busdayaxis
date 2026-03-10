@@ -2,7 +2,7 @@
 
 A Matplotlib scale that compresses non-business days and off-hours. Every visible unit on the axis corresponds to active time — no gaps for weekends, holidays, or overnight periods. No data preprocessing needed.
 
-![Remove weekend gaps](assets/remove_weekend.png)
+![Remove weekend gaps](https://raw.githubusercontent.com/saemeon/busdayaxis/master/docs/assets/remove_weekend.png)
 
 The scale is implemented as a proper `ScaleBase` subclass and participates fully in Matplotlib's transform pipeline: autoscaling, shared axes, and all standard artists (`plot`, `scatter`, `bar`, `axvline`, `fill_between`, …) work out of the box.
 
