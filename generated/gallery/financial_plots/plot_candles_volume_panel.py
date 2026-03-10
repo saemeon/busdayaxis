@@ -1,4 +1,4 @@
-"""# Candlestick Chart with Separate Volume Panel"""
+"""# Candlestick with Volume Panel"""
 
 # %%
 import matplotlib.dates as mdates

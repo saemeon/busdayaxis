@@ -53,6 +53,42 @@
          <lastmod>2026-03-10</lastmod>
     </url>
     <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_0_remove_weekend/</loc>
+         <lastmod>2026-03-10</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_1_holidayday/</loc>
+         <lastmod>2026-03-10</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_1_weekmask/</loc>
+         <lastmod>2026-03-10</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_2_bushours/</loc>
+         <lastmod>2026-03-10</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_3_per_day_bushours/</loc>
+         <lastmod>2026-03-10</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_4_mid_busday_locator/</loc>
+         <lastmod>2026-03-10</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_5_mid_busday_locator_mixed_bushours/</loc>
+         <lastmod>2026-03-10</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_6_artists/</loc>
+         <lastmod>2026-03-10</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_7_known_limitations/</loc>
+         <lastmod>2026-03-10</lastmod>
+    </url>
+    <url>
          <loc>https://saemeon.github.io/busdayaxis/generated/gallery/plot_artists/</loc>
          <lastmod>2026-03-10</lastmod>
     </url>
@@ -174,6 +210,14 @@
     </url>
     <url>
          <loc>https://saemeon.github.io/busdayaxis/generated/gallery/financial_plots/plot_stock_stochastic/</loc>
+         <lastmod>2026-03-10</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/known_limitations/mg_execution_times/</loc>
+         <lastmod>2026-03-10</lastmod>
+    </url>
+    <url>
+         <loc>https://saemeon.github.io/busdayaxis/generated/gallery/known_limitations/plot_7_known_limitations/</loc>
          <lastmod>2026-03-10</lastmod>
     </url>
 </urlset>
