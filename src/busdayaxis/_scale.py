@@ -147,7 +147,12 @@ def _datetime_to_busday_float(
     clipped = np.clip(intraday_fraction, bushour_starts, bushour_ends)
 
     duration = bushour_ends - bushour_starts
-    normalized = np.where(duration > 0, (clipped - bushour_starts) / duration, 0.0)
+    normalized = np.divide(
+        clipped - bushour_starts,
+        duration,
+        out=np.zeros_like(intraday_fraction),
+        where=duration > 0,
+    )
 
     idx = (day - calendar_days[0]).astype(int)
 
