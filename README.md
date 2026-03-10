@@ -5,6 +5,8 @@
 
 A Matplotlib scale that compresses non-business days and off-hours. Every visible unit on the axis corresponds to active time — no gaps for weekends, holidays, or overnight periods. No data preprocessing needed.
 
+![Remove weekend gaps](docs/assets/remove_weekend.png)
+
 **Full documentation at [saemeon.github.io/busdayaxis](https://saemeon.github.io/busdayaxis/)**
 
 ## Why

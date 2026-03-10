@@ -41,7 +41,7 @@ ax1.xaxis.set_major_formatter(mdates.DateFormatter("%a %-d"))
 # axis with business scale
 ax2.plot(dates, prices.values)
 ax2.set_xscale("busday", holidays=[holiday])
-ax2.set_title(f"using  `ax.set_xscale(scale='busday', holidays=['{holiday}'])`")
+ax2.set_title(f"using  `ax.set_xscale('busday', holidays=['{holiday}'])`")
 ax2.xaxis.set_major_locator(busdayaxis.DayLocator())
 ax2.xaxis.set_major_formatter(mdates.DateFormatter("%a %-d"))
 

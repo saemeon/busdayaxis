@@ -1,4 +1,4 @@
-"""# Known Limitation(s)
+"""# Problem with Non-Linear Scales and vlines
 
 If a non-linear x-scale (e.g. ``"busday"`` or ``"log"``) is set *before*
 calling ``Axes.vlines``, Matplotlib may expand the axis limits excessively

@@ -1,4 +1,4 @@
-"""# Financial Chart with Stochastic Oscillator"""
+"""# Chart with Stochastic Oscillator"""
 
 # %%
 import matplotlib.dates as mdates

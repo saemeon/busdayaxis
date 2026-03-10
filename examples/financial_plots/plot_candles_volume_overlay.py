@@ -1,4 +1,4 @@
-"""# Candlestick Chart with Volume Overlay"""
+"""# Candlestick with Volume Overlay"""
 
 # %%
 import matplotlib.dates as mdates
