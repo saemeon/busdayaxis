@@ -1,23 +1,4 @@
-"""# Multi-Pane Stock Chart
-
-A typical financial chart with three panels:
-price (candlesticks), volume, and a simple moving average (SMA) indicator.
-The busday scale compresses weekends for a cleaner view.
-
-Core code:
-
-```python
-ax_price.set_xscale("busday", bushours=(9, 17))
-ax_vol.set_xscale("busday", bushours=(9, 17))
-ax_sma.set_xscale("busday", bushours=(9, 17))
-```
-
-Panels:
-
-- **Price**: OHLC candlesticks (green/red bodies, black wicks)
-- **Volume**: colored bars aligned with price
-- **SMA**: 20-period simple moving average line
-"""
+"""# Multi-Pane Stock Chart"""
 
 # %%
 import matplotlib.dates as mdates
@@ -63,12 +44,24 @@ ax_price = fig.add_subplot(gs[0])
 ax_vol = fig.add_subplot(gs[1], sharex=ax_price)
 ax_sma = fig.add_subplot(gs[2], sharex=ax_price)
 
-fig.suptitle("AAPL 5-Day Intraday (busday scale)", fontsize=14, fontweight="bold")
+fig.suptitle("AAPL 5-Day Intraday (busday scale)", fontsize=14)
 
 # --- Price Panel ---
 # Draw wicks first (so they appear behind bodies)
 ax_price.vlines(bar_idx, low, high, linewidth=0.8, color="black", zorder=3)
-# Draw bodies
+
+# Bollinger Bands (20-period, 2 std)
+sma = pd.Series(close)
+bb_sma = sma.rolling(20).mean()
+bb_std = sma.rolling(20).std()
+bb_upper = bb_sma + 2 * bb_std
+bb_lower = bb_sma - 2 * bb_std
+ax_price.plot(bar_idx, bb_sma.values, color="blue", linewidth=1.2)
+ax_price.plot(bar_idx, bb_upper.values, color="red", linewidth=1, linestyle="--")
+ax_price.plot(bar_idx, bb_lower.values, color="green", linewidth=1, linestyle="--")
+ax_price.fill_between(
+    bar_idx, bb_lower.values, bb_upper.values, alpha=0.1, color="blue"
+)
 ax_price.bar(
     bar_idx,
     body_height,
@@ -77,29 +70,20 @@ ax_price.bar(
     color=colors,
     zorder=4,
 )
-# SMA line
 ax_sma.plot(bar_idx, sma.values, color="blue", linewidth=1.2, label="SMA(5)")
-
 ax_price.set_ylabel("Price")
 ax_price.tick_params(axis="x", labelbottom=False)
-
-# --- Volume Panel ---
 ax_vol.bar(bar_idx, volume, color=colors, alpha=0.6, width=pd.Timedelta(minutes=55))
 ax_vol.set_ylabel("Volume", fontsize=9)
 ax_vol.tick_params(axis="x", labelbottom=False)
-
-# --- SMA Panel ---
 ax_sma.plot(bar_idx, sma.values, color="blue", linewidth=1.2)
 ax_sma.set_ylabel("SMA(5)", fontsize=9)
 
-# Set locators BEFORE scale to avoid AutoDateLocator generating too many ticks
-hour_locator = busdayaxis.BusdayLocator(mdates.HourLocator(byhour=range(9, 18, 2)))
 for ax in [ax_price, ax_vol, ax_sma]:
-    ax.xaxis.set_major_locator(hour_locator)
+    ax.xaxis.set_major_locator(busdayaxis.HourLocator(byhour=range(9, 18, 2)))
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%a %H:%M"))
 
-# --- Set busday scale on all panels ---
 for ax in [ax_price, ax_vol, ax_sma]:
     ax.set_xscale("busday", bushours=(9, 17))
 
-ax_sma.tick_params(axis="x", rotation=45)
+_ = ax_sma.tick_params(axis="x", rotation=45)

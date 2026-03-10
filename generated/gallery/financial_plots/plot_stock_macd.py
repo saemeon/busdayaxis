@@ -1,26 +1,4 @@
-"""# Multi-Panel Financial Chart
-
-A comprehensive financial chart with:
-- OHLC candlesticks with moving averages (SMA 50, 100, 200)
-- MACD indicator (MACD line, signal line, histogram)
-- Volume bars
-
-The busday scale compresses weekends for continuous trading view.
-
-Core code:
-
-```python
-ax_price.set_xscale("busday", bushours=(9, 17))
-ax_macd.set_xscale("busday", bushours=(9, 17))
-ax_vol.set_xscale("busday", bushours=(9, 17))
-```
-
-Panels:
-
-- **Price**: Candlesticks + SMA(50, 100, 200)
-- **MACD**: MACD line, signal line, histogram (green/red bars)
-- **Volume**: colored bars aligned with price
-"""
+"""# Multi-Panel Financial Chart"""
 
 # %%
 import matplotlib.dates as mdates
@@ -89,7 +67,7 @@ ax_price = fig.add_subplot(gs[0])
 ax_macd = fig.add_subplot(gs[1], sharex=ax_price)
 ax_vol = fig.add_subplot(gs[2], sharex=ax_price)
 
-fig.suptitle("AAPL Intraday - SMA & MACD", fontsize=14, fontweight="bold")
+fig.suptitle("AAPL Intraday - SMA & MACD", fontsize=14)
 
 bar_width = pd.Timedelta(minutes=55)
 
@@ -136,18 +114,11 @@ ax_macd.tick_params(axis="x", labelbottom=False)
 ax_vol.bar(bar_idx, volume, color=colors, alpha=0.6, width=bar_width)
 ax_vol.set_ylabel("Volume")
 
-# Set locators BEFORE scale to avoid AutoDateLocator generating too many ticks
-hour_locator = busdayaxis.BusdayLocator(mdates.HourLocator())
-ax_vol.xaxis.set_major_locator(hour_locator)
-ax_vol.xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
+ax_vol.xaxis.set_major_locator(busdayaxis.DayLocator())
+ax_vol.xaxis.set_major_formatter(mdates.DateFormatter("%d"))
 
 # --- Apply busday scale ---
 for ax in [ax_price, ax_macd, ax_vol]:
     ax.set_xscale("busday", bushours=(9, 17))
 
-ax_vol.tick_params(axis="x", rotation=45)
-
-plt.tight_layout(rect=[0, 0, 1, 0.96])
-plt.show()
-
-# %%
+_ = plt.tight_layout(rect=[0, 0, 1, 0.96])
