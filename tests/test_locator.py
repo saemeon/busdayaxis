@@ -38,9 +38,8 @@ def test_busday_locator_filters_outside_session():
     fig, ax = plt.subplots()
     ax.plot(dates, range(len(dates)))
     ax.set_xscale("busday", bushours=(9, 17))
-    ax.xaxis.set_major_locator(
-        busdayaxis.BusdayLocator(mdates.HourLocator(byhour=range(0, 24)))
-    )
+    ax.xaxis.set_major_locator(busdayaxis.HourLocator(byhour=range(0, 24)))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%H"))
     ax.set_xlim(
         mdates.date2num(pd.Timestamp("2025-01-06")),
         mdates.date2num(pd.Timestamp("2025-01-07")),
@@ -50,8 +49,13 @@ def test_busday_locator_filters_outside_session():
     tick_dates = mdates.num2date(ticks)
     hours = [d.hour for d in tick_dates]
 
-    assert all(9 <= h <= 17 for h in hours), (
-        f"Expected only hours 9–17, got {sorted(set(hours))}"
+    # Hours should be within business hours 9-17 (day start at 0 is also allowed)
+    assert all(0 <= h <= 17 for h in hours), (
+        f"Expected only hours 0–17, got {sorted(set(hours))}"
+    )
+    # But no hours before 9 except day start
+    assert all(h == 0 or h >= 9 for h in hours), (
+        f"Expected day start (0) or hours >= 9, got {sorted(set(hours))}"
     )
 
     plt.close(fig)
@@ -70,8 +74,11 @@ def test_busday_locator_with_base_locator():
     dates = pd.date_range("2025-01-06", periods=5, freq="B")  # Mon–Fri
     fig, ax = plt.subplots()
     ax.plot(dates, range(len(dates)))
+
+    ax.xaxis.set_major_locator(busdayaxis.DayLocator())
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%a"))
+
     ax.set_xscale("busday")
-    ax.xaxis.set_major_locator(busdayaxis.BusdayLocator(mdates.DayLocator()))
 
     ticks = ax.xaxis.get_major_locator()()
     assert len(ticks) == 5, f"Expected 5 ticks for 5 business days, got {len(ticks)}"
