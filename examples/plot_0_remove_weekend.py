@@ -93,4 +93,4 @@ for d in full_days:
         ax2.axvline(d + pd.Timedelta(days=2), linestyle="--", linewidth=0.8, alpha=0.6)
 
 plt.tight_layout(rect=[0, 0, 1, 1])
-_ = plt.savefig("../docs/assets/remove_weekend.png")
+_ = plt.savefig("../docs/assets/remove_weekend.png", dpi=300)
