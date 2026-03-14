@@ -75,14 +75,14 @@ Time series that only evolve on business days — prices, signals, operational m
 - Matplotlib representation (all hours counted):
 
 
-        Thu 1970-01-01   24h (00:00 - 24:00)
+          Thu 1970-01-01   24h (00:00 - 24:00)
         + Fri 1970-01-02   24h (00:00 - 24:00)
         + Sat 1970-01-03   24h (00:00 - 24:00)
         + Sun 1970-01-04   24h (00:00 - 24:00)
         + Mon 1970-01-05   10h (00:00 - 10:00)
         ---------------------------------------
         =                  106h (Total hours since epoch)
-        ÷                  24h
+        /                  24h
         ---------------------------------------
         =                  4.41666... (matplotlib coordinate)
 
@@ -91,14 +91,14 @@ Time series that only evolve on business days — prices, signals, operational m
 
     To get the floating-point representation of "1970-01-05 10:00" (Mon 10:00), we count the business hours that have elapsed since 1970-01-01 00:00:
 
-        Thu 1970-01-01   8h (9:00 - 17:00)
+          Thu 1970-01-01   8h (9:00 - 17:00)
         + Fri 1970-01-02   8h (9:00 - 17:00)
         + Sat 1970-01-03   0h
         + Sun 1970-01-04   0h
         + Mon 1970-01-05   1h (09:00 - 10:00)
         ---------------------------------------
-       =                  17h (business hours since epoch)
-        ÷                   24h
+        =                 17h (business hours since epoch)
+        /                  24h
         ---------------------------------------
         =          0.708333... (busdayaxis coordinate)
 
