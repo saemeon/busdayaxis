@@ -6,6 +6,30 @@ A Matplotlib scale that compresses non-business days and off-hours. Every visibl
 
 **Full documentation at [saemeon.github.io/busdayaxis](https://saemeon.github.io/busdayaxis/)**
 
+## Installation
+
+```bash
+pip install busdayaxis
+```
+
+## Quick Start
+
+```python
+import matplotlib.pyplot as plt
+import pandas as pd
+import busdayaxis
+
+busdayaxis.register_scale()  # register once at the start of your script
+
+dates = pd.date_range("2026-01-01", periods=10, freq="B")
+values = range(len(dates))
+
+fig, ax = plt.subplots()
+ax.plot(dates, values)
+ax.set_xscale("busday", bushours=(9, 17))  # compress weekends (Mon–Fri default) and off-hours (17:00–09:00 in this example)
+plt.show()
+```
+
 ## Why
 
 Time series that only evolve on business days — prices, signals, operational metrics — look distorted on a standard calendar axis. Weekends and holidays introduce flat gaps that compress active periods and visually skew slopes. `busdayaxis` removes these gaps entirely.
@@ -74,33 +98,6 @@ Time series that only evolve on business days — prices, signals, operational m
         ÷                   24h
         ---------------------------------------
         =          0.708333... (busdayaxis coordinate)
-
-
-## Installation
-
-```bash
-pip install busdayaxis
-```
-
-## Quick Start
-
-```python
-import matplotlib.pyplot as plt
-import pandas as pd
-import busdayaxis
-
-busdayaxis.register_scale()  # register once at the start of your script
-
-dates = pd.date_range("2026-01-01", periods=10, freq="B")
-values = range(len(dates))
-
-fig, ax = plt.subplots()
-ax.plot(dates, values)
-ax.set_xscale("busday")  # compress weekends (Mon–Fri default)
-plt.show()
-```
-
-See the [API reference](api.md) for full parameter documentation and the [Examples](generated/gallery) for practical use cases.
 
 ## Usage
 
