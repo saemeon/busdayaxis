@@ -94,4 +94,4 @@ ax2_top.tick_params(axis="x", rotation=45)
 
 
 plt.tight_layout(rect=[0, 0, 1, 1])
-_ = plt.savefig("under_the_hood.png", dpi=300)
+_ = plt.savefig("../docs/assets/under_the_hood.png", dpi=300)
