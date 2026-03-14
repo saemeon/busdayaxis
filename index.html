@@ -1504,12 +1504,16 @@
 <h2 id="under-the-hood">Under the Hood<a class="headerlink" href="#under-the-hood" title="Permanent link">&para;</a></h2>
 <ul>
 <li>
-<p><code>matplotlib</code> internally handles dates as floating-point numbers representing <strong>days since 1970-01-01</strong>, or stated alternatively, as</p>
-<p>$$\text{ matplotlib-representation}=\frac{\text{hours since 1970-01-01}}{24 \text{hours}}$$</p>
+<p><code>matplotlib</code> internally handles dates as floating-point numbers representing <strong>days since 1970-01-01</strong>, or stated alternatively, as
+    $$
+    \text{matplotlib-representation} = \frac{\text{hours since 1970-01-01}}{24 \text{hours}}
+    $$</p>
 </li>
 <li>
-<p><code>busdayaxis</code> transforms these coordinates to floating-point numbers representing</p>
-<p>$$\text{busdayaxis-representation} = \frac{\text{business-hours since 1970-01-01}}{24 \text{ hours}}$$</p>
+<p><code>busdayaxis</code> transforms these coordinates to floating-point numbers representing
+    $$
+    \text{busdayaxis-representation} = \frac{\text{business-hours since 1970-01-01}}{24 \text{ hours}}
+    $$</p>
 <p>This conversion implies that datetime values that fall on non-business days or outside of business hours will be mapped to the same coordinate as the nearest preceding business hour. For example, if business hours are defined as 9:00 to 17:00, then "1970-01-05 08:00" (Mon 08:00) is mapped to the same coordinate as "1970-01-05 09:00" (Mon 09:00), because the earlier timestamp lies outside the defined business hours.</p>
 </li>
 </ul>
@@ -1542,9 +1546,9 @@
 + Mon 1970-01-05   1h (09:00 - 10:00)
 ---------------------------------------
 =                 17h (business hours since epoch)
-/                  24h
+/                 24h
 ---------------------------------------
-=          0.708333... (busdayaxis coordinate)
+=                 0.708333... (busdayaxis coordinate)
 </code></pre></div>
 </li>
 </ul>
@@ -1762,6 +1766,8 @@ parameter completion and inline documentation.</p>
     
     
       <script src="assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>
