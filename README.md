@@ -43,16 +43,19 @@ Time series that only evolve on business days — prices, signals, operational m
 
     $$\text{busdayaxis-representation} = \frac{\text{business-hours since 1970-01-01}}{24 \text{ hours}}$$
 
-    This conversion implies that passed datetimevalues that fall on non-business days or outside of business hours will be mapped to the same coordinate as the nearest preceding business hour. For example, if business hours are defined as 9:00 to 17:00, then "1970-01-05 08:00" (Mon 8:00) would be mapped to the same coordinate as "1970-01-05 09:00" (Mon 9:00), since both fall within the same business day and the former is outside of business hours.
+    This conversion implies that passed datetimevalues that fall on non-business days or outside of business hours will be mapped to the same coordinate as the nearest preceding business hour. For example, if business hours are defined as 9:00 to 17:00, then "1970-01-05 08:00" (Mon 08:00) is mapped to the same coordinate as "1970-01-05 09:00" (Mon 09:00), because the earlier timestamp lies outside the defined business hours.
+
+
 ### Example: "1970-01-05 10:00" (Mon 10:00)
 
-- Matplotlib representation:
+- Matplotlib representation (all hours counted):
+
 
         Thu 1970-01-01   24h (00:00 - 24:00)
         + Fri 1970-01-02   24h (00:00 - 24:00)
         + Sat 1970-01-03   24h (00:00 - 24:00)
         + Sun 1970-01-04   24h (00:00 - 24:00)
-        + Mon 1970-01-05   24h (00:00 - 24:00)
+        + Mon 1970-01-05   24h (00:00 - 10:00)
         ---------------------------------------
         =                  106h (Total hours since epoch)
         ÷                  24h
@@ -70,7 +73,7 @@ Time series that only evolve on business days — prices, signals, operational m
         + Sun 1970-01-04   0h
         + Mon 1970-01-05   1h (09:00 - 10:00)
         ---------------------------------------
-        Total.            17h (business hours since epoch)
+       =                  17h (business hours since epoch)
         ÷                   24h
         ---------------------------------------
         =          0.708333... (busdayaxis coordinate)
