@@ -42,13 +42,13 @@ Time series that only evolve on business days — prices, signals, operational m
     ax.set_xscale("busday", weekmask=..., holidays=..., busdaycal=..., bushours=...)
     ```
 
-    - `weekmask`, `holidays`, `busdaycal`: standard `numpy.is_busday` parameters to configure which days are considered business days
+    - `weekmask`, `holidays`, `busdaycal`: standard [`numpy.is_busday`](https://numpy.org/doc/stable/reference/generated/numpy.is_busday.html) parameters to configure which days are considered business days
 
     - `bushours`: define uniform or weekday-specific business hours
 
-    - Implemented as a proper `matplotlib.scale.ScaleBase` subclass — autoscaling, shared axes, and all standard artists work without any changes to your plotting code
+    - Implemented as a proper [`matplotlib.scale`](https://matplotlib.org/stable/users/explain/axes/axes_scales.html) — autoscaling, shared axes, and all standard artists work without any changes to your plotting code
 
-- Business-day-aware `DateLocator` wrappers for all standard `matplotlib.dates` locators — automatically filter out ticks on off-days and off-hours
+- Business-day-aware `DateLocator` wrappers for all standard [`matplotlib.dates` locators](https://matplotlib.org/stable/gallery/ticks/date_formatters_locators.html) — automatically filter out ticks on off-days and off-hours
 
 - `BusdayLocator` base class to wrap any custom or third-party date locator with the same business-day filtering logic
 
@@ -72,14 +72,14 @@ Time series that only evolve on business days — prices, signals, operational m
 - Matplotlib representation (all hours counted):
 
 
-        Thu 1970-01-01   24h (00:00 - 24:00)
+          Thu 1970-01-01   24h (00:00 - 24:00)
         + Fri 1970-01-02   24h (00:00 - 24:00)
         + Sat 1970-01-03   24h (00:00 - 24:00)
         + Sun 1970-01-04   24h (00:00 - 24:00)
         + Mon 1970-01-05   10h (00:00 - 10:00)
         ---------------------------------------
         =                  106h (Total hours since epoch)
-        ÷                  24h
+        /                  24h
         ---------------------------------------
         =                  4.41666... (matplotlib coordinate)
 
@@ -88,16 +88,18 @@ Time series that only evolve on business days — prices, signals, operational m
 
     To get the floating-point representation of "1970-01-05 10:00" (Mon 10:00), we count the business hours that have elapsed since 1970-01-01 00:00:
 
-        Thu 1970-01-01   8h (9:00 - 17:00)
+          Thu 1970-01-01   8h (9:00 - 17:00)
         + Fri 1970-01-02   8h (9:00 - 17:00)
         + Sat 1970-01-03   0h
         + Sun 1970-01-04   0h
         + Mon 1970-01-05   1h (09:00 - 10:00)
         ---------------------------------------
-       =                  17h (business hours since epoch)
-        ÷                   24h
+        =                 17h (business hours since epoch)
+        /                  24h
         ---------------------------------------
         =          0.708333... (busdayaxis coordinate)
+
+![Under the Hood](https://raw.githubusercontent.com/saemeon/busdayaxis/master/docs/assets/under_the_hood.png)
 
 ## Usage
 
