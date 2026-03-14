@@ -127,38 +127,9 @@ class AutoDateLocator(BusdayLocator):
     def __init__(self, keep_midnight_ticks=None, **kwargs) -> None:
         """Business-day-aware wrapper around :class:`matplotlib.dates.AutoDateLocator`.
 
-        Automatically picks the best tick frequency for the current view, then
-        discards any ticks that fall outside business days or business hours.
-
         All keyword arguments are forwarded to :class:`~matplotlib.dates.AutoDateLocator`.
         """
         super().__init__(mdates.AutoDateLocator(**kwargs), keep_midnight_ticks)
-
-
-class YearLocator(BusdayLocator):
-    def __init__(self, keep_midnight_ticks=None, **kwargs) -> None:
-        """Business-day-aware wrapper around :class:`matplotlib.dates.YearLocator`.
-
-        Places one tick per year (or every *base* years), then discards any that
-        fall on non-business days. Midnight ticks are always kept because yearly
-        ticks are placed at day boundaries.
-
-        All keyword arguments are forwarded to :class:`~matplotlib.dates.YearLocator`.
-        """
-        super().__init__(mdates.YearLocator(**kwargs), keep_midnight_ticks)
-
-
-class MonthLocator(BusdayLocator):
-    def __init__(self, keep_midnight_ticks=None, **kwargs) -> None:
-        """Business-day-aware wrapper around :class:`matplotlib.dates.MonthLocator`.
-
-        Places ticks on the specified months, then discards any that fall on
-        non-business days. Midnight ticks are always kept because monthly ticks
-        are placed at day boundaries.
-
-        All keyword arguments are forwarded to :class:`~matplotlib.dates.MonthLocator`.
-        """
-        super().__init__(mdates.MonthLocator(**kwargs), keep_midnight_ticks)
 
 
 class WeekdayLocator(BusdayLocator):
@@ -240,7 +211,7 @@ class MicrosecondLocator(BusdayLocator):
 
 
 class MidBusdayLocator(mdates.DateLocator):
-    """Places one tick at the midpoint of business hours for each business day.
+    """Places one tick at the midpoint of the business hours for each business day.
 
     Useful for centering day labels within each session, even when business
     hours vary by weekday or differ from the standard 9–17 window.
