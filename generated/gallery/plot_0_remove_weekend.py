@@ -63,7 +63,7 @@ _ = plt.tight_layout(rect=[0, 0, 1, 0.96])
 
 # %%
 # Plot for README
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 4))
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 3))
 
 # axis with default linear scale
 ax1.plot(dates, prices.values, linewidth=1.3)
@@ -93,4 +93,4 @@ for d in full_days:
         ax2.axvline(d + pd.Timedelta(days=2), linestyle="--", linewidth=0.8, alpha=0.6)
 
 plt.tight_layout(rect=[0, 0, 1, 1])
-_ = plt.savefig("../docs/assets/remove_weekend.png")
+_ = plt.savefig("../docs/assets/remove_weekend.png", dpi=300)

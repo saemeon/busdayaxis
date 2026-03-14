@@ -360,6 +360,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-provides" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it provides
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#under-the-hood" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Under the Hood
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Under the Hood">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-1970-01-05-1000-mon-1000" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: "1970-01-05 10:00" (Mon 10:00)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#usage" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -423,6 +473,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        License
+      
+    </span>
+  </a>
   
 </li>
       
@@ -537,6 +598,8 @@
   
     
     
+      
+        
       
         
       
@@ -805,6 +868,34 @@
     
   
     Multiple Different Artists
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="generated/gallery/plot_7_under_the_hood/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Under the Hood
   
 
     
@@ -1206,6 +1297,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#why" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Why
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-it-provides" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What it provides
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#under-the-hood" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Under the Hood
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Under the Hood">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-1970-01-05-1000-mon-1000" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Example: "1970-01-05 10:00" (Mon 10:00)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#usage" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1272,6 +1413,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#license" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        License
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1299,22 +1451,104 @@
 
 <h1 id="busdayaxis">busdayaxis<a class="headerlink" href="#busdayaxis" title="Permanent link">&para;</a></h1>
 <p>A Matplotlib scale that compresses non-business days and off-hours. Every visible unit on the axis corresponds to active time — no gaps for weekends, holidays, or overnight periods. No data preprocessing needed.</p>
-<p><img alt="Remove weekend gaps" src="assets/remove_weekend.png" /></p>
-<p>The scale is implemented as a proper <code>ScaleBase</code> subclass and participates fully in Matplotlib's transform pipeline: autoscaling, shared axes, and all standard artists (<code>plot</code>, <code>scatter</code>, <code>bar</code>, <code>axvline</code>, <code>fill_between</code>, …) work out of the box.</p>
+<p><img alt="Remove weekend gaps" src="https://raw.githubusercontent.com/saemeon/busdayaxis/master/docs/assets/remove_weekend.png" /></p>
+<p><strong>Full documentation at <a href="https://saemeon.github.io/busdayaxis/">saemeon.github.io/busdayaxis</a></strong></p>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>busdayaxis
 </code></pre></div>
 <h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">busdayaxis</span>
 
 <span class="n">busdayaxis</span><span class="o">.</span><span class="n">register_scale</span><span class="p">()</span>  <span class="c1"># register once at the start of your script</span>
 
+<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s2">&quot;2026-01-01&quot;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+<span class="n">values</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dates</span><span class="p">))</span>
+
 <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">)</span>  <span class="c1"># compress weekends (Mon–Fri default)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">))</span>  <span class="c1"># compress weekends (Mon–Fri default) and off-hours (17:00–09:00 in this example)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div>
-<p>See the <a href="api/">API reference</a> for full parameter documentation and the <a href="generated/gallery">Examples</a> for practical use cases.</p>
+<h2 id="why">Why<a class="headerlink" href="#why" title="Permanent link">&para;</a></h2>
+<p>Time series that only evolve on business days — prices, signals, operational metrics — look distorted on a standard calendar axis. Weekends and holidays introduce flat gaps that compress active periods and visually skew slopes. <code>busdayaxis</code> removes these gaps entirely.</p>
+<h2 id="what-it-provides">What it provides<a class="headerlink" href="#what-it-provides" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p>Compress weekends, holidays, and overnight gaps by adding an <code>axis scale</code>with  a single call:</p>
+<div class="highlight"><pre><span></span><code><span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">weekmask</span><span class="o">=...</span><span class="p">,</span> <span class="n">holidays</span><span class="o">=...</span><span class="p">,</span> <span class="n">busdaycal</span><span class="o">=...</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=...</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li>
+<p><code>weekmask</code>, <code>holidays</code>, <code>busdaycal</code>: standard <a href="https://numpy.org/doc/stable/reference/generated/numpy.is_busday.html"><code>numpy.is_busday</code></a> parameters to configure which days are considered business days</p>
+</li>
+<li>
+<p><code>bushours</code>: define uniform or weekday-specific business hours</p>
+</li>
+<li>
+<p>Implemented as a proper <a href="https://matplotlib.org/stable/users/explain/axes/axes_scales.html"><code>matplotlib.scale</code></a> — autoscaling, shared axes, and all standard artists work without any changes to your plotting code</p>
+</li>
+</ul>
+</li>
+<li>
+<p>Business-day-aware <code>DateLocator</code> wrappers for all standard <a href="https://matplotlib.org/stable/gallery/ticks/date_formatters_locators.html"><code>matplotlib.dates</code> locators</a> — automatically filter out ticks on off-days and off-hours</p>
+</li>
+<li>
+<p><code>BusdayLocator</code> base class to wrap any custom or third-party date locator with the same business-day filtering logic</p>
+</li>
+<li>
+<p><code>MidBusdayLocator</code> to place a tick at the midpoint of each business session, useful for centering day labels</p>
+</li>
+</ul>
+<h2 id="under-the-hood">Under the Hood<a class="headerlink" href="#under-the-hood" title="Permanent link">&para;</a></h2>
+<ul>
+<li>
+<p><code>matplotlib</code> internally handles dates as floating-point numbers representing <strong>days since 1970-01-01</strong>, or stated alternatively, as</p>
+<p>$$\text{ matplotlib-representation}=\frac{\text{hours since 1970-01-01}}{24 \text{hours}}$$</p>
+</li>
+<li>
+<p><code>busdayaxis</code> transforms these coordinates to floating-point numbers representing</p>
+<p>$$\text{busdayaxis-representation} = \frac{\text{business-hours since 1970-01-01}}{24 \text{ hours}}$$</p>
+<p>This conversion implies that datetime values that fall on non-business days or outside of business hours will be mapped to the same coordinate as the nearest preceding business hour. For example, if business hours are defined as 9:00 to 17:00, then "1970-01-05 08:00" (Mon 08:00) is mapped to the same coordinate as "1970-01-05 09:00" (Mon 09:00), because the earlier timestamp lies outside the defined business hours.</p>
+</li>
+</ul>
+<h3 id="example-1970-01-05-1000-mon-1000">Example: "1970-01-05 10:00" (Mon 10:00)<a class="headerlink" href="#example-1970-01-05-1000-mon-1000" title="Permanent link">&para;</a></h3>
+<ul>
+<li>
+<p>Matplotlib representation (all hours counted):</p>
+<div class="highlight"><pre><span></span><code>  Thu 1970-01-01   24h (00:00 - 24:00)
++ Fri 1970-01-02   24h (00:00 - 24:00)
++ Sat 1970-01-03   24h (00:00 - 24:00)
++ Sun 1970-01-04   24h (00:00 - 24:00)
++ Mon 1970-01-05   10h (00:00 - 10:00)
+---------------------------------------
+=                  106h (Total hours since epoch)
+/                  24h
+---------------------------------------
+=                  4.41666... (matplotlib coordinate)
+</code></pre></div>
+</li>
+<li>
+<p>Busdayaxis representation:</p>
+<ul>
+<li>We assume here that  business hours are from 9:00 to 17:00. This can be configured by setting <code>ax.set_xscale("busday", bushours=(9, 17))</code>.</li>
+</ul>
+<p>To get the floating-point representation of "1970-01-05 10:00" (Mon 10:00), we count the business hours that have elapsed since 1970-01-01 00:00:</p>
+<div class="highlight"><pre><span></span><code>  Thu 1970-01-01   8h (9:00 - 17:00)
++ Fri 1970-01-02   8h (9:00 - 17:00)
++ Sat 1970-01-03   0h
++ Sun 1970-01-04   0h
++ Mon 1970-01-05   1h (09:00 - 10:00)
+---------------------------------------
+=                 17h (business hours since epoch)
+/                  24h
+---------------------------------------
+=          0.708333... (busdayaxis coordinate)
+</code></pre></div>
+</li>
+</ul>
+<p><img alt="Under the Hood" src="https://raw.githubusercontent.com/saemeon/busdayaxis/master/docs/assets/under_the_hood.png" /></p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>There are two equivalent ways to apply the scale:</p>
 <h3 id="string-based">String-based<a class="headerlink" href="#string-based" title="Permanent link">&para;</a></h3>
@@ -1445,6 +1679,8 @@ parameter completion and inline documentation.</p>
 <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_locator</span><span class="p">(</span><span class="n">busdayaxis</span><span class="o">.</span><span class="n">MidBusdayLocator</span><span class="p">())</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_minor_formatter</span><span class="p">(</span><span class="n">mdates</span><span class="o">.</span><span class="n">DateFormatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%a</span><span class="s2">&quot;</span><span class="p">))</span>
 </code></pre></div>
+<h2 id="license">License<a class="headerlink" href="#license" title="Permanent link">&para;</a></h2>
+<p>BSD 3-Clause</p>
 
 
 
