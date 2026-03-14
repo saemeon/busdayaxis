@@ -45,13 +45,13 @@ Time series that only evolve on business days — prices, signals, operational m
     ax.set_xscale("busday", weekmask=..., holidays=..., busdaycal=..., bushours=...)
     ```
 
-    - `weekmask`, `holidays`, `busdaycal`: standard `numpy.is_busday` parameters to configure which days are considered business days
+    - `weekmask`, `holidays`, `busdaycal`: standard [`numpy.is_busday`](https://numpy.org/doc/stable/reference/generated/numpy.is_busday.html) parameters to configure which days are considered business days
 
     - `bushours`: define uniform or weekday-specific business hours
 
-    - Implemented as a proper `matplotlib.scale.ScaleBase` subclass — autoscaling, shared axes, and all standard artists work without any changes to your plotting code
+    - Implemented as a proper [`matplotlib.scale`](https://matplotlib.org/stable/users/explain/axes/axes_scales.html) — autoscaling, shared axes, and all standard artists work without any changes to your plotting code
 
-- Business-day-aware `DateLocator` wrappers for all standard `matplotlib.dates` locators — automatically filter out ticks on off-days and off-hours
+- Business-day-aware `DateLocator` wrappers for all standard [`matplotlib.dates` locators](https://matplotlib.org/stable/gallery/ticks/date_formatters_locators.html) — automatically filter out ticks on off-days and off-hours
 
 - `BusdayLocator` base class to wrap any custom or third-party date locator with the same business-day filtering logic
 
@@ -101,6 +101,8 @@ Time series that only evolve on business days — prices, signals, operational m
         /                  24h
         ---------------------------------------
         =          0.708333... (busdayaxis coordinate)
+
+![Under the Hood](https://raw.githubusercontent.com/saemeon/busdayaxis/master/docs/assets/under_the_hood.png)
 
 ## License
 

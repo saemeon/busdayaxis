@@ -36,6 +36,7 @@ prices = (1 + pd.Series(returns, index=dates)).cumprod()
 # Plot for README
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 4))
 fig.suptitle("default vs. ax.set_xscale('busday', bushours=(9, 17))")
+
 # axis with default linear scale
 ax1.plot(dates, prices.values, linewidth=1.3)
 ax1.xaxis.set_major_locator(mdates.DayLocator())
@@ -86,12 +87,11 @@ ax2_top.xaxis.set_major_formatter(
     )
 )
 ax2_top.set_xlabel(
-    "busdayaxis internal (8h per business day): \n(business hours since 1970)/24",
+    "busdayaxis internal (8 business hours per day): \n(business hours since 1970)/24",
     labelpad=8,
 )
 ax2_top.tick_params(axis="x", rotation=45)
 
 
-_ = plt.tight_layout(rect=[0, 0, 1, 1])
-
-# %%
+plt.tight_layout(rect=[0, 0, 1, 1])
+_ = plt.savefig("under_the_hood.png", dpi=300)
