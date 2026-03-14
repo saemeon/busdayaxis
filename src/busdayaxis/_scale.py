@@ -92,9 +92,12 @@ def _build_weighted_calendar(
     """Construct a lookup table mapping calendar days to cumulative
     weighted business-day coordinates."""
 
+    # Cover the full datetime64[ns] representable range (~1678–2262).
+    # Dates outside this range cannot be expressed as datetime64[ns] anyway,
+    # so there is no value in extending further in either direction.
     days = np.arange(
-        np.datetime64("1970-01-01", "D"),
-        np.datetime64("2100-01-01", "D"),
+        np.datetime64("1678-01-01", "D"),
+        np.datetime64("2262-01-01", "D"),
         dtype="datetime64[D]",
     )
 
@@ -103,6 +106,12 @@ def _build_weighted_calendar(
 
     day_weights = np.where(is_busday, weights[weekday], 0.0)
     cumulative = np.concatenate(([0.0], np.cumsum(day_weights)))
+
+    # Anchor the representation to the matplotlib epoch (1970-01-01) so that
+    # the busday float for 1970-01-01 is 0.0 and pre-1970 values are negative,
+    # mirroring matplotlib's own date-number convention.
+    epoch_idx = int((np.datetime64("1970-01-01", "D") - days[0]).astype(int))
+    cumulative -= cumulative[epoch_idx]
 
     return days, cumulative
 

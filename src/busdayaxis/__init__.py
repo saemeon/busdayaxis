@@ -10,10 +10,8 @@ from ._locator import (
     MicrosecondLocator,
     MidBusdayLocator,
     MinuteLocator,
-    MonthLocator,
     SecondLocator,
     WeekdayLocator,
-    YearLocator,
 )
 from ._scale import BusdayScale, register_scale
 
@@ -21,8 +19,6 @@ __all__ = [
     "BusdayScale",
     "BusdayLocator",
     "AutoDateLocator",
-    "YearLocator",
-    "MonthLocator",
     "WeekdayLocator",
     "DayLocator",
     "HourLocator",
