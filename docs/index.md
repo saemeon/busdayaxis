@@ -57,12 +57,14 @@ Time series that only evolve on business days — prices, signals, operational m
 ## Under the Hood
 
 - ``matplotlib`` internally handles dates as floating-point numbers representing **days since 1970-01-01**, or stated alternatively, as
-
-    $$\text{ matplotlib-representation}=\frac{\text{hours\ since\ 1970-01-01}}{24\ \text{hours}}$$
+    $$
+    \text{matplotlib-representation} = \frac{\text{hours since 1970-01-01}}{24\ \text{hours}}
+    $$
 
 - `busdayaxis` transforms these coordinates to floating-point numbers representing
-
-    $$\text{busdayaxis-representation} = \frac{\text{business-hours since 1970-01-01}}{24 \text{ hours}}$$
+    $$
+    \text{busdayaxis-representation} = \frac{\text{business-hours since 1970-01-01}}{24 \text{ hours}}
+    $$
 
     This conversion implies that datetime values that fall on non-business days or outside of business hours will be mapped to the same coordinate as the nearest preceding business hour. For example, if business hours are defined as 9:00 to 17:00, then "1970-01-05 08:00" (Mon 08:00) is mapped to the same coordinate as "1970-01-05 09:00" (Mon 09:00), because the earlier timestamp lies outside the defined business hours.
 
@@ -95,9 +97,9 @@ Time series that only evolve on business days — prices, signals, operational m
         + Mon 1970-01-05   1h (09:00 - 10:00)
         ---------------------------------------
         =                 17h (business hours since epoch)
-        /                  24h
+        /                 24h
         ---------------------------------------
-        =          0.708333... (busdayaxis coordinate)
+        =                 0.708333... (busdayaxis coordinate)
 
 ![Under the Hood](https://raw.githubusercontent.com/saemeon/busdayaxis/master/docs/assets/under_the_hood.png)
 

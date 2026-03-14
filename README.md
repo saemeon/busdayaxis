@@ -81,7 +81,7 @@ Time series that only evolve on business days — prices, signals, operational m
         + Sun 1970-01-04   24h (00:00 - 24:00)
         + Mon 1970-01-05   10h (00:00 - 10:00)
         ---------------------------------------
-        =                  106h (Total hours since epoch)
+        =                 106h (Total hours since epoch)
         /                  24h
         ---------------------------------------
         =                  4.41666... (matplotlib coordinate)
@@ -98,7 +98,7 @@ Time series that only evolve on business days — prices, signals, operational m
         + Mon 1970-01-05   1h (09:00 - 10:00)
         ---------------------------------------
         =                 17h (business hours since epoch)
-        /                  24h
+        /                 24h
         ---------------------------------------
         =          0.708333... (busdayaxis coordinate)
 
