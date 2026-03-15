@@ -17,16 +17,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
-          cache: "pip"
 
       - name: Install dependencies
-        run: |
-          pip install --upgrade pip
-          pip install ".[test]"
+        run: uv sync --group test
 
       - name: Tests
-        run: pytest
+        run: uv run pytest

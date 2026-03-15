@@ -28,7 +28,7 @@ dependencies = ["matplotlib", "numpy"]
 Homepage = "https://saemeon.github.io/busdayaxis/"
 Repository = "https://github.com/saemeon/busdayaxis"
 
-[project.optional-dependencies]
+[dependency-groups]
 test = ["pandas", "pytest", "pytest-cov"]
 doc = [
     "mkdocs",
@@ -37,18 +37,7 @@ doc = [
     "mkdocstrings[python]",
     "mike",
 ]
-dev = [
-    "ruff",
-    "pandas",
-    "prek",
-    "pytest",
-    "pytest-cov",
-    "mkdocs",
-    "mkdocs-material",
-    "mkdocs-gallery",
-    "mkdocstrings[python]",
-    "mike",
-]
+dev = ["ruff", "prek", { include-group = "test" }, { include-group = "doc" }]
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel", "setuptools-scm>=8.0"]
