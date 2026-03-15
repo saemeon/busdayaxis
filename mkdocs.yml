@@ -94,6 +94,7 @@ plugins:
             show_if_no_docstring: False
             show_root_toc_entry: False
             show_source: False
+            heading_level: 3
             # show if an element is an attribute/class or function in the headers, but not in the ToC on the right
             show_symbol_type_heading: True
             show_symbol_type_toc: False

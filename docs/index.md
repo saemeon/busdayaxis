@@ -114,6 +114,7 @@ Requires a prior call to `busdayaxis.register_scale()`.
 Pass the registered name `"busday"` to `set_xscale` along with keyword arguments taken by [`BusdayScale`](api.md#busdayaxis.BusdayScale). The `axis` parameter is excluded as it is automatically provided by the `ax.set_xscale()` call.
 
 ```python
+import datetime
 import matplotlib.pyplot as plt
 import busdayaxis
 
@@ -124,15 +125,15 @@ ax.plot(dates, values)
 
 ax.set_xscale("busday")  # compress weekends (Mon–Fri default)
 # or
-ax.set_xscale(  # compress weekends + overnight gaps
-    "busday", bushours=(9, 17)
-)
+ax.set_xscale("busday", bushours=(9, 17))           # numeric hours
+ax.set_xscale("busday", bushours=("09:00", "17:00"))  # ISO time strings
+ax.set_xscale("busday", bushours=(datetime.time(9), datetime.time(17)))  # datetime.time
 # or
 ax.set_xscale(  # per-day business hours
     "busday", bushours={"Mon": (9, 17), "Fri": (9, 16)}
 )
 # or
-ax.set_xscale( # custom week mask and holidays
+ax.set_xscale(  # custom week mask and holidays
     "busday",
     weekmask="Sun Mon Tue Wed Thu",
     holidays=["2025-01-01"]

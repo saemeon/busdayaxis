@@ -6,6 +6,14 @@ off-hours.
 
 - All weekdays use the same bushours.
 - The standard Mon–Fri weekmask still applies so weekends remain collapsed.
+- Boundaries accept numeric hours, ISO time strings, or ``datetime.time`` objects —
+  the following are all equivalent:
+
+```python
+bushours=(9, 17)
+bushours=("09:00", "17:00")
+bushours=(datetime.time(9), datetime.time(17))
+```
 
 Core code:
 

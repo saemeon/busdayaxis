@@ -346,10 +346,17 @@ class BusdayScale(mscale.ScaleBase):
     the defined schedule are collapsed so that every visible unit on the axis
     corresponds to active time.
 
+    Registered as the ``"busday"`` scale by
+    [`busdayaxis.register_scale()`](https://saemeon.github.io/busdayaxis/api/#busdayaxis.register_scale).
+    After registration, all parameters below **except** ``axis`` can be passed
+    directly to ``ax.set_xscale("busday", ...)``. ``axis`` is injected
+    automatically by Matplotlib and must not be passed explicitly.
+
     Parameters
     ----------
     axis : matplotlib.axis.Axis
-        The axis this scale is attached to.
+        Injected automatically by Matplotlib. Do not pass this via
+        ``ax.set_xscale``.
     bushours : tuple[HourValue, HourValue]
                 | Sequence[tuple[HourValue, HourValue]]
                 | Mapping[WeekdayKey, tuple[HourValue, HourValue]]
@@ -619,8 +626,12 @@ class BusdayScale(mscale.ScaleBase):
 def register_scale() -> None:
     """Register the ``"busday"`` scale with Matplotlib.
 
-    Call once at the start of your script before using
-    ``ax.set_xscale("busday")``.
+    Call this once before any plotting code. After registration,
+    ``ax.set_xscale("busday", ...)`` is available for the lifetime of the
+    Python session. The keyword arguments ``bushours``, ``weekmask``,
+    ``holidays``, and ``busdaycal`` are forwarded directly to
+    [`busdayaxis.BusdayScale`](https://saemeon.github.io/busdayaxis/api/#busdayaxis.BusdayScale);
+    ``axis`` is injected by Matplotlib automatically and cannot be passed.
 
     Examples
     --------
@@ -630,14 +641,14 @@ def register_scale() -> None:
     import matplotlib.pyplot as plt
     import pandas as pd
 
-    busdayaxis.register_scale()
+    busdayaxis.register_scale()  # register once
 
     dates = pd.date_range("2025-01-01", periods=10, freq="D")
     values = range(10)
 
     fig, ax = plt.subplots()
     ax.plot(dates, values)
-    ax.set_xscale("busday", bushours=(9, 17))
+    ax.set_xscale("busday", bushours=(9, 17))  # kwargs forwarded to BusdayScale
     plt.show()
     ```
     """
