@@ -27,8 +27,6 @@ class BusdayLocator(mdates.DateLocator):
 
     Wraps any Matplotlib date locator and discards ticks that fall on
     non-business days or outside the active session defined by ``bushours``.
-    Midnight ticks (00:00) on business days are always kept so that
-    daily-granularity locators (e.g. ``DayLocator``) continue to work.
 
     The locator reads the business-hours and weekmask configuration from the
     axis automatically (set by ``BusdayScale``), so it stays in sync with the
@@ -42,6 +40,13 @@ class BusdayLocator(mdates.DateLocator):
     base_locator : matplotlib.dates.DateLocator, optional
         The underlying datetime locator that proposes tick candidates.
         If None, falls back to ``AutoDateLocator``.
+    keep_midnight_ticks : bool or None, optional
+        Controls whether ticks at midnight (00:00) on business days are kept
+        even when they fall outside ``bushours``. When ``None`` (default), this
+        is determined automatically: midnight ticks are kept for
+        daily-granularity locators (e.g. ``DayLocator``) so that day labels
+        remain properly aligned, and suppressed for finer locators (e.g.
+        ``HourLocator``) where they would appear outside the visible session.
 
     Examples
     --------

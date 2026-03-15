@@ -34,7 +34,7 @@ values = range(len(dates))
 
 fig, ax = plt.subplots()
 ax.plot(dates, values)
-ax.set_xscale("busday", bushours=(9, 17))  # compress weekends (Mon–Fri default) and off-hours (17:00–09:00 in this example)
+ax.set_xscale("busday", bushours=(9, 17))  # compress weekends (Mon–Fri default) and off-hours (business hours: 09:00–17:00)
 plt.show()
 ```
 

@@ -475,11 +475,23 @@ class BusdayScale(mscale.ScaleBase):
         *weekmask* and *holidays* are ignored. Useful when reusing the same
         calendar across multiple axes. Default ``None``.
 
+        Note that ``busdaycal`` only controls *which days* are business days;
+        it does not affect *bushours*. The two parameters are independent.
+
         ```python
         cal = np.busdaycalendar(weekmask="Mon Tue Wed Thu Fri",
                                 holidays=["2025-01-01"])
         ax.set_xscale("busday", busdaycal=cal)
         ```
+
+    Notes
+    -----
+    Timestamps outside ``bushours`` are clipped to the nearest session
+    boundary during the forward transform. For example, with
+    ``bushours=(9, 17)``, both 08:30 and 09:00 map to the same axis
+    position (the session open). This means the transform is not perfectly
+    invertible: the inverse transform always returns a time within business
+    hours, even if the original value was outside.
 
     Examples
     --------
