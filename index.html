@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="assets/favicon.ico">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
@@ -1451,7 +1451,7 @@
 
 <h1 id="busdayaxis">busdayaxis<a class="headerlink" href="#busdayaxis" title="Permanent link">&para;</a></h1>
 <p>A Matplotlib scale that compresses non-business days and off-hours. Every visible unit on the axis corresponds to active time — no gaps for weekends, holidays, or overnight periods. No data preprocessing needed.</p>
-<p><img alt="Remove weekend gaps" src="https://raw.githubusercontent.com/saemeon/busdayaxis/master/docs/assets/remove_weekend.png" /></p>
+<p><img alt="Remove weekend gaps" src="https://raw.githubusercontent.com/saemeon/busdayaxis/main/docs/assets/remove_weekend.png" /></p>
 <p><strong>Full documentation at <a href="https://saemeon.github.io/busdayaxis/">saemeon.github.io/busdayaxis</a></strong></p>
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>busdayaxis
@@ -1552,13 +1552,14 @@
 </code></pre></div>
 </li>
 </ul>
-<p><img alt="Under the Hood" src="https://raw.githubusercontent.com/saemeon/busdayaxis/master/docs/assets/under_the_hood.png" /></p>
+<p><img alt="Under the Hood" src="https://raw.githubusercontent.com/saemeon/busdayaxis/main/docs/assets/under_the_hood.png" /></p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
 <p>There are two equivalent ways to apply the scale:</p>
 <h3 id="string-based">String-based<a class="headerlink" href="#string-based" title="Permanent link">&para;</a></h3>
 <p>Requires a prior call to <code>busdayaxis.register_scale()</code>.</p>
 <p>Pass the registered name <code>"busday"</code> to <code>set_xscale</code> along with keyword arguments taken by <a href="api/#busdayaxis.BusdayScale"><code>BusdayScale</code></a>. The <code>axis</code> parameter is excluded as it is automatically provided by the <code>ax.set_xscale()</code> call.</p>
-<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">busdayaxis</span>
 
 <span class="n">busdayaxis</span><span class="o">.</span><span class="n">register_scale</span><span class="p">()</span>  <span class="c1"># register once at the start of your script</span>
@@ -1568,15 +1569,15 @@
 
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">)</span>  <span class="c1"># compress weekends (Mon–Fri default)</span>
 <span class="c1"># or</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span>  <span class="c1"># compress weekends + overnight gaps</span>
-    <span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">)</span>
-<span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">))</span>           <span class="c1"># numeric hours</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;09:00&quot;</span><span class="p">,</span> <span class="s2">&quot;17:00&quot;</span><span class="p">))</span>  <span class="c1"># ISO time strings</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span> <span class="n">datetime</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="mi">17</span><span class="p">)))</span>  <span class="c1"># datetime.time</span>
 <span class="c1"># or</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span>  <span class="c1"># per-day business hours</span>
     <span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Mon&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span> <span class="s2">&quot;Fri&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">16</span><span class="p">)}</span>
 <span class="p">)</span>
 <span class="c1"># or</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span> <span class="c1"># custom week mask and holidays</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span>  <span class="c1"># custom week mask and holidays</span>
     <span class="s2">&quot;busday&quot;</span><span class="p">,</span>
     <span class="n">weekmask</span><span class="o">=</span><span class="s2">&quot;Sun Mon Tue Wed Thu&quot;</span><span class="p">,</span>
     <span class="n">holidays</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;2025-01-01&quot;</span><span class="p">]</span>
@@ -1616,14 +1617,6 @@ parameter completion and inline documentation.</p>
 <tr>
 <td><code>AutoDateLocator</code></td>
 <td><code>mdates.AutoDateLocator</code></td>
-</tr>
-<tr>
-<td><code>YearLocator</code></td>
-<td><code>mdates.YearLocator</code></td>
-</tr>
-<tr>
-<td><code>MonthLocator</code></td>
-<td><code>mdates.MonthLocator</code></td>
 </tr>
 <tr>
 <td><code>WeekdayLocator</code></td>

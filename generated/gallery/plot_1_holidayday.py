@@ -1,6 +1,7 @@
 """# Exclude Extra Days or Holidays
 
-Pass an array of dates as ``holidays`` keyword argument, compatible with ``np.is_busday()``, to collapsed them on the business axis.
+Pass an array of dates as ``holidays`` keyword argument, compatible with
+``np.is_busday()``, to collapsed them on the business axis.
 
 Core code:
 ```python
