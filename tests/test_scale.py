@@ -61,6 +61,53 @@ def test_coerce_hour_span_out_of_range():
         _coerce_hour_span((0, 25))
 
 
+def test_coerce_hour_span_wrong_length():
+    with pytest.raises(ValueError):
+        _coerce_hour_span((9, 17, 5))  # type: ignore[arg-type]
+
+
+def test_normalize_bushours_int_key():
+    from busdayaxis._scale import _normalize_bushours
+
+    result = _normalize_bushours({0: (9, 17), 4: (9, 13)})
+    assert result[0] == (9.0, 17.0)
+    assert result[4] == (9.0, 13.0)
+
+
+def test_normalize_bushours_invalid_key():
+    from busdayaxis._scale import _normalize_bushours
+
+    with pytest.raises(ValueError):
+        _normalize_bushours({"Funday": (9, 17)})  # type: ignore[arg-type]
+
+
+def test_normalize_bushours_invalid_input():
+    from busdayaxis._scale import _normalize_bushours
+
+    with pytest.raises(ValueError):
+        _normalize_bushours((9, 17, 5))  # type: ignore[arg-type]
+
+
+def test_inverted_transform_roundtrip():
+    """InvertedBusdayTransform.inverted() returns a BusdayTransform."""
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    import busdayaxis
+
+    busdayaxis.register_scale()
+    dates = pd.date_range("2025-01-06", periods=5, freq="D")
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(5))
+    ax.set_xscale("busday")
+
+    transform = ax.xaxis._scale.get_transform()
+    inv = transform.inverted()
+    assert inv.inverted() is not None
+
+    plt.close(fig)
+
+
 def test_import():
     import busdayaxis
 

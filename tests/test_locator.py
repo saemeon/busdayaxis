@@ -84,3 +84,160 @@ def test_busday_locator_with_base_locator():
     assert len(ticks) == 5, f"Expected 5 ticks for 5 business days, got {len(ticks)}"
 
     plt.close(fig)
+
+
+def test_filter_ticks_empty():
+    """_filter_ticks returns [] for empty input."""
+    from busdayaxis._locator import BusdayLocator
+
+    locator = BusdayLocator()
+    assert locator._filter_ticks([]) == []
+
+
+def test_keep_midnight_ticks_explicit_true():
+    """keep_midnight_ticks=True always keeps midnight ticks."""
+    import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    import busdayaxis
+
+    busdayaxis.register_scale()
+    dates = pd.date_range("2025-01-06", periods=24, freq="h")
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(len(dates)))
+    ax.set_xscale("busday", bushours=(9, 17))
+    ax.xaxis.set_major_locator(
+        busdayaxis.HourLocator(byhour=range(0, 24), keep_midnight_ticks=True)
+    )
+
+    ticks = ax.xaxis.get_major_locator()()
+    tick_hours = [mdates.num2date(t).hour for t in ticks]
+    assert 0 in tick_hours
+
+    plt.close(fig)
+
+
+def test_keep_midnight_ticks_explicit_false():
+    """keep_midnight_ticks=False suppresses midnight ticks."""
+    import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    import busdayaxis
+
+    busdayaxis.register_scale()
+    dates = pd.date_range("2025-01-06", periods=24, freq="h")
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(len(dates)))
+    ax.set_xscale("busday", bushours=(9, 17))
+    ax.xaxis.set_major_locator(
+        busdayaxis.HourLocator(byhour=range(0, 24), keep_midnight_ticks=False)
+    )
+
+    ticks = ax.xaxis.get_major_locator()()
+    tick_hours = [mdates.num2date(t).hour for t in ticks]
+    assert 0 not in tick_hours
+
+    plt.close(fig)
+
+
+def test_locator_delegate_methods():
+    """set_tzinfo, datalim_to_dt, viewlim_to_dt, _get_unit, _get_interval,
+    tick_values.
+    """
+    import datetime as dt
+
+    import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    import busdayaxis
+
+    busdayaxis.register_scale()
+    dates = pd.date_range("2025-01-06", periods=5, freq="D")
+    # Use a linear-scale axis so axis limits stay in matplotlib date space,
+    # which datalim_to_dt / viewlim_to_dt require.
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(5))
+
+    locator = busdayaxis.BusdayLocator(mdates.DayLocator())
+    locator.set_axis(ax.xaxis)
+
+    vmin = mdates.date2num(dates[0].to_pydatetime())
+    vmax = mdates.date2num(dates[-1].to_pydatetime())
+    ax.set_xlim(vmin, vmax)
+
+    locator.set_tzinfo(dt.timezone.utc)
+    assert locator.datalim_to_dt() is not None
+    assert locator.viewlim_to_dt() is not None
+    assert locator._get_unit() is not None
+    assert locator._get_interval() is not None
+    assert locator() is not None
+
+    plt.close(fig)
+
+
+def test_locator_subclasses():
+    """WeekdayLocator, MinuteLocator, SecondLocator, MicrosecondLocator instantiate."""
+    import busdayaxis
+
+    assert busdayaxis.WeekdayLocator() is not None
+    assert busdayaxis.MinuteLocator() is not None
+    assert busdayaxis.SecondLocator() is not None
+    assert busdayaxis.MicrosecondLocator() is not None
+
+
+def test_mid_busday_locator_no_axis():
+    """MidBusdayLocator.__call__ returns [] when axis is None."""
+    from busdayaxis._locator import MidBusdayLocator
+
+    locator = MidBusdayLocator()
+    assert locator() == []
+
+
+def test_mid_busday_locator_tick_values():
+    """MidBusdayLocator places one tick per business day at midpoint."""
+    import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    import busdayaxis
+
+    busdayaxis.register_scale()
+    dates = pd.date_range("2025-01-06", periods=5, freq="D")  # Mon–Fri
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(5))
+    ax.set_xscale("busday", bushours=(9, 17))
+    ax.set_xlim(
+        mdates.date2num(pd.Timestamp("2025-01-06")),
+        mdates.date2num(pd.Timestamp("2025-01-10 23:59")),
+    )
+    ax.xaxis.set_minor_locator(busdayaxis.MidBusdayLocator())
+
+    ticks = ax.xaxis.get_minor_locator()()
+    assert len(ticks) == 5
+    assert mdates.num2date(ticks[0]).hour == 13  # midpoint of 9–17
+
+    plt.close(fig)
+
+
+def test_mid_busday_locator_no_busdays():
+    """MidBusdayLocator returns [] when the range contains no business days."""
+    import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+
+    import busdayaxis
+
+    busdayaxis.register_scale()
+    fig, ax = plt.subplots()
+    ax.set_xscale("busday")
+
+    locator = busdayaxis.MidBusdayLocator()
+    locator.set_axis(ax.xaxis)
+
+    sat = mdates.datestr2num("2025-01-04")
+    sun = mdates.datestr2num("2025-01-05")
+    assert locator.tick_values(sat, sun) == []
+
+    plt.close(fig)
