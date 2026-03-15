@@ -10,12 +10,14 @@ import matplotlib.dates as mdates
 import numpy as np
 
 if TYPE_CHECKING:
+    from typing import Union
+
     from matplotlib.axis import Axis
     from matplotlib.projections.polar import _AxisWrapper
     from matplotlib.ticker import _DummyAxis
     from numpy.typing import NDArray
 
-    AxisLike = Axis | _DummyAxis | _AxisWrapper | None
+    AxisLike = Union[Axis, _DummyAxis, _AxisWrapper, None]
 
 _DEFAULT_BUSHOURS = {i: (0, 24) for i in range(7)}
 

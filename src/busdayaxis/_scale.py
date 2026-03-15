@@ -55,7 +55,7 @@ def _normalize_bushours(
             else:
                 raise ValueError(f"Got {k!r}; expected int 0-6 or name in {WEEKDAYS}")
             int_dict[weekday] = _coerce_hour_span(
-                v, label=f"bushours for {WEEKDAYS[weekday]}"
+                cast(BushourSpan, v), label=f"bushours for {WEEKDAYS[weekday]}"
             )
         # Unspecified weekdays default to full day; weekends default to closed
         return {i: int_dict.get(i, (0, 0) if i >= 5 else (0, 24)) for i in range(7)}
@@ -66,7 +66,9 @@ def _normalize_bushours(
             return {i: span for i in range(7)}
         if len(bushours) == 7:
             return {
-                i: _coerce_hour_span(bushours[i], label=f"bushours for {WEEKDAYS[i]}")
+                i: _coerce_hour_span(
+                    cast(BushourSpan, bushours[i]), label=f"bushours for {WEEKDAYS[i]}"
+                )
                 for i in range(7)
             }
 
@@ -241,9 +243,9 @@ def _busday_float_to_datetime(
 class _BusdayTransformBase(mtransforms.Transform):
     """Shared base for forward and inverse business-day transforms."""
 
-    input_dims = 1  # type: ignore[assignment]
-    output_dims = 1  # type: ignore[assignment]
-    is_separable = True  # type: ignore[assignment]
+    input_dims = 1
+    output_dims = 1
+    is_separable = True
 
     def __init__(
         self,
@@ -270,10 +272,10 @@ class BusdayTransform(_BusdayTransformBase):
     part represents the normalised position within the active session.
     """
 
-    def transform_non_affine(self, x: ArrayLike) -> ArrayLike:
-        x = np.asarray(x)
+    def transform_non_affine(self, values: ArrayLike) -> ArrayLike:
+        values = np.asarray(values)
         # num2date returns tz-aware datetimes; strip tzinfo before numpy conversion
-        dates = [d.replace(tzinfo=None) for d in mdates.num2date(x.ravel())]
+        dates = [d.replace(tzinfo=None) for d in mdates.num2date(values.ravel())]
         result = _datetime_to_busday_float(
             dates,
             self._bushours_dict,
@@ -282,7 +284,7 @@ class BusdayTransform(_BusdayTransformBase):
             self._weights,
             **self._busday_kwargs,
         )
-        return result.reshape(x.shape)
+        return result.reshape(values.shape)
 
     def inverted(self) -> InvertedBusdayTransform:
         return InvertedBusdayTransform(
@@ -301,16 +303,16 @@ class InvertedBusdayTransform(_BusdayTransformBase):
     clipped to session boundaries during the forward transform.
     """
 
-    def transform_non_affine(self, x: ArrayLike) -> ArrayLike:
-        x = np.asarray(x, dtype=float)
+    def transform_non_affine(self, values: ArrayLike) -> ArrayLike:
+        values = np.asarray(values, dtype=float)
         dates = _busday_float_to_datetime(
-            x.ravel(),
+            values.ravel(),
             self._bushours_dict,
             self._calendar_days,
             self._calendar_cumulative,
             self._weights,
         )
-        return mdates.date2num(dates).reshape(x.shape)
+        return mdates.date2num(dates).reshape(values.shape)
 
     def inverted(self) -> BusdayTransform:
         return BusdayTransform(

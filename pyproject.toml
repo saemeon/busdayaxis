@@ -37,7 +37,13 @@ doc = [
     "mkdocstrings[python]",
     "mike",
 ]
-dev = ["ruff", "prek", { include-group = "test" }, { include-group = "doc" }]
+dev = [
+    "ruff",
+    "prek",
+    "ty",
+    { include-group = "test" },
+    { include-group = "doc" },
+]
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel", "setuptools-scm>=8.0"]
@@ -59,6 +65,9 @@ busdayaxis = ["py.typed"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+
+[tool.ty.src]
+include = ["src"]
 
 [tool.ruff]
 line-length = 88
