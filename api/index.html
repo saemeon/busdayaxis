@@ -1722,6 +1722,8 @@ Accepts any format understood by :func:<code>numpy.is_busday</code> (ISO strings
                 <p>Pre-built calendar combining a weekmask and holiday list. When set,
 <em>weekmask</em> and <em>holidays</em> are ignored. Useful when reusing the same
 calendar across multiple axes. Default <code>None</code>.</p>
+<p>Note that <code>busdaycal</code> only controls <em>which days</em> are business days;
+it does not affect <em>bushours</em>. The two parameters are independent.</p>
 <div class="highlight"><pre><span></span><code><span class="n">cal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">busdaycalendar</span><span class="p">(</span><span class="n">weekmask</span><span class="o">=</span><span class="s2">&quot;Mon Tue Wed Thu Fri&quot;</span><span class="p">,</span>
                         <span class="n">holidays</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;2025-01-01&quot;</span><span class="p">])</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">busdaycal</span><span class="o">=</span><span class="n">cal</span><span class="p">)</span>
@@ -1742,6 +1744,16 @@ calendar across multiple axes. Default <code>None</code>.</p>
       </tbody>
     </table>
 
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <p>Timestamps outside <code>bushours</code> are clipped to the nearest session
+boundary during the forward transform. For example, with
+<code>bushours=(9, 17)</code>, both 08:30 and 09:00 map to the same axis
+position (the session open). This means the transform is not perfectly
+invertible: the inverse transform always returns a time within business
+hours, even if the original value was outside.</p>
+</details>
 
 <p><span class="doc-section-title">Examples:</span></p>
     <p>Compress weekends only (Mon–Fri default):</p>
@@ -1903,9 +1915,7 @@ Python session. The keyword arguments <code>bushours</code>, <code>weekmask</cod
 
         <p>Tick locator that filters out ticks outside business hours and business days.</p>
 <p>Wraps any Matplotlib date locator and discards ticks that fall on
-non-business days or outside the active session defined by <code>bushours</code>.
-Midnight ticks (00:00) on business days are always kept so that
-daily-granularity locators (e.g. <code>DayLocator</code>) continue to work.</p>
+non-business days or outside the active session defined by <code>bushours</code>.</p>
 <p>The locator reads the business-hours and weekmask configuration from the
 axis automatically (set by <code>BusdayScale</code>), so it stays in sync with the
 scale without any extra configuration.</p>
@@ -1934,6 +1944,31 @@ If None, falls back to <code>AutoDateLocator</code>.</p>
                   <span class="doc-param-annotation">
                     <b>TYPE:</b>
                       <code><span title="matplotlib">matplotlib</span>.<span title="matplotlib.dates">dates</span>.<span title="matplotlib.dates.DateLocator">DateLocator</span></code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>None</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>keep_midnight_ticks</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Controls whether ticks at midnight (00:00) on business days are kept
+even when they fall outside <code>bushours</code>. When <code>None</code> (default), this
+is determined automatically: midnight ticks are kept for
+daily-granularity locators (e.g. <code>DayLocator</code>) so that day labels
+remain properly aligned, and suppressed for finer locators (e.g.
+<code>HourLocator</code>) where they would appear outside the visible session.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="bool">bool</span> or None</code>
                   </span>
                   <span class="doc-param-default">
                     <b>DEFAULT:</b>
