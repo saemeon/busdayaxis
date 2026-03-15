@@ -1,7 +1,7 @@
 """# MidBusdayLocator with Mixed Bushours
 
-This example shows how to use the MidBusdayLocator to mark the middle of each business day
-when using mixed bushours (different hours for different weekdays).
+This example shows how to use the MidBusdayLocator to mark the middle of each business
+day when using mixed bushours (different hours for different weekdays).
 
 Core code:
 

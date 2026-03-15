@@ -1,7 +1,8 @@
 """# Uniform Business Hours For All Busdays
 
 If the business of interest is only active during the same hours each day, such as with
-overnight gaps and pre/post-market time, pass a ``bushours`` tuple to collapse all off-hours.
+overnight gaps and pre/post-market time, pass a ``bushours`` tuple to collapse all
+off-hours.
 
 - All weekdays use the same bushours.
 - The standard Mon–Fri weekmask still applies so weekends remain collapsed.

@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import TYPE_CHECKING, Mapping, Optional, Protocol, Sequence, Union, cast
+from typing import TYPE_CHECKING, Mapping, Protocol, Sequence, Union, cast
 
 import matplotlib.dates as mdates
 import matplotlib.scale as mscale
@@ -41,11 +41,7 @@ def _coerce_hour_span(values: BushourSpan, *, label: str = "hours") -> BushourSp
 
 
 def _normalize_bushours(
-    bushours: Union[
-        BushourSpan,
-        Sequence[BushourSpan],
-        Mapping[WeekdayKey, BushourSpan],
-    ],
+    bushours: BushourSpan | Sequence[BushourSpan] | Mapping[WeekdayKey, BushourSpan],
 ) -> dict[int, BushourSpan]:
     """Return a dict ``{0..6: (start, end)}`` from any supported bushours form."""
     if isinstance(bushours, dict):
@@ -519,16 +515,12 @@ class BusdayScale(mscale.ScaleBase):
     def __init__(
         self,
         axis: Axis,
-        bushours: Union[
-            BushourSpan,
-            Sequence[BushourSpan],
-            Mapping[WeekdayKey, BushourSpan],
-        ] = (0, 24),
-        weekmask: Optional[ArrayLike] = None,
-        holidays: Optional[
-            Union[ArrayLike, Sequence[Union[str, dt.date, np.datetime64]]]
-        ] = None,
-        busdaycal: Optional[np.busdaycalendar] = None,
+        bushours: BushourSpan
+        | Sequence[BushourSpan]
+        | Mapping[WeekdayKey, BushourSpan] = (0, 24),
+        weekmask: ArrayLike | None = None,
+        holidays: ArrayLike | Sequence[str | dt.date | np.datetime64] | None = None,
+        busdaycal: np.busdaycalendar | None = None,
     ) -> None:
         self._bushours_dict = _normalize_bushours(bushours)
         starts, ends = _bushours_bounds(self._bushours_dict)

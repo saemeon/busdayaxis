@@ -1,9 +1,9 @@
 """# Per-Day Business Hours
 
-Each weekday can be configured to have different bushours. To do so, pass a ``bushours`` dict
-where each key is a weekday name and the value is a tuple of (start_hour, end_hour).
-On the business axis, days are scaled proportionally to their total bushours
-length — i.e. days with less bushours will appear narrower.
+Each weekday can be configured to have different bushours. To do so, pass a ``bushours``
+dict where each key is a weekday name and the value is a tuple of
+(start_hour, end_hour). On the business axis, days are scaled proportionally to their
+total bushours length — i.e. days with less bushours will appear narrower.
 
 Core code:
 
