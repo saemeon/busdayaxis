@@ -3,40 +3,53 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Tuple, Union  # noqa: UP006, UP035
+import datetime as dt
+from typing import TYPE_CHECKING, Mapping, Optional, Protocol, Sequence, Union, cast
 
 import matplotlib.dates as mdates
 import matplotlib.scale as mscale
 import matplotlib.transforms as mtransforms
 import numpy as np
-from matplotlib.axis import Axis
+
+if TYPE_CHECKING:
+    from matplotlib.axis import Axis
+    from numpy.typing import ArrayLike, NDArray
 
 from busdayaxis._locator import AutoDateLocator, BusdayLocator
 
 WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 WEEKDAYS_MAP = {name: i for i, name in enumerate(WEEKDAYS)}
 
+BushourSpan = tuple[float, float]
+WeekdayKey = Union[str, int]
+
 #####################################################################
 # Helper functions
 #####################################################################
 
 
-def _validate_hours(start: float, end: float, label: str = "hours") -> None:
-    if not (0 <= start <= end <= 24):
+def _coerce_hour_span(values: BushourSpan, *, label: str = "hours") -> BushourSpan:
+    if len(values) != 2:
+        raise ValueError(f"{label} must be a (start, end) pair")
+
+    start, end = values
+    start_f = float(start)
+    end_f = float(end)
+    if not (0 <= start_f <= end_f <= 24):
         raise ValueError(f"{label} must satisfy 0 <= start <= end <= 24")
+    return start_f, end_f
 
 
-_BushoursInput = Union[
-    Tuple[float, float],  # noqa: UP006, UP007
-    List[Tuple[float, float]],  # noqa: UP006, UP007
-    Dict[Union[str, int], Tuple[float, float]],  # noqa: UP006, UP007
-]
-
-
-def _normalize_bushours(bushours: _BushoursInput) -> dict[int, tuple[float, float]]:
+def _normalize_bushours(
+    bushours: Union[
+        BushourSpan,
+        Sequence[BushourSpan],
+        Mapping[WeekdayKey, BushourSpan],
+    ],
+) -> dict[int, BushourSpan]:
     """Return a dict ``{0..6: (start, end)}`` from any supported bushours form."""
     if isinstance(bushours, dict):
-        int_dict = {}
+        int_dict: dict[int, BushourSpan] = {}
 
         for k, v in bushours.items():
             if isinstance(k, str) and k in WEEKDAYS_MAP:
@@ -45,19 +58,21 @@ def _normalize_bushours(bushours: _BushoursInput) -> dict[int, tuple[float, floa
                 weekday = k
             else:
                 raise ValueError(f"Got {k!r}; expected int 0-6 or name in {WEEKDAYS}")
-            _validate_hours(*v, f"bushours for {WEEKDAYS[weekday]}")
-            int_dict[weekday] = v
+            int_dict[weekday] = _coerce_hour_span(
+                v, label=f"bushours for {WEEKDAYS[weekday]}"
+            )
         # Unspecified weekdays default to full day; weekends default to closed
         return {i: int_dict.get(i, (0, 0) if i >= 5 else (0, 24)) for i in range(7)}
 
     if isinstance(bushours, (list, tuple)):
         if len(bushours) == 2 and all(isinstance(x, (int, float)) for x in bushours):
-            _validate_hours(*bushours)
-            return {i: bushours for i in range(7)}
+            span = _coerce_hour_span(cast(BushourSpan, bushours))
+            return {i: span for i in range(7)}
         if len(bushours) == 7:
-            for i, _bushours in enumerate(bushours):
-                _validate_hours(*_bushours, f"bushours for {WEEKDAYS[i]}")
-            return {i: bushours[i] for i in range(7)}
+            return {
+                i: _coerce_hour_span(bushours[i], label=f"bushours for {WEEKDAYS[i]}")
+                for i in range(7)
+            }
 
     raise ValueError(
         "bushours must be:\n"
@@ -68,15 +83,15 @@ def _normalize_bushours(bushours: _BushoursInput) -> dict[int, tuple[float, floa
 
 
 def _bushours_bounds(
-    bushours_dict: dict[int, tuple[float, float]],
-) -> tuple[np.ndarray, np.ndarray]:
-    """Return (starts, ends) as numpy arrays of day-fractions (0–1) for all 7 weekdays."""
+    bushours_dict: dict[int, BushourSpan],
+) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
+    """Return (starts, ends) as arrays of day-fractions (0–1) for all 7 weekdays."""
     starts = np.array([bushours_dict[i][0] for i in range(7)]) / 24
     ends = np.array([bushours_dict[i][1] for i in range(7)]) / 24
     return starts, ends
 
 
-def _weekday_from_days(days_d64: np.ndarray) -> np.ndarray:
+def _weekday_from_days(days_d64: NDArray[np.datetime64]) -> NDArray[np.int64]:
     """
     Compute weekday as 0=Mon, ..., 6=Sun for datetime64[D] arrays.
 
@@ -87,8 +102,9 @@ def _weekday_from_days(days_d64: np.ndarray) -> np.ndarray:
 
 
 def _build_weighted_calendar(
-    weights: np.ndarray, **busday_kwargs: Any
-) -> tuple[np.ndarray, np.ndarray]:
+    weights: NDArray[np.float64],
+    **busday_kwargs,
+) -> tuple[NDArray[np.datetime64], NDArray[np.float64]]:
     """Construct a lookup table mapping calendar days to cumulative
     weighted business-day coordinates."""
 
@@ -117,13 +133,13 @@ def _build_weighted_calendar(
 
 
 def _datetime_to_busday_float(
-    values: Any,
-    bushours_dict: dict[int, tuple[float, float]],
-    calendar_days: np.ndarray,
-    cumulative: np.ndarray,
-    weights: np.ndarray,
-    **busday_kwargs: Any,
-) -> np.ndarray:
+    values: ArrayLike,
+    bushours_dict: dict[int, BushourSpan],
+    calendar_days: NDArray[np.datetime64],
+    cumulative: NDArray[np.float64],
+    weights: NDArray[np.float64],
+    **busday_kwargs,
+) -> NDArray[np.float64]:
     """Convert datetime-like values to business-day floats.
 
     Mapping:
@@ -173,12 +189,12 @@ def _datetime_to_busday_float(
 
 
 def _busday_float_to_datetime(
-    values: Any,
-    bushours_dict: dict[int, tuple[float, float]],
-    calendar_days: np.ndarray,
-    cumulative: np.ndarray,
-    weights: np.ndarray,
-) -> np.ndarray:
+    values: ArrayLike,
+    bushours_dict: dict[int, BushourSpan],
+    calendar_days: NDArray[np.datetime64],
+    cumulative: NDArray[np.float64],
+    weights: NDArray[np.float64],
+) -> NDArray[np.datetime64]:
     """Convert business-day floats back to datetime values.
 
     Note that the transform is not perfectly invertible because
@@ -229,17 +245,17 @@ def _busday_float_to_datetime(
 class _BusdayTransformBase(mtransforms.Transform):
     """Shared base for forward and inverse business-day transforms."""
 
-    input_dims = 1
-    output_dims = 1
-    is_separable = True
+    input_dims = 1  # type: ignore[assignment]
+    output_dims = 1  # type: ignore[assignment]
+    is_separable = True  # type: ignore[assignment]
 
     def __init__(
         self,
-        bushours_dict: dict[int, tuple[float, float]],
-        calendar_days: np.ndarray,
-        cumulative: np.ndarray,
-        weights: np.ndarray,
-        **busday_kwargs: Any,
+        bushours_dict: dict[int, BushourSpan],
+        calendar_days: NDArray[np.datetime64],
+        cumulative: NDArray[np.float64],
+        weights: NDArray[np.float64],
+        **busday_kwargs,
     ) -> None:
         self._bushours_dict = bushours_dict
         self._calendar_days = calendar_days
@@ -258,7 +274,7 @@ class BusdayTransform(_BusdayTransformBase):
     part represents the normalised position within the active session.
     """
 
-    def transform_non_affine(self, x):
+    def transform_non_affine(self, x: ArrayLike) -> ArrayLike:
         x = np.asarray(x)
         # num2date returns tz-aware datetimes; strip tzinfo before numpy conversion
         dates = [d.replace(tzinfo=None) for d in mdates.num2date(x.ravel())]
@@ -272,7 +288,7 @@ class BusdayTransform(_BusdayTransformBase):
         )
         return result.reshape(x.shape)
 
-    def inverted(self):
+    def inverted(self) -> InvertedBusdayTransform:
         return InvertedBusdayTransform(
             self._bushours_dict,
             self._calendar_days,
@@ -289,7 +305,7 @@ class InvertedBusdayTransform(_BusdayTransformBase):
     clipped to session boundaries during the forward transform.
     """
 
-    def transform_non_affine(self, x):
+    def transform_non_affine(self, x: ArrayLike) -> ArrayLike:
         x = np.asarray(x, dtype=float)
         dates = _busday_float_to_datetime(
             x.ravel(),
@@ -300,7 +316,7 @@ class InvertedBusdayTransform(_BusdayTransformBase):
         )
         return mdates.date2num(dates).reshape(x.shape)
 
-    def inverted(self):
+    def inverted(self) -> BusdayTransform:
         return BusdayTransform(
             self._bushours_dict,
             self._calendar_days,
@@ -321,12 +337,19 @@ class BusdayScale(mscale.ScaleBase):
     ----------
     axis : matplotlib.axis.Axis
         The axis this scale is attached to.
-    bushours : tuple, list of 7 tuples, or dict, optional
+    bushours : BushourSpan
+                | Sequence[BushourSpan]
+                | Mapping[WeekdayKey, BushourSpan]
+                , optional
         Active hours per weekday (hours as floats, 0–24).
 
-        Three forms:
+        ``BushourSpan`` means ``(start, end)``.
+        ``WeekdayKey`` means either weekday index ``0..6`` or weekday name
+        ``"Mon"``..``"Sun"``.
 
-        - ``(start, end)``:
+        Three accepted forms:
+
+        - ``BushourSpan`` = ``(start, end)``:
             Same session for all days (e.g. ``(9, 17)``). The weekmask still
             applies, so off-days (Sat/Sun by default) are collapsed regardless.
             Default ``(0, 24)``.
@@ -343,8 +366,8 @@ class BusdayScale(mscale.ScaleBase):
             bushours=(9, 17), weekmask="1111111"  # Mon–Sun
             ```
 
-        - list of 7 ``(start, end)`` tuples:
-            One tuple per weekday Monday–Sunday, fully explicit.
+        - ``Sequence[BushourSpan]`` with length 7:
+            One tuple per weekday Monday–Sunday (index 0..6), fully explicit.
 
             Example:
 
@@ -360,9 +383,10 @@ class BusdayScale(mscale.ScaleBase):
             ]
             ```
 
-        - dict ``{weekday: (start, end)}``:
-            Per-day overrides; keys are integers 0–6 or names
-            ``"Mon"``–``"Sun"``. Defaults for unspecified days:
+        - ``Mapping[WeekdayKey, BushourSpan]``:
+            Per-day overrides; keys are ``WeekdayKey`` values
+            (integers ``0..6`` or names ``"Mon"``–``"Sun"``).
+            Defaults for unspecified days:
 
             | Day  | Key  | Default |
             |------|------|---------|
@@ -381,7 +405,7 @@ class BusdayScale(mscale.ScaleBase):
             Example:
 
             ```python
-            bushours={"Sun": (10, 18)}  # Show Sundays with custom hours, Weekdays 00-24
+            bushours={"Sun": (10, 18)}  # Sundays with custom hours, Weekdays 00-24
             ```
 
             FX Trading Hours:
@@ -495,16 +519,21 @@ class BusdayScale(mscale.ScaleBase):
     def __init__(
         self,
         axis: Axis,
-        bushours: _BushoursInput = (0, 24),
-        weekmask: str | None = None,
-        holidays: list[str] | None = None,
-        busdaycal: np.busdaycalendar | None = None,
+        bushours: Union[
+            BushourSpan,
+            Sequence[BushourSpan],
+            Mapping[WeekdayKey, BushourSpan],
+        ] = (0, 24),
+        weekmask: Optional[ArrayLike] = None,
+        holidays: Optional[
+            Union[ArrayLike, Sequence[Union[str, dt.date, np.datetime64]]]
+        ] = None,
+        busdaycal: Optional[np.busdaycalendar] = None,
     ) -> None:
         self._bushours_dict = _normalize_bushours(bushours)
         starts, ends = _bushours_bounds(self._bushours_dict)
         self._weights = ends - starts
-
-        busday_kwargs = {}
+        busday_kwargs: dict = {}
         if busdaycal is not None:
             busday_kwargs["busdaycal"] = busdaycal
         else:
@@ -547,8 +576,13 @@ class BusdayScale(mscale.ScaleBase):
         )
 
     def set_default_locators_and_formatters(self, axis: Axis) -> None:
-        axis._busday_kwargs = self._busday_kwargs.copy()
-        axis._bushours = self._bushours_dict.copy()
+        class _AxisBusdayState(Protocol):
+            _busday_kwargs: dict[str, object]
+            _bushours: dict[int, BushourSpan]
+
+        axis_state = cast(_AxisBusdayState, axis)
+        axis_state._busday_kwargs = self._busday_kwargs.copy()
+        axis_state._bushours = self._bushours_dict.copy()
 
         if not isinstance(axis.get_major_locator(), BusdayLocator):
             majloc = AutoDateLocator()
@@ -556,7 +590,11 @@ class BusdayScale(mscale.ScaleBase):
             axis.set_major_locator(majloc)
 
         if not isinstance(axis.get_major_formatter(), mdates.DateFormatter):
-            majfmt = mdates.AutoDateFormatter(axis.get_major_locator().base_locator)
+            current_locator = axis.get_major_locator()
+            if isinstance(current_locator, BusdayLocator):
+                majfmt = mdates.AutoDateFormatter(current_locator.base_locator)
+            else:
+                majfmt = mdates.AutoDateFormatter(current_locator)
             axis.set_major_formatter(majfmt)
 
     def limit_range_for_scale(

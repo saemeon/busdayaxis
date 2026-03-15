@@ -16,27 +16,20 @@ classifiers = [
 readme = "README.md"
 license = "BSD-3-Clause"
 authors = [
-    {name = "Simon Niederberger", email = "s.niederberger@hotmail.com"}
+    { name = "Simon Niederberger", email = "s.niederberger@hotmail.com" },
 ]
 maintainers = [
-    {name = "Simon Niederberger", email = "s.niederberger@hotmail.com"}
+    { name = "Simon Niederberger", email = "s.niederberger@hotmail.com" },
 ]
 requires-python = ">=3.9"
-dependencies = [
-    "matplotlib",
-    "numpy",
-]
+dependencies = ["matplotlib", "numpy"]
 
 [project.urls]
 Homepage = "https://saemeon.github.io/busdayaxis/"
 Repository = "https://github.com/saemeon/busdayaxis"
 
 [project.optional-dependencies]
-test = [
-    "pandas",
-    "pytest",
-    "pytest-cov",
-]
+test = ["pandas", "pytest", "pytest-cov"]
 doc = [
     "mkdocs",
     "mkdocs-material",
@@ -69,18 +62,18 @@ local_scheme = "no-local-version"
 [tool.setuptools.dynamic]
 version = { attr = "busdayaxis._version.__version__" }
 
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-
-[tool.ruff]
-line-length = 88
-
-[tool.ruff.lint]
-select = ["E", "F", "I", "N", "W", "UP"]
-ignore = ["E501"]
-
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
 busdayaxis = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W"]
