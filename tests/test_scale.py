@@ -1,4 +1,64 @@
+import datetime as dt
+
 import pytest  # noqa
+
+from busdayaxis._scale import _coerce_hour_span, _to_hour_float
+
+
+def test_to_hour_float_int():
+    assert _to_hour_float(9) == 9.0
+
+
+def test_to_hour_float_float():
+    assert _to_hour_float(9.5) == 9.5
+
+
+def test_to_hour_float_string_hhmm():
+    assert _to_hour_float("09:30") == 9.5
+
+
+def test_to_hour_float_string_hhmmss():
+    assert _to_hour_float("09:30:30") == pytest.approx(9.5 + 30 / 3600)
+
+
+def test_to_hour_float_time_object():
+    assert _to_hour_float(dt.time(9, 30)) == 9.5
+
+
+def test_to_hour_float_time_microseconds():
+    t = dt.time(9, 30, 0, 500_000)
+    assert _to_hour_float(t) == pytest.approx(9.5 + 500_000 / 3_600_000_000)
+
+
+def test_to_hour_float_invalid_string():
+    with pytest.raises(ValueError):
+        _to_hour_float("not-a-time")
+
+
+def test_coerce_hour_span_floats():
+    assert _coerce_hour_span((9, 17)) == (9.0, 17.0)
+
+
+def test_coerce_hour_span_strings():
+    assert _coerce_hour_span(("09:00", "17:00")) == (9.0, 17.0)
+
+
+def test_coerce_hour_span_time_objects():
+    assert _coerce_hour_span((dt.time(9), dt.time(17))) == (9.0, 17.0)
+
+
+def test_coerce_hour_span_mixed():
+    assert _coerce_hour_span((9, "17:30")) == (9.0, 17.5)
+
+
+def test_coerce_hour_span_invalid_order():
+    with pytest.raises(ValueError):
+        _coerce_hour_span((17, 9))
+
+
+def test_coerce_hour_span_out_of_range():
+    with pytest.raises(ValueError):
+        _coerce_hour_span((0, 25))
 
 
 def test_import():
@@ -131,4 +191,54 @@ def test_busdaycal_parameter():
     ax.plot(dates, range(len(dates)))
     ax.set_xscale("busday", busdaycal=cal)
 
+    plt.close(fig)
+
+
+def test_bushours_string_tuple():
+    """bushours accepts ISO time strings."""
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    dates = pd.date_range("2024-01-01", periods=10, freq="D")
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(len(dates)))
+    ax.set_xscale("busday", bushours=("09:00", "17:00"))
+    plt.close(fig)
+
+
+def test_bushours_time_object_tuple():
+    """bushours accepts datetime.time objects."""
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    dates = pd.date_range("2024-01-01", periods=10, freq="D")
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(len(dates)))
+    ax.set_xscale("busday", bushours=(dt.time(9), dt.time(17)))
+    plt.close(fig)
+
+
+def test_bushours_dict_with_strings():
+    """Per-day bushours dict accepts ISO time strings as values."""
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    dates = pd.date_range("2024-01-01", periods=10, freq="D")
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(len(dates)))
+    ax.set_xscale(
+        "busday", bushours={"Mon": ("09:00", "17:00"), "Fri": ("09:00", "13:00")}
+    )
+    plt.close(fig)
+
+
+def test_bushours_dict_with_time_objects():
+    """Per-day bushours dict accepts datetime.time objects as values."""
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    dates = pd.date_range("2024-01-01", periods=10, freq="D")
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(len(dates)))
+    ax.set_xscale("busday", bushours={"Mon": (dt.time(9), dt.time(17))})
     plt.close(fig)
