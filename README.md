@@ -10,7 +10,7 @@
 
 A Matplotlib scale that compresses non-business days and off-hours. Every visible unit on the axis corresponds to active time — no gaps for weekends, holidays, or overnight periods. No data preprocessing needed.
 
-![Remove weekend gaps](https://raw.githubusercontent.com/saemeon/busdayaxis/master/docs/assets/remove_weekend.png)
+![Remove weekend gaps](https://raw.githubusercontent.com/saemeon/busdayaxis/main/docs/assets/remove_weekend.png)
 
 **Full documentation at [saemeon.github.io/busdayaxis](https://saemeon.github.io/busdayaxis/)**
 
@@ -107,7 +107,7 @@ Time series that only evolve on business days — prices, signals, operational m
         ---------------------------------------
         =          0.708333... (busdayaxis coordinate)
 
-![Under the Hood](https://raw.githubusercontent.com/saemeon/busdayaxis/master/docs/assets/under_the_hood.png)
+![Under the Hood](https://raw.githubusercontent.com/saemeon/busdayaxis/main/docs/assets/under_the_hood.png)
 
 ## License
 

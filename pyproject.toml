@@ -65,6 +65,7 @@ busdayaxis = ["py.typed"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+addopts = "--cov=src/busdayaxis --cov-report=term-missing"
 
 [tool.ty.src]
 include = ["src"]
