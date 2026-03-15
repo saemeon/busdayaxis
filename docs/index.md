@@ -173,8 +173,6 @@ The default `BusdayScale(ax.xaxis)` is equivalent to `ax.set_xscale("busday")`: 
 | `busdayaxis` locator | Wraps                       |
 |----------------------|-----------------------------|
 | `AutoDateLocator`    | `mdates.AutoDateLocator`    |
-| `YearLocator`        | `mdates.YearLocator`        |
-| `MonthLocator`       | `mdates.MonthLocator`       |
 | `WeekdayLocator`     | `mdates.WeekdayLocator`     |
 | `DayLocator`         | `mdates.DayLocator`         |
 | `HourLocator`        | `mdates.HourLocator`        |
