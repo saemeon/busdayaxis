@@ -19,7 +19,9 @@ if TYPE_CHECKING:
 
     AxisLike = Union[Axis, _DummyAxis, _AxisWrapper, None]
 
-_DEFAULT_BUSHOURS = {i: (0, 24) for i in range(7)}
+_DEFAULT_BUSHOURS: dict[int, list[tuple[float, float]]] = {
+    i: [(0.0, 24.0)] for i in range(7)
+}
 
 
 class BusdayLocator(mdates.DateLocator):
@@ -96,12 +98,14 @@ class BusdayLocator(mdates.DateLocator):
 
         bushours_dict = getattr(self.axis, "_bushours", _DEFAULT_BUSHOURS)
 
-        _starts = np.array([bushours_dict[i][0] for i in range(7)]) / 24
-        _ends = np.array([bushours_dict[i][1] for i in range(7)]) / 24
-        bushour_starts = _starts[weekday]
-        bushour_ends = _ends[weekday]
-
-        within_hours = (frac >= bushour_starts) & (frac < bushour_ends)
+        within_hours = np.zeros(len(ticks_arr), dtype=bool)
+        for wd in range(7):
+            wd_mask = weekday == wd
+            if not np.any(wd_mask):
+                continue
+            for s, e in bushours_dict[wd]:
+                s_f, e_f = s / 24.0, e / 24.0
+                within_hours[wd_mask] |= (frac[wd_mask] >= s_f) & (frac[wd_mask] < e_f)
         if self._keep_midnight_ticks is None:
             # allow midnight ticks through so daily-granularity ticks (placed at 00:00
             # by AutoDateLocator) are not filtered by the business-hours check
@@ -269,8 +273,13 @@ class MidBusdayLocator(mdates.DateLocator):
         bushours_dict = getattr(self.axis, "_bushours", _DEFAULT_BUSHOURS)
         weekday = (busdays.view("int64") + 3) % 7  # epoch (1970-01-01) was Thursday = 3
 
-        _starts = np.array([bushours_dict[i][0] for i in range(7)])
-        _ends = np.array([bushours_dict[i][1] for i in range(7)])
+        # Midpoint between the first interval's start and the last interval's end
+        _starts = np.array(
+            [bushours_dict[i][0][0] if bushours_dict[i] else 12.0 for i in range(7)]
+        )
+        _ends = np.array(
+            [bushours_dict[i][-1][1] if bushours_dict[i] else 12.0 for i in range(7)]
+        )
         mid_fracs = (_starts[weekday] + _ends[weekday]) / 2 / 24
 
         busday_nums = mdates.date2num(busdays.astype("datetime64[ms]").astype(object))

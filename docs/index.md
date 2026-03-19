@@ -44,7 +44,7 @@ Time series that only evolve on business days — prices, signals, operational m
 
     - `weekmask`, `holidays`, `busdaycal`: standard [`numpy.is_busday`](https://numpy.org/doc/stable/reference/generated/numpy.is_busday.html) parameters to configure which days are considered business days
 
-    - `bushours`: define uniform or weekday-specific business hours
+    - `bushours`: define uniform or weekday-specific business hours; supports multiple intervals per day (e.g. to collapse a lunch break)
 
     - Implemented as a proper [`matplotlib.scale`](https://matplotlib.org/stable/users/explain/axes/axes_scales.html) — autoscaling, shared axes, and all standard artists work without any changes to your plotting code
 
@@ -128,9 +128,11 @@ ax.set_xscale("busday")  # compress weekends (Mon–Fri default)
 ax.set_xscale("busday", bushours=(9, 17))           # numeric hours
 ax.set_xscale("busday", bushours=("09:00", "17:00"))  # ISO time strings
 ax.set_xscale("busday", bushours=(datetime.time(9), datetime.time(17)))  # datetime.time
+# or — multiple intervals (e.g. collapse a lunch break)
+ax.set_xscale("busday", bushours=[(9, 12), (13, 17)])
 # or
 ax.set_xscale(  # per-day business hours
-    "busday", bushours={"Mon": (9, 17), "Fri": (9, 16)}
+    "busday", bushours={"Mon": [(9, 12), (13, 17)], "Fri": (9, 13)}
 )
 # or
 ax.set_xscale(  # custom week mask and holidays
@@ -151,12 +153,12 @@ from busdayaxis import BusdayScale
 
 ax.set_xscale(BusdayScale(ax.xaxis))  # compress weekends (Mon–Fri default)
 # or
-ax.set_xscale(  # compress weekends + overnight gaps
-    BusdayScale(ax.xaxis, bushours=(9, 17))
-)
+ax.set_xscale(BusdayScale(ax.xaxis, bushours=(9, 17)))  # single session, all days
 # or
-ax.set_xscale(  # per-day business hours
-    BusdayScale(ax.xaxis, bushours={"Mon": (9, 17), "Fri": (9, 16)})
+ax.set_xscale(BusdayScale(ax.xaxis, bushours=[(9, 12), (13, 17)]))  # morning + afternoon
+# or
+ax.set_xscale(  # per-day business hours, with a lunch break on Mondays
+    BusdayScale(ax.xaxis, bushours={"Mon": [(9, 12), (13, 17)], "Fri": (9, 13)})
 )
 # or
 ax.set_xscale(  # custom week mask and holidays

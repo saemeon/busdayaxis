@@ -222,6 +222,36 @@ def test_mid_busday_locator_tick_values():
     plt.close(fig)
 
 
+def test_mid_busday_locator_per_day_varied_midpoints():
+    """MidBusdayLocator uses each day's own hours for its midpoint.
+
+    Mon 9–13 → midpoint 11:00; Tue 10–18 → midpoint 14:00.
+    """
+    import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    import busdayaxis
+
+    busdayaxis.register_scale()
+    dates = pd.date_range("2025-01-06", periods=48, freq="h")  # Mon–Tue
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(len(dates)))
+    ax.set_xscale("busday", bushours={"Mon": (9, 13), "Tue": (10, 18)})
+    ax.set_xlim(
+        mdates.date2num(pd.Timestamp("2025-01-06")),
+        mdates.date2num(pd.Timestamp("2025-01-07 23:59")),
+    )
+    ax.xaxis.set_minor_locator(busdayaxis.MidBusdayLocator())
+
+    ticks = ax.xaxis.get_minor_locator()()
+    assert len(ticks) == 2
+    assert mdates.num2date(ticks[0]).hour == 11  # Mon: (9+13)/2
+    assert mdates.num2date(ticks[1]).hour == 14  # Tue: (10+18)/2
+
+    plt.close(fig)
+
+
 def test_mid_busday_locator_no_busdays():
     """MidBusdayLocator returns [] when the range contains no business days."""
     import matplotlib.dates as mdates
@@ -239,5 +269,64 @@ def test_mid_busday_locator_no_busdays():
     sat = mdates.datestr2num("2025-01-04")
     sun = mdates.datestr2num("2025-01-05")
     assert locator.tick_values(sat, sun) == []
+
+    plt.close(fig)
+
+
+def test_busday_locator_filters_lunch_gap():
+    """With multi-interval bushours, ticks during the lunch gap are removed."""
+    import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    import busdayaxis
+
+    busdayaxis.register_scale()
+
+    dates = pd.date_range("2025-01-06", periods=24, freq="h")  # Mon
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(len(dates)))
+    ax.set_xscale("busday", bushours=[(9, 12), (13, 17)])
+    ax.xaxis.set_major_locator(
+        busdayaxis.HourLocator(byhour=range(0, 24), keep_midnight_ticks=False)
+    )
+    ax.set_xlim(
+        mdates.date2num(pd.Timestamp("2025-01-06")),
+        mdates.date2num(pd.Timestamp("2025-01-07")),
+    )
+
+    ticks = ax.xaxis.get_major_locator()()
+    hours = {mdates.num2date(t).hour for t in ticks}
+
+    assert hours <= {9, 10, 11, 13, 14, 15, 16}  # only session hours
+    assert 12 not in hours  # noon (lunch open) filtered
+    assert 17 not in hours  # session close filtered (frac < e_f)
+
+    plt.close(fig)
+
+
+def test_mid_busday_locator_multi_interval():
+    """MidBusdayLocator midpoint uses first open and last close of the session."""
+    import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    import busdayaxis
+
+    busdayaxis.register_scale()
+
+    dates = pd.date_range("2025-01-06", periods=5, freq="D")  # Mon–Fri
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(5))
+    ax.set_xscale("busday", bushours=[(9, 12), (13, 17)])
+    ax.set_xlim(
+        mdates.date2num(pd.Timestamp("2025-01-06")),
+        mdates.date2num(pd.Timestamp("2025-01-10 23:59")),
+    )
+    ax.xaxis.set_minor_locator(busdayaxis.MidBusdayLocator())
+
+    ticks = ax.xaxis.get_minor_locator()()
+    assert len(ticks) == 5
+    assert mdates.num2date(ticks[0]).hour == 13  # midpoint of (9+17)/2
 
     plt.close(fig)

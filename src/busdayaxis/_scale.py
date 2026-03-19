@@ -36,28 +36,71 @@ def _to_hour_float(v: HourValue) -> float:
     return float(v)
 
 
-def _coerce_hour_span(
-    values: tuple[HourValue, HourValue], *, label: str = "hours"
-) -> tuple[float, float]:
-    if len(values) != 2:
-        raise ValueError(f"{label} must be a (start, end) pair")
+def _is_single_interval(v: object) -> bool:
+    return (
+        isinstance(v, tuple)
+        and len(v) == 2
+        and all(isinstance(x, (int, float, str, dt.time)) for x in v)
+    )
 
-    start_f = _to_hour_float(values[0])
-    end_f = _to_hour_float(values[1])
-    if not (0 <= start_f <= end_f <= 24):
-        raise ValueError(f"{label} must satisfy 0 <= start <= end <= 24")
-    return start_f, end_f
+
+def _coerce_intervals(v: object, *, label: str = "hours") -> list[tuple[float, float]]:
+    """Normalize a single ``(start, end)`` tuple or list of such tuples into
+    a sorted, non-overlapping list of ``(start_float, end_float)`` pairs."""
+    if _is_single_interval(v):
+        v = cast(tuple[HourValue, HourValue], v)
+        s, e = _to_hour_float(v[0]), _to_hour_float(v[1])
+        if not (0 <= s <= e <= 24):
+            raise ValueError(
+                f"{label}: 0 <= start <= end <= 24 required, got ({s}, {e})"
+            )
+        return [(s, e)]
+    if isinstance(v, (list, tuple)):
+        result: list[tuple[float, float]] = []
+        for i, item in enumerate(v):
+            if not (isinstance(item, (list, tuple)) and len(item) == 2):
+                raise ValueError(
+                    f"{label}[{i}]: each interval must be a (start, end) pair, "
+                    f"got {item!r}"
+                )
+            s = _to_hour_float(item[0])
+            e = _to_hour_float(item[1])
+            if not (0 <= s <= e <= 24):
+                raise ValueError(
+                    f"{label}[{i}]: 0 <= start <= end <= 24 required, got ({s}, {e})"
+                )
+            result.append((s, e))
+        result.sort()
+        for i in range(len(result) - 1):
+            if result[i][1] > result[i + 1][0]:
+                raise ValueError(
+                    f"{label}: intervals must not overlap, "
+                    f"got {result[i]} and {result[i + 1]}"
+                )
+        return result
+    raise ValueError(
+        f"{label}: expected (start, end) tuple or list of (start, end) pairs, got {v!r}"
+    )
 
 
 def _normalize_bushours(
     bushours: tuple[HourValue, HourValue]
     | Sequence[tuple[HourValue, HourValue]]
-    | Mapping[WeekdayKey, tuple[HourValue, HourValue]],
-) -> dict[int, tuple[float, float]]:
-    """Return a dict ``{0..6: (start, end)}`` from any supported bushours form."""
-    if isinstance(bushours, dict):
-        int_dict: dict[int, tuple[float, float]] = {}
+    | Mapping[
+        WeekdayKey, tuple[HourValue, HourValue] | Sequence[tuple[HourValue, HourValue]]
+    ],
+) -> dict[int, list[tuple[float, float]]]:
+    """Return a dict ``{0..6: [(start, end), ...]}`` from any supported bushours form.
 
+    Accepted forms:
+
+    - ``(start, end)``: single interval applied to all 7 days
+    - ``[(start, end), ...]``: list of intervals applied to all 7 days
+    - ``{weekday: (start, end) | [(start, end), ...]}``: per-day intervals;
+      unspecified weekdays default to ``[(0, 24)]`` for Mon–Fri and ``[]`` for weekends
+    """
+    if isinstance(bushours, dict):
+        int_dict: dict[int, list[tuple[float, float]]] = {}
         for k, v in bushours.items():
             if isinstance(k, str) and k in WEEKDAYS_MAP:
                 weekday = WEEKDAYS_MAP[k]
@@ -65,43 +108,22 @@ def _normalize_bushours(
                 weekday = k
             else:
                 raise ValueError(f"Got {k!r}; expected int 0-6 or name in {WEEKDAYS}")
-            int_dict[weekday] = _coerce_hour_span(
-                cast(tuple[HourValue, HourValue], v),
-                label=f"bushours for {WEEKDAYS[weekday]}",
+            int_dict[weekday] = _coerce_intervals(
+                v, label=f"bushours for {WEEKDAYS[weekday]}"
             )
-        # Unspecified weekdays default to full day; weekends default to closed
-        return {i: int_dict.get(i, (0, 0) if i >= 5 else (0, 24)) for i in range(7)}
+        # Unspecified weekdays: Mon–Fri full day, weekends closed
+        return {i: int_dict.get(i, [] if i >= 5 else [(0.0, 24.0)]) for i in range(7)}
 
-    if isinstance(bushours, (list, tuple)):
-        if len(bushours) == 2 and all(
-            isinstance(x, (int, float, str, dt.time)) for x in bushours
-        ):
-            span = _coerce_hour_span(cast(tuple[HourValue, HourValue], bushours))
-            return {i: span for i in range(7)}
-        if len(bushours) == 7:
-            return {
-                i: _coerce_hour_span(
-                    cast(tuple[HourValue, HourValue], bushours[i]),
-                    label=f"bushours for {WEEKDAYS[i]}",
-                )
-                for i in range(7)
-            }
-
-    raise ValueError(
-        "bushours must be:\n"
-        "  - tuple (start, end): same hours for all days\n"
-        "  - list of 7 (start, end): hours for each weekday (Mon-Sun)\n"
-        "  - dict {weekday: (start, end)}: per-weekday hours (keys: 0-6 or 'Mon'–'Sun')"
-    )
+    # Uniform form: single (start, end) tuple or list of (start, end) tuples
+    intervals = _coerce_intervals(bushours)
+    return {i: intervals for i in range(7)}
 
 
-def _bushours_bounds(
-    bushours_dict: dict[int, tuple[float, float]],
-) -> tuple[NDArray[np.float64], NDArray[np.float64]]:
-    """Return (starts, ends) as arrays of day-fractions (0–1) for all 7 weekdays."""
-    starts = np.array([bushours_dict[i][0] for i in range(7)]) / 24
-    ends = np.array([bushours_dict[i][1] for i in range(7)]) / 24
-    return starts, ends
+def _total_durations(
+    bushours_dict: dict[int, list[tuple[float, float]]],
+) -> NDArray[np.float64]:
+    """Return total active duration as a day-fraction (0–1) for each weekday."""
+    return np.array([sum(e - s for s, e in bushours_dict[i]) / 24.0 for i in range(7)])
 
 
 def _weekday_from_days(days_d64: NDArray[np.datetime64]) -> NDArray[np.int64]:
@@ -147,7 +169,7 @@ def _build_weighted_calendar(
 
 def _datetime_to_busday_float(
     values: ArrayLike,
-    bushours_dict: dict[int, tuple[float, float]],
+    bushours_dict: dict[int, list[tuple[float, float]]],
     calendar_days: NDArray[np.datetime64],
     cumulative: NDArray[np.float64],
     weights: NDArray[np.float64],
@@ -156,15 +178,13 @@ def _datetime_to_busday_float(
     """Convert datetime-like values to business-day floats.
 
     Mapping:
-        business_day_weighted_index + intraday_fraction
+        business_day_weighted_index + compressed_intraday
 
-    The first part corresponds to the cumulative weighted business-day index
-    obtained from a precomputed calendar table. Days with shorter business
-    hours therefore occupy a shorter span on the axis.
-
-    The second part is the intraday fraction, which is defined only inside
-    business hours. Times outside that interval are clipped to the boundaries
-    so that nights collapse to the endpoints of the business session.
+    The first part is a cumulative weighted index from a precomputed calendar
+    table. The second part is the total elapsed active time within the day's
+    session(s), computed as a piecewise-linear compression across all intervals:
+    gaps between intervals (e.g. lunch breaks) are collapsed just like
+    off-hours.
     """
     values = np.asarray(values, dtype="datetime64[ns]")
 
@@ -178,68 +198,81 @@ def _datetime_to_busday_float(
 
     weekday = _weekday_from_days(day)
 
-    _starts, _ends = _bushours_bounds(bushours_dict)
-    bushour_starts = _starts[weekday]
-    bushour_ends = _ends[weekday]
-
-    clipped = np.clip(intraday_fraction, bushour_starts, bushour_ends)
-
-    duration = bushour_ends - bushour_starts
-    normalized = np.divide(
-        clipped - bushour_starts,
-        duration,
-        out=np.zeros_like(intraday_fraction),
-        where=duration > 0,
-    )
+    # Piecewise compression: for each interval (s, e) sum up how much of it
+    # has elapsed by intraday_fraction.  Gaps between intervals collapse to zero.
+    # For each timestamp, compute how much active time has elapsed within the day.
+    # Each interval (s, e) contributes min(max(t - s, 0), e - s): zero before the
+    # interval starts, linear growth while inside it, and capped once past it.
+    # Summing over all intervals gives the total compressed intraday offset.
+    compressed = np.zeros_like(intraday_fraction)
+    for wd in range(7):
+        mask = weekday == wd
+        if not np.any(mask):
+            continue
+        t = intraday_fraction[mask]
+        c = np.zeros_like(t)
+        for s, e in bushours_dict[wd]:
+            s_f, e_f = s / 24.0, e / 24.0
+            c += np.clip(t - s_f, 0.0, e_f - s_f)  # elapsed time within this interval
+        compressed[mask] = c
 
     idx = (day - calendar_days[0]).astype(int)
-
     business_days = cumulative[idx]
     is_busday = np.is_busday(day, **busday_kwargs)
-    intraday = np.where(is_busday, normalized * weights[weekday], 0.0)
+    intraday = np.where(is_busday, compressed, 0.0)
     busday_float = (business_days + intraday).astype(float)
     return busday_float
 
 
 def _busday_float_to_datetime(
     values: ArrayLike,
-    bushours_dict: dict[int, tuple[float, float]],
+    bushours_dict: dict[int, list[tuple[float, float]]],
     calendar_days: NDArray[np.datetime64],
     cumulative: NDArray[np.float64],
     weights: NDArray[np.float64],
 ) -> NDArray[np.datetime64]:
     """Convert business-day floats back to datetime values.
 
-    Note that the transform is not perfectly invertible because
-    timestamps outside business hours are clipped during the forward
-    transformation.
+    Note that the transform is not perfectly invertible because timestamps
+    outside business hours are clipped during the forward transformation.
+    Times in gaps between intervals (e.g. lunch) map to the end of the
+    preceding interval.
     """
     values = np.asarray(values, dtype=float)
 
     original_shape = values.shape
     values_flat = values.ravel()
 
-    _starts, _ends = _bushours_bounds(bushours_dict)
-    durations = _ends - _starts
-
     idx = np.searchsorted(cumulative, values_flat, side="right") - 1
+    idx = np.clip(idx, 0, len(calendar_days) - 1)
 
     date_d = calendar_days[idx]
     weekday = _weekday_from_days(date_d)
 
-    bushour_starts = _starts[weekday]
-    bushour_durations = durations[weekday]
-
     base = cumulative[idx]
 
-    intraday_fraction = np.divide(
-        values_flat - base,
-        weights[weekday],
-        out=np.zeros_like(values_flat),
-        where=weights[weekday] > 0,
-    )
-
-    scaled = bushour_starts + intraday_fraction * bushour_durations
+    # scaled: day-fraction of wall-clock time within the session
+    scaled = np.zeros_like(values_flat)
+    for wd in range(7):
+        mask = weekday == wd
+        if not np.any(mask):
+            continue
+        intervals = bushours_dict[wd]
+        if not intervals:
+            scaled[mask] = 0.0
+            continue
+        # remaining: compressed active-time offset from start of this day
+        remaining = values_flat[mask] - base[mask]
+        result = np.full_like(remaining, intervals[-1][1] / 24.0)
+        found = np.zeros(len(remaining), dtype=bool)
+        for s, e in intervals:
+            s_f, e_f = s / 24.0, e / 24.0
+            dur = e_f - s_f
+            in_this = (~found) & (remaining <= dur)
+            result = np.where(in_this, s_f + remaining, result)
+            found |= in_this
+            remaining = np.where(~found, remaining - dur, remaining)
+        scaled[mask] = result
 
     intraday_seconds = (scaled * 86400.0).astype("int64").astype("timedelta64[s]")
 
@@ -264,7 +297,7 @@ class _BusdayTransformBase(mtransforms.Transform):
 
     def __init__(
         self,
-        bushours_dict: dict[int, tuple[float, float]],
+        bushours_dict: dict[int, list[tuple[float, float]]],
         calendar_days: NDArray[np.datetime64],
         cumulative: NDArray[np.float64],
         weights: NDArray[np.float64],
@@ -358,10 +391,12 @@ class BusdayScale(mscale.ScaleBase):
         Injected automatically by Matplotlib. Do not pass this via
         ``ax.set_xscale``.
     bushours : tuple[HourValue, HourValue]
-                | Sequence[tuple[HourValue, HourValue]]
-                | Mapping[WeekdayKey, tuple[HourValue, HourValue]]
+                | list[tuple[HourValue, HourValue]]
+                | Mapping[WeekdayKey, tuple[HourValue, HourValue]
+                          | list[tuple[HourValue, HourValue]]]
                 , optional
-        Active hours per weekday.
+        Active hours per weekday. Gaps between intervals (e.g. a lunch break)
+        are collapsed on the axis just like overnight gaps or weekends.
 
         ``HourValue`` is ``int | float | str | datetime.time``. Strings must
         be valid ISO time strings (e.g. ``"09:30"``). Numbers are hours since
@@ -369,11 +404,13 @@ class BusdayScale(mscale.ScaleBase):
         ``WeekdayKey`` means either weekday index ``0..6`` or weekday name
         ``"Mon"``..``"Sun"``.
 
-        Three accepted forms:
+        Two accepted forms:
 
-        - ``tuple[HourValue, HourValue]`` = ``(start, end)``:
-            Same session for all days. The weekmask still applies, so
-            off-days (Sat/Sun by default) are collapsed regardless.
+        - ``(start, end)`` or ``[(start, end), ...]``:
+            One or more sessions applied uniformly to all days. A plain
+            ``(start, end)`` tuple is shorthand for a single-element list.
+            Intervals must be sorted and non-overlapping. The weekmask still
+            applies, so off-days (Sat/Sun by default) are collapsed regardless.
             Default ``(0, 24)``.
 
             Example:
@@ -384,52 +421,49 @@ class BusdayScale(mscale.ScaleBase):
             bushours=(dt.time(9), dt.time(17))  # datetime.time objects
             ```
 
+            Multiple intervals — collapse a lunch break:
+
+            ```python
+            bushours=[(9, 12), (13, 17)]
+            ```
+
             To apply also on weekends, use:
 
             ```python
             bushours=(9, 17), weekmask="1111111"  # Mon–Sun
             ```
 
-        - ``Sequence[tuple[HourValue, HourValue]]`` with length 7:
-            One tuple per weekday Monday–Sunday (index 0..6), fully explicit.
-
-            Example:
-
-            ```python
-            bushours=[
-                (9, 17),  # Mon
-                (9, 17),  # Tue
-                (9, 17),  # Wed
-                (9, 17),  # Thu
-                (9, 17),  # Fri
-                (0, 0),   # Sat
-                (0, 0),   # Sun
-            ]
-            ```
-
-        - ``Mapping[WeekdayKey, tuple[HourValue, HourValue]]``:
-            Per-day overrides; keys are ``WeekdayKey`` values
-            (integers ``0..6`` or names ``"Mon"``–``"Sun"``).
+        - ``Mapping[WeekdayKey, (start, end) | [(start, end), ...]]``:
+            Per-day schedule; keys are integers ``0..6`` or names
+            ``"Mon"``–``"Sun"``. Each value is either a single
+            ``(start, end)`` tuple or a list of tuples.
             Defaults for unspecified days:
 
-            | Day  | Key  | Default |
-            |------|------|---------|
-            | Mon  | 0    | `(0, 24)` |
-            | Tue  | 1    | `(0, 24)` |
-            | Wed  | 2    | `(0, 24)` |
-            | Thu  | 3    | `(0, 24)` |
-            | Fri  | 4    | `(0, 24)` |
-            | Sat  | 5    | `(0, 0)`  |
-            | Sun  | 6    | `(0, 0)`  |
+            | Day  | Key  | Default      |
+            |------|------|--------------|
+            | Mon  | 0    | `[(0, 24)]`  |
+            | Tue  | 1    | `[(0, 24)]`  |
+            | Wed  | 2    | `[(0, 24)]`  |
+            | Thu  | 3    | `[(0, 24)]`  |
+            | Fri  | 4    | `[(0, 24)]`  |
+            | Sat  | 5    | `[]`         |
+            | Sun  | 6    | `[]`         |
 
-            The weekmask is derived automatically: days with non-zero hours
-            are treated as business days, so passing ``{"Sun": (10, 18)}``
-            will show Sundays without a separate *weekmask* override.
+            The weekmask is derived automatically: days with at least one
+            interval are treated as business days, so passing
+            ``{"Sun": (10, 18)}`` includes Sundays without a separate
+            *weekmask* override.
 
             Example:
 
             ```python
-            bushours={"Sun": (10, 18)}  # Sundays with custom hours, Weekdays 00-24
+            bushours={"Sun": (10, 18)}  # Sundays with custom hours, weekdays 00-24
+            ```
+
+            Lunch break on Monday, early Friday close:
+
+            ```python
+            bushours={"Mon": [(9, 12), (13, 17)], "Fri": (9, 13)}
             ```
 
             FX Trading Hours:
@@ -446,9 +480,9 @@ class BusdayScale(mscale.ScaleBase):
         Which weekdays are business days (``"1"`` = on, ``"0"`` = off).
         Passed to :func:`numpy.is_busday`. When ``None`` (default):
 
-        - For dict / list-of-7 *bushours*: derived automatically — days with
-          non-zero hours become business days.
-        - For uniform ``(start, end)`` *bushours*: ``"1111100"`` (Mon–Fri).
+        - For dict *bushours*: derived automatically — days with at least one
+          interval become business days.
+        - For uniform *bushours* (tuple or list of tuples): ``"1111100"`` (Mon–Fri).
 
         Use a string of 7 characters (Mon–Sun), a space-separated list of
         three-letter day names, or any format accepted by ``numpy.is_busday``:
@@ -486,12 +520,19 @@ class BusdayScale(mscale.ScaleBase):
 
     Notes
     -----
-    Timestamps outside ``bushours`` are clipped to the nearest session
-    boundary during the forward transform. For example, with
-    ``bushours=(9, 17)``, both 08:30 and 09:00 map to the same axis
-    position (the session open). This means the transform is not perfectly
-    invertible: the inverse transform always returns a time within business
-    hours, even if the original value was outside.
+    - **Clipping:** Timestamps outside ``bushours`` are clipped to the nearest
+      session boundary during the forward transform. For example, with
+      ``bushours=(9, 17)``, both 08:30 and 09:00 map to the same axis
+      position (the session open). With multiple intervals, times in a gap
+      (e.g. during a lunch break) are clipped to the end of the preceding
+      interval. The transform is therefore not perfectly invertible: the
+      inverse always returns a time on a session boundary or within a session.
+    - **Timezone handling:** The scale expects timezone-naive inputs and treats
+      them as wall-clock time. If your data carries timezone info (e.g. a
+      UTC-aware ``pandas.DatetimeIndex``), convert to the market's local
+      timezone and strip the tzinfo before plotting::
+
+          dates = dates_utc.tz_convert("America/New_York").tz_localize(None)
 
     Examples
     --------
@@ -507,10 +548,16 @@ class BusdayScale(mscale.ScaleBase):
     ax.set_xscale("busday", bushours=(9, 17))
     ```
 
-    Per-day hours — Friday early close at 16:00, weekends closed:
+    Collapse a lunch break (12:00–13:00) in addition to overnight gaps:
 
     ```python
-    ax.set_xscale("busday", bushours={"Mon": (9, 17), "Fri": (9, 16)})
+    ax.set_xscale("busday", bushours=[(9, 12), (13, 17)])
+    ```
+
+    Per-day hours — Friday early close, Monday with a lunch break:
+
+    ```python
+    ax.set_xscale("busday", bushours={"Mon": [(9, 12), (13, 17)], "Fri": (9, 13)})
     ```
 
     Show Sundays with custom hours; weekmask derived automatically (Sat excluded):
@@ -557,31 +604,26 @@ class BusdayScale(mscale.ScaleBase):
         axis: Axis,
         bushours: tuple[HourValue, HourValue]
         | Sequence[tuple[HourValue, HourValue]]
-        | Mapping[WeekdayKey, tuple[HourValue, HourValue]] = (0, 24),
+        | Mapping[
+            WeekdayKey,
+            tuple[HourValue, HourValue] | Sequence[tuple[HourValue, HourValue]],
+        ] = (0, 24),
         weekmask: ArrayLike | None = None,
         holidays: ArrayLike | Sequence[str | dt.date | np.datetime64] | None = None,
         busdaycal: np.busdaycalendar | None = None,
     ) -> None:
         self._bushours_dict = _normalize_bushours(bushours)
-        starts, ends = _bushours_bounds(self._bushours_dict)
-        self._weights = ends - starts
+        self._weights = _total_durations(self._bushours_dict)
         busday_kwargs: dict = {}
         if busdaycal is not None:
             busday_kwargs["busdaycal"] = busdaycal
         else:
             if weekmask is None:
-                # Per-day spec (dict or list of 7): derive weekmask from which days
-                # have non-zero hours so callers don't need a separate weekmask arg.
-                # Uniform (start, end) tuple: fall back to Mon–Fri default.
-                is_per_day = isinstance(bushours, dict) or (
-                    isinstance(bushours, (list, tuple)) and len(bushours) == 7
-                )
-                if is_per_day:
+                # Dict form: derive weekmask from which days have active intervals.
+                # Uniform form: default to Mon–Fri.
+                if isinstance(bushours, dict):
                     weekmask = "".join(
-                        "1"
-                        if self._bushours_dict[i][1] > self._bushours_dict[i][0]
-                        else "0"
-                        for i in range(7)
+                        "1" if self._bushours_dict[i] else "0" for i in range(7)
                     )
                 else:
                     weekmask = "1111100"
@@ -610,7 +652,7 @@ class BusdayScale(mscale.ScaleBase):
     def set_default_locators_and_formatters(self, axis: Axis) -> None:
         class _AxisBusdayState(Protocol):
             _busday_kwargs: dict[str, object]
-            _bushours: dict[int, tuple[float, float]]
+            _bushours: dict[int, list[tuple[float, float]]]
 
         axis_state = cast(_AxisBusdayState, axis)
         axis_state._busday_kwargs = self._busday_kwargs.copy()
