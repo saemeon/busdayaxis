@@ -21,6 +21,10 @@ from ._locator import (
 from ._scale import BusdayScale, register_scale
 from ._utils import holidays_from_exchange, mark_gaps
 
+# Register the scale automatically so users don't need to call register_scale()
+# explicitly. The call is idempotent, so explicit calls in existing code still work.
+register_scale()
+
 __all__ = [
     "__version__",
     "BusdayScale",

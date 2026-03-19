@@ -24,6 +24,23 @@ _DEFAULT_BUSHOURS: dict[int, list[tuple[float, float]]] = {
 }
 
 
+def _require_bushours(axis: AxisLike) -> dict[int, list[tuple[float, float]]]:
+    """Return the ``_bushours`` dict from *axis*, raising if it is a real axis
+    without a busday scale.
+
+    Matplotlib's ``_DummyAxis`` (used internally before a locator is attached)
+    does not have ``get_scale``, so it passes through silently with the default.
+    A real ``Axis`` that lacks ``_bushours`` has a non-busday scale — raise.
+    """
+    is_real_axis = axis is not None and hasattr(axis, "get_scale")
+    if is_real_axis and not hasattr(axis, "_bushours"):
+        raise ValueError(
+            "BusdayLocator requires a 'busday' scale axis. "
+            "Call ax.set_xscale('busday', ...) before setting the locator."
+        )
+    return getattr(axis, "_bushours", _DEFAULT_BUSHOURS)
+
+
 class BusdayLocator(mdates.DateLocator):
     """Tick locator that filters out ticks outside business hours and business days.
 
@@ -34,8 +51,8 @@ class BusdayLocator(mdates.DateLocator):
     axis automatically (set by ``BusdayScale``), so it stays in sync with the
     scale without any extra configuration.
 
-    ``BusdayLocator`` is set automatically when you call
-    ``ax.set_xscale("busday")``.
+    The ``"busday"`` scale is registered automatically on ``import busdayaxis``.
+    ``BusdayLocator`` is set automatically when you call ``ax.set_xscale("busday")``.
 
     Parameters
     ----------
@@ -96,7 +113,7 @@ class BusdayLocator(mdates.DateLocator):
         )
         frac = intraday_s / 86400.0
 
-        bushours_dict = getattr(self.axis, "_bushours", _DEFAULT_BUSHOURS)
+        bushours_dict = _require_bushours(self.axis)
 
         within_hours = np.zeros(len(ticks_arr), dtype=bool)
         for wd in range(7):
@@ -270,7 +287,7 @@ class MidBusdayLocator(mdates.DateLocator):
         if len(busdays) == 0:
             return []
 
-        bushours_dict = getattr(self.axis, "_bushours", _DEFAULT_BUSHOURS)
+        bushours_dict = _require_bushours(self.axis)
         weekday = (busdays.view("int64") + 3) % 7  # epoch (1970-01-01) was Thursday = 3
 
         # Midpoint between the first interval's start and the last interval's end

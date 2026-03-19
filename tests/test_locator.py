@@ -156,10 +156,9 @@ def test_locator_delegate_methods():
 
     busdayaxis.register_scale()
     dates = pd.date_range("2025-01-06", periods=5, freq="D")
-    # Use a linear-scale axis so axis limits stay in matplotlib date space,
-    # which datalim_to_dt / viewlim_to_dt require.
     fig, ax = plt.subplots()
     ax.plot(dates, range(5))
+    ax.set_xscale("busday")
 
     locator = busdayaxis.BusdayLocator(mdates.DayLocator())
     locator.set_axis(ax.xaxis)
@@ -175,6 +174,21 @@ def test_locator_delegate_methods():
     assert locator._get_interval() is not None
     assert locator() is not None
 
+    plt.close(fig)
+
+
+def test_locator_raises_on_non_busday_axis():
+    """BusdayLocator raises ValueError when attached to a non-busday axis."""
+    import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+
+    import busdayaxis
+
+    fig, ax = plt.subplots()  # default linear scale
+    locator = busdayaxis.BusdayLocator(mdates.DayLocator())
+    locator.set_axis(ax.xaxis)
+    with pytest.raises(ValueError, match="busday"):
+        locator()
     plt.close(fig)
 
 

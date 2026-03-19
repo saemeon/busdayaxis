@@ -113,16 +113,12 @@ There are two equivalent ways to apply the scale:
 
 ### String-based
 
-Requires a prior call to `busdayaxis.register_scale()`.
-
 Pass the registered name `"busday"` to `set_xscale` along with keyword arguments taken by [`BusdayScale`](api.md#busdayaxis.BusdayScale). The `axis` parameter is excluded as it is automatically provided by the `ax.set_xscale()` call.
 
 ```python
 import datetime
 import matplotlib.pyplot as plt
-import busdayaxis
-
-busdayaxis.register_scale()  # register once at the start of your script
+import busdayaxis  # scale is registered automatically on import
 
 fig, ax = plt.subplots()
 ax.plot(dates, values)

@@ -34,8 +34,10 @@ def holidays_from_exchange(calendar, start, end) -> list[str]:
     Parameters
     ----------
     calendar : exchange_calendars or pandas_market_calendars calendar
-        Any object that exposes a ``schedule()`` method returning a
-        DataFrame whose index contains the trading dates.
+        Any object that exposes either a ``schedule()`` method returning a
+        DataFrame (``pandas_market_calendars`` style) or a
+        ``sessions_in_range()`` method returning a ``DatetimeIndex``
+        (``exchange_calendars`` style).
     start, end : str or datetime-like
         Inclusive date range to scan (e.g. ``"2024-01-01"``).
 

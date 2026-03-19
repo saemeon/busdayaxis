@@ -379,11 +379,10 @@ class BusdayScale(mscale.ScaleBase):
     the defined schedule are collapsed so that every visible unit on the axis
     corresponds to active time.
 
-    Registered as the ``"busday"`` scale by
-    [`busdayaxis.register_scale()`](https://saemeon.github.io/busdayaxis/api/#busdayaxis.register_scale).
-    After registration, all parameters below **except** ``axis`` can be passed
-    directly to ``ax.set_xscale("busday", ...)``. ``axis`` is injected
-    automatically by Matplotlib and must not be passed explicitly.
+    Registered as the ``"busday"`` scale automatically on ``import busdayaxis``.
+    All parameters below **except** ``axis`` can be passed directly to
+    ``ax.set_xscale("busday", ...)``. ``axis`` is injected automatically by
+    Matplotlib and must not be passed explicitly.
 
     Parameters
     ----------
@@ -680,10 +679,13 @@ class BusdayScale(mscale.ScaleBase):
 def register_scale() -> None:
     """Register the ``"busday"`` scale with Matplotlib.
 
-    Call this once before any plotting code. After registration,
-    ``ax.set_xscale("busday", ...)`` is available for the lifetime of the
-    Python session. The keyword arguments ``bushours``, ``weekmask``,
-    ``holidays``, and ``busdaycal`` are forwarded directly to
+    Called automatically on ``import busdayaxis``, so explicit calls are
+    not required. The function is idempotent — calling it again has no effect
+    and existing code that calls it explicitly continues to work.
+
+    After registration, ``ax.set_xscale("busday", ...)`` is available for the
+    lifetime of the Python session. The keyword arguments ``bushours``,
+    ``weekmask``, ``holidays``, and ``busdaycal`` are forwarded directly to
     [`busdayaxis.BusdayScale`](https://saemeon.github.io/busdayaxis/api/#busdayaxis.BusdayScale);
     ``axis`` is injected by Matplotlib automatically and cannot be passed.
 
@@ -691,11 +693,9 @@ def register_scale() -> None:
     --------
 
     ```python
-    import busdayaxis
+    import busdayaxis          # scale is registered automatically
     import matplotlib.pyplot as plt
     import pandas as pd
-
-    busdayaxis.register_scale()  # register once
 
     dates = pd.date_range("2025-01-01", periods=10, freq="D")
     values = range(10)

@@ -277,3 +277,30 @@ def test_mark_gaps_size_kwarg():
     artists = mark_gaps(ax, style="broken", size=14)
     assert len(artists) > 0
     plt.close(fig)
+
+
+def test_mark_gaps_default_scale_only_weekend_gaps():
+    """Default scale (no bushours) marks only the weekend gap, not every midnight.
+
+    With bushours=(0, 24), Mon 24:00 == Tue 00:00 so no gap exists between
+    consecutive weekdays. Only the Fri→Mon gap is a real gap.
+    The view runs Mon Jan 6 → Mon Jan 13 so Fri's close (Sat 00:00) is in range.
+    """
+    import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    busdayaxis.register_scale()
+    dates = pd.date_range("2025-01-06", periods=10 * 24, freq="h")  # Mon–Fri + weekend
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(len(dates)))
+    ax.set_xscale("busday")
+    # Extend view to next Monday so the weekend close (Sat 00:00) is in range
+    ax.set_xlim(
+        mdates.date2num(pd.Timestamp("2025-01-06")),
+        mdates.date2num(pd.Timestamp("2025-01-13")),
+    )
+    artists = mark_gaps(ax)
+    # Only Fri's close (= Sat 00:00) is a real gap — Mon–Thu closes are zero-width
+    assert len(artists) == 1
+    plt.close(fig)

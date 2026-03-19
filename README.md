@@ -28,9 +28,7 @@ pip install busdayaxis
 ```python
 import matplotlib.pyplot as plt
 import pandas as pd
-import busdayaxis
-
-busdayaxis.register_scale()  # register once at the start of your script
+import busdayaxis  # scale is registered automatically on import
 
 dates = pd.date_range("2026-01-01", periods=10, freq="B")
 values = range(len(dates))
