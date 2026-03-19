@@ -19,6 +19,7 @@ from ._locator import (
     WeekdayLocator,
 )
 from ._scale import BusdayScale, register_scale
+from ._utils import holidays_from_exchange, mark_gaps
 
 __all__ = [
     "__version__",
@@ -33,4 +34,6 @@ __all__ = [
     "MicrosecondLocator",
     "MidBusdayLocator",
     "register_scale",
+    "holidays_from_exchange",
+    "mark_gaps",
 ]

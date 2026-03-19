@@ -54,6 +54,10 @@ Time series that only evolve on business days — prices, signals, operational m
 
 - `MidBusdayLocator` to place a tick at the midpoint of each business session, useful for centering day labels
 
+- `mark_gaps` to draw visual indicators (vlines or broken-axis slash marks) at every session boundary on a busday axis
+
+- `holidays_from_exchange` to build the `holidays=` list automatically from any `exchange_calendars` or `pandas_market_calendars` calendar object
+
 ## Under the Hood
 
 - ``matplotlib`` internally handles dates as floating-point numbers representing **days since 1970-01-01**, or stated alternatively, as
@@ -220,6 +224,30 @@ ax.xaxis.set_minor_locator(busdayaxis.MidBusdayLocator())
 ax.xaxis.set_minor_formatter(mdates.DateFormatter("%a"))
 ```
 
+
+### Marking gap boundaries
+
+`mark_gaps` draws a visual indicator at every point where the axis collapses a gap — end of session, overnight, weekend, or holiday. Three styles are available:
+
+```python
+busdayaxis.mark_gaps(ax)                        # "vline": thin dashed vertical line (default)
+busdayaxis.mark_gaps(ax, style="broken")        # diagonal slash marks at top and bottom
+busdayaxis.mark_gaps(ax, style="both")          # vline + slash marks combined
+busdayaxis.mark_gaps(ax, color="steelblue", alpha=0.4)  # keyword args forwarded to artists
+```
+
+### Holidays from an exchange calendar
+
+`holidays_from_exchange` extracts the `holidays=` list from any `exchange_calendars` or `pandas_market_calendars` calendar object — no manual date maintenance needed:
+
+```python
+import pandas_market_calendars as mcal   # or: import exchange_calendars as xcals
+import busdayaxis
+
+cal = mcal.get_calendar("NYSE")          # or: xcals.get_calendar("XNYS")
+holidays = busdayaxis.holidays_from_exchange(cal, "2025-01-01", "2025-12-31")
+ax.set_xscale("busday", holidays=holidays)
+```
 
 ## License
 

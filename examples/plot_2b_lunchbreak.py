@@ -81,10 +81,6 @@ ax2.set_title("Business Time (scale='busday', bushours=[(9, 12), (13, 17)])")
 ax2.set_ylabel("Price")
 ax2.tick_params(axis="x", rotation=90)
 
-for d in full_days:
-    for hour in (MORNING_OPEN, MORNING_CLOSE, AFTERNOON_OPEN, AFTERNOON_CLOSE):
-        ax2.axvline(
-            d + pd.Timedelta(hours=hour), linestyle="--", linewidth=0.8, alpha=0.6
-        )
+busdayaxis.mark_gaps(ax2, alpha=0.6)
 
 _ = plt.tight_layout(rect=[0, 0, 1, 0.96])

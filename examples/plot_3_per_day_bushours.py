@@ -87,10 +87,6 @@ for d in full_days:
         alpha=0.15,
         linewidth=0,
     )
-# Mark open/close boundaries
-for d in full_days:
-    close = close_per_wd[d.weekday()]
-    ax2.axvline(d + pd.Timedelta(hours=OPEN), linestyle="--", linewidth=0.8, alpha=0.6)
-    ax2.axvline(d + pd.Timedelta(hours=close), linestyle="--", linewidth=0.8, alpha=0.6)
+busdayaxis.mark_gaps(ax2, alpha=0.6)
 
 _ = plt.tight_layout(rect=[0, 0, 1, 0.96])

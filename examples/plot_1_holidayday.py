@@ -7,6 +7,16 @@ Core code:
 ```python
 ax.set_xscale("busday", holidays=["2025-01-06"])
 ```
+
+To build a ``holidays`` list from a real exchange calendar (``exchange_calendars``
+or ``pandas_market_calendars``), use [`busdayaxis.holidays_from_exchange`](https://saemeon.github.io/busdayaxis/api/#busdayaxis.holidays_from_exchange):
+
+```python
+import exchange_calendars as xcals
+cal = xcals.get_calendar("XNYS")
+holidays = busdayaxis.holidays_from_exchange(cal, "2025-01-01", "2025-12-31")
+ax.set_xscale("busday", holidays=holidays)
+```
 """
 
 # %%

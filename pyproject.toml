@@ -29,13 +29,20 @@ Homepage = "https://saemeon.github.io/busdayaxis/"
 Repository = "https://github.com/saemeon/busdayaxis"
 
 [dependency-groups]
-test = ["pandas", "pytest", "pytest-cov"]
+test = [
+    "exchange-calendars>=4.5.6",
+    "pandas",
+    "pandas-market-calendars>=5.2.4",
+    "pytest",
+    "pytest-cov",
+]
 doc = [
     "mkdocs",
     "mkdocs-material",
     "mkdocs-gallery",
     "mkdocstrings[python]",
     "mike",
+    "pandas-market-calendars>=5.2.4",
 ]
 dev = [
     "ruff",

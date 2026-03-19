@@ -85,11 +85,7 @@ ax4.xaxis.set_major_formatter(mdates.DateFormatter("%a %d %b"))
 ax2.set_xscale("busday")
 ax4.set_xscale("busday")
 
-for d in full_days:
-    if d.weekday() == 5:  # Saturday
-        ax2.axvline(d, linestyle="--", linewidth=0.8, alpha=0.6)
-        ax2.axvline(d + pd.Timedelta(days=2), linestyle="--", linewidth=0.8, alpha=0.6)
-        ax4.axvline(d, linestyle="--", linewidth=0.8, alpha=0.6)
-        ax4.axvline(d + pd.Timedelta(days=2), linestyle="--", linewidth=0.8, alpha=0.6)
+busdayaxis.mark_gaps(ax2, alpha=0.6)
+busdayaxis.mark_gaps(ax4, alpha=0.6)
 
 _ = plt.tight_layout(rect=[0, 0, 1, 0.96])

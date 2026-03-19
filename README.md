@@ -65,6 +65,10 @@ Time series that only evolve on business days — prices, signals, operational m
 
 - `MidBusdayLocator` to place a tick at the midpoint of each business session, useful for centering day labels
 
+- `mark_gaps` to draw visual indicators (vlines or broken-axis slash marks) at every session boundary on a busday axis
+
+- `holidays_from_exchange` to build the `holidays=` list automatically from any `exchange_calendars` or `pandas_market_calendars` calendar object
+
 ## Under the Hood
 
 - ``matplotlib`` internally handles dates as floating-point numbers representing **days since 1970-01-01**, or stated alternatively, as

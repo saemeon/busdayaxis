@@ -22,3 +22,12 @@
         - MinuteLocator
         - SecondLocator
         - WeekdayLocator
+
+## Utilities
+
+::: busdayaxis
+    options:
+      show_source: false
+      members:
+        - mark_gaps
+        - holidays_from_exchange
