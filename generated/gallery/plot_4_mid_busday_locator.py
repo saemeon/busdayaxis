@@ -20,8 +20,6 @@ import pandas as pd
 
 import busdayaxis
 
-busdayaxis.register_scale()
-
 # define dummy data
 OPEN = 9
 CLOSE = 17

@@ -23,8 +23,6 @@ import pandas as pd
 
 import busdayaxis
 
-busdayaxis.register_scale()
-
 dates = pd.bdate_range("2025-01-01", periods=20)
 returns = np.random.default_rng(42).normal(0, 0.01, len(dates))
 

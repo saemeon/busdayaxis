@@ -19,8 +19,6 @@ import pandas as pd
 
 import busdayaxis
 
-busdayaxis.register_scale()
-
 # prepare dummy data
 num_days = 13
 dates = pd.date_range("2025-01-02", periods=num_days * 24, freq="h")
@@ -51,11 +49,7 @@ full_days = pd.date_range(dates.min().normalize(), dates.max().normalize(), freq
 for d in full_days:
     if d.weekday() == 5:  # Saturday
         ax1.axvspan(d, d + pd.Timedelta(days=2), color="grey", alpha=0.15, linewidth=0)
-# Mark weekend boundaries on business scale
-for d in full_days:
-    if d.weekday() == 5:
-        ax2.axvline(d, linestyle="--", linewidth=0.8, alpha=0.6)
-        ax2.axvline(d + pd.Timedelta(days=2), linestyle="--", linewidth=0.8, alpha=0.6)
+busdayaxis.mark_gaps(ax2, alpha=0.6)
 
 
 _ = plt.tight_layout(rect=[0, 0, 1, 0.96])
@@ -86,11 +80,7 @@ full_days = pd.date_range(dates.min().normalize(), dates.max().normalize(), freq
 for d in full_days:
     if d.weekday() == 5:  # Saturday
         ax1.axvspan(d, d + pd.Timedelta(days=2), color="grey", alpha=0.15, linewidth=0)
-# Mark weekend boundaries on business scale
-for d in full_days:
-    if d.weekday() == 5:
-        ax2.axvline(d, linestyle="--", linewidth=0.8, alpha=0.6)
-        ax2.axvline(d + pd.Timedelta(days=2), linestyle="--", linewidth=0.8, alpha=0.6)
+busdayaxis.mark_gaps(ax2, alpha=0.6)
 
 plt.tight_layout(rect=[0, 0, 1, 1])
 _ = plt.savefig("../docs/assets/remove_weekend.png", dpi=300)

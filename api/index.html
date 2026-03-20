@@ -510,6 +510,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#utilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Utilities
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Utilities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.mark_gaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mark_gaps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.holidays_from_exchange" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        holidays_from_exchange
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -594,6 +633,12 @@
   
     
     
+      
+        
+      
+        
+      
+        
       
         
       
@@ -744,6 +789,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../generated/gallery/plot_1b_holidays_from_exchange/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Holidays from Exchange Calendar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../generated/gallery/plot_2_bushours/" class="md-nav__link">
         
   
@@ -752,6 +825,34 @@
     
   
     Uniform Business Hours For All Busdays
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/plot_2b_lunchbreak/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multiple Intervals Per Day (Lunch Break)
   
 
     
@@ -892,6 +993,34 @@
     
   
     Under the Hood
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/plot_8_mark_gaps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mark Gap Boundaries
   
 
     
@@ -1414,6 +1543,45 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#utilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Utilities
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Utilities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.mark_gaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mark_gaps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.holidays_from_exchange" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        holidays_from_exchange
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1497,11 +1665,10 @@
 <p>Maps datetime values to business-day coordinates. Days and hours outside
 the defined schedule are collapsed so that every visible unit on the axis
 corresponds to active time.</p>
-<p>Registered as the <code>"busday"</code> scale by
-<a href="https://saemeon.github.io/busdayaxis/api/#busdayaxis.register_scale"><code>busdayaxis.register_scale()</code></a>.
-After registration, all parameters below <strong>except</strong> <code>axis</code> can be passed
-directly to <code>ax.set_xscale("busday", ...)</code>. <code>axis</code> is injected
-automatically by Matplotlib and must not be passed explicitly.</p>
+<p>Registered as the <code>"busday"</code> scale automatically on <code>import busdayaxis</code>.
+All parameters below <strong>except</strong> <code>axis</code> can be passed directly to
+<code>ax.set_xscale("busday", ...)</code>. <code>axis</code> is injected automatically by
+Matplotlib and must not be passed explicitly.</p>
 
 
 <table>
@@ -1535,51 +1702,44 @@ automatically by Matplotlib and must not be passed explicitly.</p>
             </td>
             <td class="doc-param-details">
               <div class="doc-md-description">
-                <div class="highlight"><pre><span></span><code>    | Sequence[tuple[HourValue, HourValue]]
-    | Mapping[WeekdayKey, tuple[HourValue, HourValue]]
+                <div class="highlight"><pre><span></span><code>    | list[tuple[HourValue, HourValue]]
+    | Mapping[WeekdayKey, tuple[HourValue, HourValue]
+              | list[tuple[HourValue, HourValue]]]
     , optional
 </code></pre></div>
-<p>Active hours per weekday.</p>
+<p>Active hours per weekday. Gaps between intervals (e.g. a lunch break)
+are collapsed on the axis just like overnight gaps or weekends.</p>
 <p><code>HourValue</code> is <code>int | float | str | datetime.time</code>. Strings must
 be valid ISO time strings (e.g. <code>"09:30"</code>). Numbers are hours since
 midnight (e.g. <code>9.5</code> = 09:30).
 <code>WeekdayKey</code> means either weekday index <code>0..6</code> or weekday name
 <code>"Mon"</code>..<code>"Sun"</code>.</p>
-<p>Three accepted forms:</p>
+<p>Two accepted forms:</p>
 <ul>
 <li>
-<p><code>tuple[HourValue, HourValue]</code> = <code>(start, end)</code>:
-    Same session for all days. The weekmask still applies, so
-    off-days (Sat/Sun by default) are collapsed regardless.
+<p><code>(start, end)</code> or <code>[(start, end), ...]</code>:
+    One or more sessions applied uniformly to all days. A plain
+    <code>(start, end)</code> tuple is shorthand for a single-element list.
+    Intervals must be sorted and non-overlapping. The weekmask still
+    applies, so off-days (Sat/Sun by default) are collapsed regardless.
     Default <code>(0, 24)</code>.</p>
 <p>Example:</p>
 <div class="highlight"><pre><span></span><code><span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">)</span>                    <span class="c1"># numeric hours</span>
 <span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;09:00&quot;</span><span class="p">,</span> <span class="s2">&quot;17:00&quot;</span><span class="p">)</span>         <span class="c1"># ISO time strings</span>
 <span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span> <span class="n">dt</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="mi">17</span><span class="p">))</span>  <span class="c1"># datetime.time objects</span>
 </code></pre></div>
+<p>Multiple intervals — collapse a lunch break:</p>
+<div class="highlight"><pre><span></span><code><span class="n">bushours</span><span class="o">=</span><span class="p">[(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">17</span><span class="p">)]</span>
+</code></pre></div>
 <p>To apply also on weekends, use:</p>
 <div class="highlight"><pre><span></span><code><span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span> <span class="n">weekmask</span><span class="o">=</span><span class="s2">&quot;1111111&quot;</span>  <span class="c1"># Mon–Sun</span>
 </code></pre></div>
 </li>
 <li>
-<p><code>Sequence[tuple[HourValue, HourValue]]</code> with length 7:
-    One tuple per weekday Monday–Sunday (index 0..6), fully explicit.</p>
-<p>Example:</p>
-<div class="highlight"><pre><span></span><code><span class="n">bushours</span><span class="o">=</span><span class="p">[</span>
-    <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span>  <span class="c1"># Mon</span>
-    <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span>  <span class="c1"># Tue</span>
-    <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span>  <span class="c1"># Wed</span>
-    <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span>  <span class="c1"># Thu</span>
-    <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span>  <span class="c1"># Fri</span>
-    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>   <span class="c1"># Sat</span>
-    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>   <span class="c1"># Sun</span>
-<span class="p">]</span>
-</code></pre></div>
-</li>
-<li>
-<p><code>Mapping[WeekdayKey, tuple[HourValue, HourValue]]</code>:
-    Per-day overrides; keys are <code>WeekdayKey</code> values
-    (integers <code>0..6</code> or names <code>"Mon"</code>–<code>"Sun"</code>).
+<p><code>Mapping[WeekdayKey, (start, end) | [(start, end), ...]]</code>:
+    Per-day schedule; keys are integers <code>0..6</code> or names
+    <code>"Mon"</code>–<code>"Sun"</code>. Each value is either a single
+    <code>(start, end)</code> tuple or a list of tuples.
     Defaults for unspecified days:</p>
 <table>
 <thead>
@@ -1593,45 +1753,49 @@ midnight (e.g. <code>9.5</code> = 09:30).
 <tr>
 <td>Mon</td>
 <td>0</td>
-<td><code>(0, 24)</code></td>
+<td><code>[(0, 24)]</code></td>
 </tr>
 <tr>
 <td>Tue</td>
 <td>1</td>
-<td><code>(0, 24)</code></td>
+<td><code>[(0, 24)]</code></td>
 </tr>
 <tr>
 <td>Wed</td>
 <td>2</td>
-<td><code>(0, 24)</code></td>
+<td><code>[(0, 24)]</code></td>
 </tr>
 <tr>
 <td>Thu</td>
 <td>3</td>
-<td><code>(0, 24)</code></td>
+<td><code>[(0, 24)]</code></td>
 </tr>
 <tr>
 <td>Fri</td>
 <td>4</td>
-<td><code>(0, 24)</code></td>
+<td><code>[(0, 24)]</code></td>
 </tr>
 <tr>
 <td>Sat</td>
 <td>5</td>
-<td><code>(0, 0)</code></td>
+<td><code>[]</code></td>
 </tr>
 <tr>
 <td>Sun</td>
 <td>6</td>
-<td><code>(0, 0)</code></td>
+<td><code>[]</code></td>
 </tr>
 </tbody>
 </table>
-<p>The weekmask is derived automatically: days with non-zero hours
-are treated as business days, so passing <code>{"Sun": (10, 18)}</code>
-will show Sundays without a separate <em>weekmask</em> override.</p>
+<p>The weekmask is derived automatically: days with at least one
+interval are treated as business days, so passing
+<code>{"Sun": (10, 18)}</code> includes Sundays without a separate
+<em>weekmask</em> override.</p>
 <p>Example:</p>
-<div class="highlight"><pre><span></span><code><span class="n">bushours</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Sun&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">18</span><span class="p">)}</span>  <span class="c1"># Sundays with custom hours, Weekdays 00-24</span>
+<div class="highlight"><pre><span></span><code><span class="n">bushours</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Sun&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">18</span><span class="p">)}</span>  <span class="c1"># Sundays with custom hours, weekdays 00-24</span>
+</code></pre></div>
+<p>Lunch break on Monday, early Friday close:</p>
+<div class="highlight"><pre><span></span><code><span class="n">bushours</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Mon&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">17</span><span class="p">)],</span> <span class="s2">&quot;Fri&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">13</span><span class="p">)}</span>
 </code></pre></div>
 <p>FX Trading Hours:</p>
 <div class="highlight"><pre><span></span><code><span class="n">bushours</span><span class="o">=</span><span class="p">{</span>
@@ -1664,9 +1828,9 @@ will show Sundays without a separate <em>weekmask</em> override.</p>
                 <p>Which weekdays are business days (<code>"1"</code> = on, <code>"0"</code> = off).
 Passed to :func:<code>numpy.is_busday</code>. When <code>None</code> (default):</p>
 <ul>
-<li>For dict / list-of-7 <em>bushours</em>: derived automatically — days with
-  non-zero hours become business days.</li>
-<li>For uniform <code>(start, end)</code> <em>bushours</em>: <code>"1111100"</code> (Mon–Fri).</li>
+<li>For dict <em>bushours</em>: derived automatically — days with at least one
+  interval become business days.</li>
+<li>For uniform <em>bushours</em> (tuple or list of tuples): <code>"1111100"</code> (Mon–Fri).</li>
 </ul>
 <p>Use a string of 7 characters (Mon–Sun), a space-separated list of
 three-letter day names, or any format accepted by <code>numpy.is_busday</code>:</p>
@@ -1747,12 +1911,22 @@ it does not affect <em>bushours</em>. The two parameters are independent.</p>
 
 <details class="note" open>
   <summary>Notes</summary>
-  <p>Timestamps outside <code>bushours</code> are clipped to the nearest session
-boundary during the forward transform. For example, with
-<code>bushours=(9, 17)</code>, both 08:30 and 09:00 map to the same axis
-position (the session open). This means the transform is not perfectly
-invertible: the inverse transform always returns a time within business
-hours, even if the original value was outside.</p>
+  <ul>
+<li><strong>Clipping:</strong> Timestamps outside <code>bushours</code> are clipped to the nearest
+  session boundary during the forward transform. For example, with
+  <code>bushours=(9, 17)</code>, both 08:30 and 09:00 map to the same axis
+  position (the session open). With multiple intervals, times in a gap
+  (e.g. during a lunch break) are clipped to the end of the preceding
+  interval. The transform is therefore not perfectly invertible: the
+  inverse always returns a time on a session boundary or within a session.</li>
+<li>
+<p><strong>Timezone handling:</strong> The scale expects timezone-naive inputs and treats
+  them as wall-clock time. If your data carries timezone info (e.g. a
+  UTC-aware <code>pandas.DatetimeIndex</code>), convert to the market's local
+  timezone and strip the tzinfo before plotting::</p>
+<p>dates = dates_utc.tz_convert("America/New_York").tz_localize(None)</p>
+</li>
+</ul>
 </details>
 
 <p><span class="doc-section-title">Examples:</span></p>
@@ -1762,8 +1936,11 @@ hours, even if the original value was outside.</p>
 <p>Compress overnight gaps as well as weekends:</p>
 <div class="highlight"><pre><span></span><code><span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">))</span>
 </code></pre></div>
-<p>Per-day hours — Friday early close at 16:00, weekends closed:</p>
-<div class="highlight"><pre><span></span><code><span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Mon&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span> <span class="s2">&quot;Fri&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">16</span><span class="p">)})</span>
+<p>Collapse a lunch break (12:00–13:00) in addition to overnight gaps:</p>
+<div class="highlight"><pre><span></span><code><span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">[(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">17</span><span class="p">)])</span>
+</code></pre></div>
+<p>Per-day hours — Friday early close, Monday with a lunch break:</p>
+<div class="highlight"><pre><span></span><code><span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Mon&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">17</span><span class="p">)],</span> <span class="s2">&quot;Fri&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">13</span><span class="p">)})</span>
 </code></pre></div>
 <p>Show Sundays with custom hours; weekmask derived automatically (Sat excluded):</p>
 <div class="highlight"><pre><span></span><code><span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Sun&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">18</span><span class="p">)})</span>
@@ -1831,20 +2008,20 @@ hours, even if the original value was outside.</p>
     <div class="doc doc-contents ">
 
         <p>Register the <code>"busday"</code> scale with Matplotlib.</p>
-<p>Call this once before any plotting code. After registration,
-<code>ax.set_xscale("busday", ...)</code> is available for the lifetime of the
-Python session. The keyword arguments <code>bushours</code>, <code>weekmask</code>,
-<code>holidays</code>, and <code>busdaycal</code> are forwarded directly to
+<p>Called automatically on <code>import busdayaxis</code>, so explicit calls are
+not required. The function is idempotent — calling it again has no effect
+and existing code that calls it explicitly continues to work.</p>
+<p>After registration, <code>ax.set_xscale("busday", ...)</code> is available for the
+lifetime of the Python session. The keyword arguments <code>bushours</code>,
+<code>weekmask</code>, <code>holidays</code>, and <code>busdaycal</code> are forwarded directly to
 <a href="https://saemeon.github.io/busdayaxis/api/#busdayaxis.BusdayScale"><code>busdayaxis.BusdayScale</code></a>;
 <code>axis</code> is injected by Matplotlib automatically and cannot be passed.</p>
 
 
 <p><span class="doc-section-title">Examples:</span></p>
-    <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">busdayaxis</span>
+    <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">busdayaxis</span>          <span class="c1"># scale is registered automatically</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-
-<span class="n">busdayaxis</span><span class="o">.</span><span class="n">register_scale</span><span class="p">()</span>  <span class="c1"># register once</span>
 
 <span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s2">&quot;2025-01-01&quot;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
 <span class="n">values</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
@@ -1919,8 +2096,8 @@ non-business days or outside the active session defined by <code>bushours</code>
 <p>The locator reads the business-hours and weekmask configuration from the
 axis automatically (set by <code>BusdayScale</code>), so it stays in sync with the
 scale without any extra configuration.</p>
-<p><code>BusdayLocator</code> is set automatically when you call
-<code>ax.set_xscale("busday")</code>.</p>
+<p>The <code>"busday"</code> scale is registered automatically on <code>import busdayaxis</code>.
+<code>BusdayLocator</code> is set automatically when you call <code>ax.set_xscale("busday")</code>.</p>
 
 
 <table>
@@ -2397,6 +2574,312 @@ because weekday ticks are placed at day boundaries.</p>
 
 </div>
 
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="utilities">Utilities<a class="headerlink" href="#utilities" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="busdayaxis.mark_gaps" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">mark_gaps</span>
+
+
+<a href="#busdayaxis.mark_gaps" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">mark_gaps</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;vline&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Mark session-boundary gaps on a <code>"busday"</code>-scale axis.</p>
+<p>Draws a visual indicator at every point where the axis collapses a gap
+(end of a session, overnight, weekend, holiday). Useful for signalling
+to the reader that time has been removed.</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">PARAMETER</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>ax</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Axis that must already use the <code>"busday"</code> scale.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="matplotlib">matplotlib</span>.<span title="matplotlib.axes">axes</span>.<span title="matplotlib.axes.Axes">Axes</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>style</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Visual style:</p>
+<ul>
+<li><code>"vline"</code> — a thin vertical line at each seam.</li>
+<li><code>"broken"</code> — two diagonal slash marks at the top and bottom of
+  the axes at each seam (traditional broken-axis convention).</li>
+<li><code>"both"</code> — vline and broken marks combined.</li>
+</ul>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code>(&#39;vline&#39;, &#39;broken&#39;, &#39;both&#39;)</code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>&#34;vline&#34;</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>**kwargs</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Forwarded to the underlying artists. Useful keys:</p>
+<ul>
+<li><code>color</code> (default <code>"gray"</code> for vline, <code>"k"</code> for broken)</li>
+<li><code>linewidth</code> (default <code>0.8</code> for vline, <code>1.5</code> for broken)</li>
+<li><code>linestyle</code> — vline only (default <code>"--"</code>)</li>
+<li><code>alpha</code></li>
+<li><code>zorder</code></li>
+<li><code>size</code> — broken only, size of the slash marks in points
+  (default <code>10</code>)</li>
+</ul>
+              </div>
+              <p>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>{}</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">RETURNS</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <span class="doc-returns-annotation">
+                    <code>list of matplotlib artists</code>
+                </span>
+            </td>
+            <td class="doc-returns-details">
+              <div class="doc-md-description">
+                <p>All artists added to the axes, so the caller can adjust them later.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <div class="highlight"><pre><span></span><code><span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">))</span>
+<span class="n">busdayaxis</span><span class="o">.</span><span class="n">mark_gaps</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>                          <span class="c1"># thin dashed vlines</span>
+<span class="n">busdayaxis</span><span class="o">.</span><span class="n">mark_gaps</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;broken&quot;</span><span class="p">)</span>          <span class="c1"># slash marks only</span>
+<span class="n">busdayaxis</span><span class="o">.</span><span class="n">mark_gaps</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+</code></pre></div>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="busdayaxis.holidays_from_exchange" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">holidays_from_exchange</span>
+
+
+<a href="#busdayaxis.holidays_from_exchange" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">holidays_from_exchange</span><span class="p">(</span><span class="n">calendar</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return non-trading weekdays as ISO date strings for use with
+<code>holidays=</code>.</p>
+<p>Extracts trading days from an <code>exchange_calendars</code> or
+<code>pandas_market_calendars</code> calendar object and returns all weekdays in
+<code>[start, end]</code> that are <em>not</em> trading days — i.e. the holidays and
+irregular closures you can pass directly to <code>holidays=</code>.</p>
+<p>The function duck-types the calendar object and tries all known calling
+conventions, so no hard dependency on either library is introduced:
+<code>pandas_market_calendars</code> uses <code>schedule(start_date=, end_date=)</code>,
+while <code>exchange_calendars</code> exposes <code>sessions_in_range(start, end)</code>.</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">PARAMETER</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>calendar</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Any object that exposes either a <code>schedule()</code> method returning a
+DataFrame (<code>pandas_market_calendars</code> style) or a
+<code>sessions_in_range()</code> method returning a <code>DatetimeIndex</code>
+(<code>exchange_calendars</code> style).</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code>exchange_calendars or pandas_market_calendars calendar</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>start</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Inclusive date range to scan (e.g. <code>"2024-01-01"</code>).</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="str">str</span> or <span title="datetime">datetime</span> - <span title="like">like</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>end</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Inclusive date range to scan (e.g. <code>"2024-01-01"</code>).</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="str">str</span> or <span title="datetime">datetime</span> - <span title="like">like</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">RETURNS</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <span class="doc-returns-annotation">
+                    <code><span title="list">list</span>[<span title="str">str</span>]</code>
+                </span>
+            </td>
+            <td class="doc-returns-details">
+              <div class="doc-md-description">
+                <p>ISO date strings (<code>"YYYY-MM-DD"</code>) of weekdays in <code>[start, end]</code>
+that are not trading sessions.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <p>With <code>exchange_calendars</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">exchange_calendars</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xcals</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">busdayaxis</span>
+
+<span class="n">cal</span> <span class="o">=</span> <span class="n">xcals</span><span class="o">.</span><span class="n">get_calendar</span><span class="p">(</span><span class="s2">&quot;XNYS&quot;</span><span class="p">)</span>
+<span class="n">holidays</span> <span class="o">=</span> <span class="n">busdayaxis</span><span class="o">.</span><span class="n">holidays_from_exchange</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="s2">&quot;2025-01-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2025-12-31&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">holidays</span><span class="o">=</span><span class="n">holidays</span><span class="p">)</span>
+</code></pre></div>
+<p>With <code>pandas_market_calendars</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas_market_calendars</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mcal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">busdayaxis</span>
+
+<span class="n">cal</span> <span class="o">=</span> <span class="n">mcal</span><span class="o">.</span><span class="n">get_calendar</span><span class="p">(</span><span class="s2">&quot;NYSE&quot;</span><span class="p">)</span>
+<span class="n">holidays</span> <span class="o">=</span> <span class="n">busdayaxis</span><span class="o">.</span><span class="n">holidays_from_exchange</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="s2">&quot;2025-01-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2025-12-31&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">holidays</span><span class="o">=</span><span class="n">holidays</span><span class="p">)</span>
+</code></pre></div>
+
+
+    </div>
+
+</div>
 
 
 

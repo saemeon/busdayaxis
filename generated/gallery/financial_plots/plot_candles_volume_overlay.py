@@ -8,8 +8,6 @@ import pandas as pd
 
 import busdayaxis
 
-busdayaxis.register_scale()
-
 rng = np.random.default_rng(42)
 
 dates = pd.bdate_range("2025-01-01", periods=20)
@@ -86,10 +84,6 @@ ax2.xaxis.set_major_locator(busdayaxis.DayLocator())
 ax2.xaxis.set_major_formatter(mdates.DateFormatter("%a %d %b"))
 ax2.tick_params(axis="x", rotation=90)
 
-for d in full_days:
-    if d.weekday() == 5:  # Saturday
-        ax2.axvline(d, linestyle="--", linewidth=0.8, alpha=0.5)
-        ax2.axvline(d + pd.Timedelta(days=2), linestyle="--", linewidth=0.8, alpha=0.5)
-
 ax2.set_xscale("busday")
 ax2_vol.set_xscale("busday")
+busdayaxis.mark_gaps(ax2, alpha=0.5)

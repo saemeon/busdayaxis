@@ -11,8 +11,6 @@ import pandas as pd
 
 import busdayaxis
 
-busdayaxis.register_scale()
-
 # Use dark theme
 plt.style.use("dark_background")
 n = 75
