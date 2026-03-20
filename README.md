@@ -1,7 +1,7 @@
 [![PyPI](https://img.shields.io/pypi/v/busdayaxis)](https://pypi.org/project/busdayaxis/)
 [![Python](https://img.shields.io/pypi/pyversions/busdayaxis)](https://pypi.org/project/busdayaxis/)
 [![Docs](https://img.shields.io/badge/docs-saemeon.github.io%2Fbusdayaxis-blue)](https://saemeon.github.io/busdayaxis/)
-[![License](https://img.shields.io/badge/License-BSD--3--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Tests](https://github.com/saemeon/busdayaxis/actions/workflows/test.yml/badge.svg)](https://github.com/saemeon/busdayaxis/actions/workflows/test.yml)
 [![MkDocs Material](https://img.shields.io/badge/MkDocs-Material-526CFE?logo=materialformkdocs&logoColor=white)](https://squidfunk.github.io/mkdocs-material/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -116,4 +116,4 @@ Time series that only evolve on business days — prices, signals, operational m
 
 ## License
 
-BSD 3-Clause
+MIT

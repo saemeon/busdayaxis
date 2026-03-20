@@ -13,7 +13,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 readme = "README.md"
-license = "BSD-3-Clause"
+license = "MIT"
 authors = [
     { name = "Simon Niederberger", email = "s.niederberger@hotmail.com" },
 ]

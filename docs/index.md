@@ -244,4 +244,4 @@ ax.set_xscale("busday", holidays=holidays)
 
 ## License
 
-BSD 3-Clause
+MIT

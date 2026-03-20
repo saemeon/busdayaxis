@@ -1,5 +1,5 @@
 # Copyright (c) Simon Niederberger.
-# Distributed under the terms of the Modified BSD License.
+# Distributed under the terms of the MIT License.
 
 
 try:
