@@ -4,20 +4,19 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import TYPE_CHECKING, Sequence
+from collections.abc import Sequence
+from typing import TYPE_CHECKING
 
 import matplotlib.dates as mdates
 import numpy as np
 
 if TYPE_CHECKING:
-    from typing import Union
-
     from matplotlib.axis import Axis
     from matplotlib.projections.polar import _AxisWrapper
     from matplotlib.ticker import _DummyAxis
     from numpy.typing import NDArray
 
-    AxisLike = Union[Axis, _DummyAxis, _AxisWrapper, None]
+    AxisLike = Axis | _DummyAxis | _AxisWrapper | None
 
 _DEFAULT_BUSHOURS: dict[int, list[tuple[float, float]]] = {
     i: [(0.0, 24.0)] for i in range(7)

@@ -4,7 +4,6 @@ dynamic = ["version"]
 description = "Business day axis scale for matplotlib"
 keywords = ["matplotlib", "business day", "busday", "matplotlib-scale"]
 classifiers = [
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -21,7 +20,7 @@ authors = [
 maintainers = [
     { name = "Simon Niederberger", email = "s.niederberger@hotmail.com" },
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = ["matplotlib", "numpy"]
 
 [project.urls]
@@ -82,8 +81,9 @@ unresolved-import = "warn"
 
 [tool.ruff]
 line-length = 88
-target-version = "py39"
+target-version = "py310"
+exclude = ["src/busdayaxis/_version.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP"]
-ignore = ["E203", "UP035"]
+ignore = ["E203"]

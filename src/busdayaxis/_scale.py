@@ -4,7 +4,8 @@
 from __future__ import annotations
 
 import datetime as dt
-from typing import TYPE_CHECKING, Mapping, Protocol, Sequence, Union, cast
+from collections.abc import Mapping, Sequence
+from typing import TYPE_CHECKING, Protocol, cast
 
 import matplotlib.dates as mdates
 import matplotlib.scale as mscale
@@ -20,8 +21,8 @@ from busdayaxis._locator import AutoDateLocator, BusdayLocator
 WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 WEEKDAYS_MAP = {name: i for i, name in enumerate(WEEKDAYS)}
 
-HourValue = Union[int, float, str, dt.time]
-WeekdayKey = Union[str, int]
+HourValue = int | float | str | dt.time
+WeekdayKey = str | int
 
 #####################################################################
 # Helper functions
@@ -40,7 +41,7 @@ def _is_single_interval(v: object) -> bool:
     return (
         isinstance(v, tuple)
         and len(v) == 2
-        and all(isinstance(x, (int, float, str, dt.time)) for x in v)
+        and all(isinstance(x, int | float | str | dt.time) for x in v)
     )
 
 
@@ -55,10 +56,10 @@ def _coerce_intervals(v: object, *, label: str = "hours") -> list[tuple[float, f
                 f"{label}: 0 <= start <= end <= 24 required, got ({s}, {e})"
             )
         return [(s, e)]
-    if isinstance(v, (list, tuple)):
+    if isinstance(v, list | tuple):
         result: list[tuple[float, float]] = []
         for i, item in enumerate(v):
-            if not (isinstance(item, (list, tuple)) and len(item) == 2):
+            if not (isinstance(item, list | tuple) and len(item) == 2):
                 raise ValueError(
                     f"{label}[{i}]: each interval must be a (start, end) pair, "
                     f"got {item!r}"
