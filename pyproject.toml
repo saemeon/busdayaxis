@@ -77,6 +77,9 @@ addopts = "--cov=src/busdayaxis --cov-report=term-missing"
 [tool.ty.src]
 include = ["src"]
 
+[tool.ty.rules]
+unresolved-import = "warn"
+
 [tool.ruff]
 line-length = 88
 target-version = "py39"

@@ -168,7 +168,7 @@ def mark_gaps(
     if style not in ("vline", "broken", "both"):
         raise ValueError(f"style must be 'vline', 'broken', or 'both', got {style!r}")
 
-    scale = ax.xaxis._scale
+    scale = ax.xaxis._scale  # type: ignore[attr-defined]
     if not isinstance(scale, BusdayScale):
         raise ValueError(
             "ax must use the 'busday' scale; call ax.set_xscale('busday', ...) first."
