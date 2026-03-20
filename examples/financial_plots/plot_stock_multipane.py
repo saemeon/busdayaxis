@@ -8,8 +8,6 @@ import pandas as pd
 
 import busdayaxis
 
-busdayaxis.register_scale()
-
 rng = np.random.default_rng(42)
 
 # Intraday hourly bars for 5 business days, 9:00-17:00

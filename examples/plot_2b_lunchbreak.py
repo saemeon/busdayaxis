@@ -19,8 +19,6 @@ import pandas as pd
 
 import busdayaxis
 
-busdayaxis.register_scale()
-
 MORNING_OPEN = 9
 MORNING_CLOSE = 12
 AFTERNOON_OPEN = 13

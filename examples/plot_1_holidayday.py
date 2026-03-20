@@ -27,8 +27,6 @@ import pandas as pd
 
 import busdayaxis
 
-busdayaxis.register_scale()
-
 # define dummy data
 saturday = "2025-01-04"
 sunday = "2025-01-05"

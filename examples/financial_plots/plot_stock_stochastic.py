@@ -8,8 +8,6 @@ import pandas as pd
 
 import busdayaxis
 
-busdayaxis.register_scale()
-
 rng = np.random.default_rng(42)
 n = 100
 # Generate hourly data

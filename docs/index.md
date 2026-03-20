@@ -19,8 +19,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import busdayaxis
 
-busdayaxis.register_scale()  # register once at the start of your script
-
 dates = pd.date_range("2026-01-01", periods=10, freq="B")
 values = range(len(dates))
 
@@ -144,9 +142,8 @@ ax.set_xscale(  # custom week mask and holidays
 
 ### Class-based
 
-Instantiate `BusdayScale` directly and pass it to `set_xscale`. No prior
-`register_scale()` call needed. The class is fully typed, so IDEs provide
-parameter completion and inline documentation.
+Instantiate `BusdayScale` directly and pass it to `set_xscale`. The class is
+fully typed, so IDEs provide parameter completion and inline documentation.
 
 ```python
 from busdayaxis import BusdayScale

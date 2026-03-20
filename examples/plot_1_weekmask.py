@@ -21,8 +21,6 @@ import pandas as pd
 
 import busdayaxis
 
-busdayaxis.register_scale()
-
 WEEKMASK = "Sun Mon Tue Wed Thu"  # Middle-Eastern work week
 
 # define dummy data

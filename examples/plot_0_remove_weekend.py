@@ -19,8 +19,6 @@ import pandas as pd
 
 import busdayaxis
 
-busdayaxis.register_scale()
-
 # prepare dummy data
 num_days = 13
 dates = pd.date_range("2025-01-02", periods=num_days * 24, freq="h")

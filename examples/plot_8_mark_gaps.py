@@ -27,8 +27,6 @@ import pandas as pd
 
 import busdayaxis
 
-busdayaxis.register_scale()
-
 # %%
 # Prepare dummy intraday data (Mon–Fri, 09:00–17:00)
 num_days = 5

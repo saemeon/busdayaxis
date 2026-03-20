@@ -34,8 +34,6 @@ import pandas_market_calendars as mcal
 
 import busdayaxis
 
-busdayaxis.register_scale()
-
 # %%
 # Build the holiday list from the NYSE calendar.
 # January 2025 has two NYSE holidays: New Year's Day (Jan 1) and MLK Day (Jan 20).

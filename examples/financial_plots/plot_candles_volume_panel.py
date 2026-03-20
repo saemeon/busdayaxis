@@ -8,8 +8,6 @@ import pandas as pd
 
 import busdayaxis
 
-busdayaxis.register_scale()
-
 rng = np.random.default_rng(42)
 
 # Daily OHLC data — business days only, centered at noon to avoid weekend edges
