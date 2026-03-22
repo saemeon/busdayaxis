@@ -14,6 +14,7 @@
     options:
       show_source: false
       members:
+        - AutoDateLocator
         - BusdayLocator
         - DayLocator
         - HourLocator
