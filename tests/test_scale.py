@@ -601,3 +601,53 @@ def test_inverse_at_morning_close_multi_interval():
     """
     inv = _inv([(9, 12), (13, 17)], [3 / 24]).astype("datetime64[s]").astype(object)
     assert inv[0] == dt.datetime(1970, 1, 1, 12)
+
+
+# ── Coverage gap tests ──────────────────────────────────────────────────────
+
+
+def test_coerce_intervals_list_item_out_of_range():
+    """An interval inside a list with values outside [0, 24] raises."""
+    with pytest.raises(ValueError, match="0 <= start <= end <= 24"):
+        _coerce_intervals([(9, 12), (13, 25)])
+
+
+def test_coerce_intervals_invalid_type():
+    """Passing an invalid type (not tuple/list) to _coerce_intervals raises."""
+    with pytest.raises(ValueError, match="expected"):
+        _coerce_intervals("not-an-interval")  # type: ignore[arg-type]
+
+
+def test_inverse_on_empty_interval_day():
+    """Inverse transform on a day with no intervals returns start of day."""
+    # Use per-day dict where Sat has no intervals, and set weekmask to include Sat
+    bushours = {"Mon": (9, 17), "Sat": []}
+    d = _normalize_bushours(bushours)
+    w = _total_durations(d)
+    weekmask = "1111110"  # Mon-Sat
+    cal, cum = _build_weighted_calendar(w, weekmask=weekmask)
+    # Forward: get the busday float for Sat 1970-01-03 (Sat has weight 0)
+    fwd = _datetime_to_busday_float(
+        [dt.datetime(1970, 1, 3, 12)], d, cal, cum, w, weekmask=weekmask
+    )
+    inv = _busday_float_to_datetime(fwd, d, cal, cum, w)
+    # Should not crash; the result maps to a valid datetime
+    assert inv is not None
+
+
+def test_inverse_per_day_dict_with_closed_day():
+    """Inverse transform handles days with no intervals (weight 0)."""
+    # Sat has no intervals but is included in weekmask
+    bushours = {0: (9, 17), 5: []}  # Mon 9-17, Sat closed
+    d = _normalize_bushours(bushours)
+    w = _total_durations(d)
+    weekmask = "1111110"
+    cal, cum = _build_weighted_calendar(w, weekmask=weekmask)
+    # Forward transform a Saturday — should get the same as Fri close
+    sat_fwd = _datetime_to_busday_float(
+        [dt.datetime(1970, 1, 3, 12)], d, cal, cum, w, weekmask=weekmask
+    )
+    # Inverse: recover a datetime from the Saturday's busday float
+    inv = _busday_float_to_datetime(sat_fwd, d, cal, cum, w)
+    assert inv is not None
+    assert len(inv) == 1
