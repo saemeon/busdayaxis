@@ -1,0 +1,3079 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Matplotlib Business Day Axis Scale">
+      
+      
+        <meta name="author" content="Simon Niederberger">
+      
+      
+        <link rel="canonical" href="https://saemeon.github.io/busdayaxis/latest/api/">
+      
+      
+        <link rel="prev" href="..">
+      
+      
+        <link rel="next" href="../generated/gallery/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/favicon.ico">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+    
+    
+      
+        <title>API - busdayaxis</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../assets/extra.css">
+    
+      <link rel="stylesheet" href="../sg_gallery.css">
+    
+      <link rel="stylesheet" href="../sg_gallery-rendered-html.css">
+    
+      <link rel="stylesheet" href="../sg_gallery-binder.css">
+    
+      <link rel="stylesheet" href="../sg_gallery-dataframe.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#api-reference" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="busdayaxis" class="md-header__button md-logo" aria-label="busdayaxis" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            busdayaxis
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              API
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/saemeon/busdayaxis" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    saemeon/busdayaxis
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="busdayaxis" class="md-nav__button md-logo" aria-label="busdayaxis" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    busdayaxis
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/saemeon/busdayaxis" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    saemeon/busdayaxis
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scale
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Scale">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.BusdayScale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BusdayScale
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.register_scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        register_scale
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#locator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Locator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Locator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.AutoDateLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AutoDateLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.BusdayLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BusdayLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.DayLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DayLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.HourLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HourLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.MicrosecondLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MicrosecondLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.MidBusdayLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MidBusdayLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.MinuteLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MinuteLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.SecondLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SecondLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.WeekdayLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WeekdayLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#utilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Utilities
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Utilities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.mark_gaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mark_gaps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.holidays_from_exchange" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        holidays_from_exchange
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../generated/gallery/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Functionality
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core Functionality
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/plot_0_remove_weekend/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Remove Weekends
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/plot_1_holidayday/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exclude Extra Days or Holidays
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/plot_1_weekmask/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Custom Work Week
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/plot_1b_holidays_from_exchange/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Holidays from Exchange Calendar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/plot_2_bushours/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Uniform Business Hours For All Busdays
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/plot_2b_lunchbreak/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multiple Intervals Per Day (Lunch Break)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/plot_3_per_day_bushours/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Per-Day Business Hours
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/plot_4_mid_busday_locator/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Centering Day Labels with MidBusdayLocator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/plot_5_mid_busday_locator_mixed_bushours/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MidBusdayLocator with Mixed Bushours
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/plot_6_artists/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multiple Different Artists
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/plot_7_under_the_hood/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Under the Hood
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/plot_8_mark_gaps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Mark Gap Boundaries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/plot_9_locators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Locator Showcase
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Financial Plots
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Financial Plots
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/financial_plots/plot_candles_volume_overlay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Candlestick with Volume Overlay
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/financial_plots/plot_candles_volume_panel/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Candlestick with Volume Panel
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/financial_plots/plot_dark_theme/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dark Theme Example
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/financial_plots/plot_stock_macd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Panel Financial Chart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/financial_plots/plot_stock_multipane/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Multi-Pane Stock Chart
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/financial_plots/plot_stock_stochastic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Chart with Stochastic Oscillator
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Known Limitations
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Known Limitations
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../generated/gallery/known_limitations/plot_7_known_limitations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Problem with Non-Linear Scales and vlines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scale
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Scale">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.BusdayScale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BusdayScale
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.register_scale" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        register_scale
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#locator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Locator
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Locator">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.AutoDateLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AutoDateLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.BusdayLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        BusdayLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.DayLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DayLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.HourLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HourLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.MicrosecondLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MicrosecondLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.MidBusdayLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MidBusdayLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.MinuteLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        MinuteLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.SecondLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SecondLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.WeekdayLocator" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        WeekdayLocator
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#utilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Utilities
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Utilities">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.mark_gaps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mark_gaps
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#busdayaxis.holidays_from_exchange" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        holidays_from_exchange
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/saemeon/busdayaxis/edit/master/docs/api.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0 8a5 5 0 0 1-5-5 5 5 0 0 1 5-5 5 5 0 0 1 5 5 5 5 0 0 1-5 5m0-12.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h1>
+<h2 id="scale">Scale<a class="headerlink" href="#scale" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="busdayaxis.BusdayScale" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">BusdayScale</span>
+
+
+<a href="#busdayaxis.BusdayScale" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">BusdayScale</span><span class="p">(</span>
+    <span class="n">axis</span><span class="p">,</span>
+    <span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span>
+    <span class="n">weekmask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">holidays</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">busdaycal</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="matplotlib.scale">mscale</span>.<span title="matplotlib.scale.ScaleBase">ScaleBase</span></code></p>
+
+
+
+        <p>Matplotlib scale that compresses off-hours and non-business days.</p>
+<p>Maps datetime values to business-day coordinates. Days and hours outside
+the defined schedule are collapsed so that every visible unit on the axis
+corresponds to active time.</p>
+<p>Registered as the <code>"busday"</code> scale automatically on <code>import busdayaxis</code>.
+All parameters below <strong>except</strong> <code>axis</code> can be passed directly to
+<code>ax.set_xscale("busday", ...)</code>. <code>axis</code> is injected automatically by
+Matplotlib and must not be passed explicitly.</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">PARAMETER</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>axis</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Injected automatically by Matplotlib. Do not pass this via
+<code>ax.set_xscale</code>.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="matplotlib">matplotlib</span>.<span title="matplotlib.axis">axis</span>.<span title="matplotlib.axis.Axis">Axis</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>bushours</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <div class="highlight"><pre><span></span><code>    | list[tuple[HourValue, HourValue]]
+    | Mapping[WeekdayKey, tuple[HourValue, HourValue]
+              | list[tuple[HourValue, HourValue]]]
+    , optional
+</code></pre></div>
+<p>Active hours per weekday. Gaps between intervals (e.g. a lunch break)
+are collapsed on the axis just like overnight gaps or weekends.</p>
+<p><code>HourValue</code> is <code>int | float | str | datetime.time</code>. Strings must
+be valid ISO time strings (e.g. <code>"09:30"</code>). Numbers are hours since
+midnight (e.g. <code>9.5</code> = 09:30).
+<code>WeekdayKey</code> means either weekday index <code>0..6</code> or weekday name
+<code>"Mon"</code>..<code>"Sun"</code>.</p>
+<p>Two accepted forms:</p>
+<ul>
+<li>
+<p><code>(start, end)</code> or <code>[(start, end), ...]</code>:
+    One or more sessions applied uniformly to all days. A plain
+    <code>(start, end)</code> tuple is shorthand for a single-element list.
+    Intervals must be sorted and non-overlapping. The weekmask still
+    applies, so off-days (Sat/Sun by default) are collapsed regardless.
+    Default <code>(0, 24)</code>.</p>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">)</span>                    <span class="c1"># numeric hours</span>
+<span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;09:00&quot;</span><span class="p">,</span> <span class="s2">&quot;17:00&quot;</span><span class="p">)</span>         <span class="c1"># ISO time strings</span>
+<span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="mi">9</span><span class="p">),</span> <span class="n">dt</span><span class="o">.</span><span class="n">time</span><span class="p">(</span><span class="mi">17</span><span class="p">))</span>  <span class="c1"># datetime.time objects</span>
+</code></pre></div>
+<p>Multiple intervals — collapse a lunch break:</p>
+<div class="highlight"><pre><span></span><code><span class="n">bushours</span><span class="o">=</span><span class="p">[(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">17</span><span class="p">)]</span>
+</code></pre></div>
+<p>To apply also on weekends, use:</p>
+<div class="highlight"><pre><span></span><code><span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">),</span> <span class="n">weekmask</span><span class="o">=</span><span class="s2">&quot;1111111&quot;</span>  <span class="c1"># Mon–Sun</span>
+</code></pre></div>
+</li>
+<li>
+<p><code>Mapping[WeekdayKey, (start, end) | [(start, end), ...]]</code>:
+    Per-day schedule; keys are integers <code>0..6</code> or names
+    <code>"Mon"</code>–<code>"Sun"</code>. Each value is either a single
+    <code>(start, end)</code> tuple or a list of tuples.
+    Defaults for unspecified days:</p>
+<table>
+<thead>
+<tr>
+<th>Day</th>
+<th>Key</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Mon</td>
+<td>0</td>
+<td><code>[(0, 24)]</code></td>
+</tr>
+<tr>
+<td>Tue</td>
+<td>1</td>
+<td><code>[(0, 24)]</code></td>
+</tr>
+<tr>
+<td>Wed</td>
+<td>2</td>
+<td><code>[(0, 24)]</code></td>
+</tr>
+<tr>
+<td>Thu</td>
+<td>3</td>
+<td><code>[(0, 24)]</code></td>
+</tr>
+<tr>
+<td>Fri</td>
+<td>4</td>
+<td><code>[(0, 24)]</code></td>
+</tr>
+<tr>
+<td>Sat</td>
+<td>5</td>
+<td><code>[]</code></td>
+</tr>
+<tr>
+<td>Sun</td>
+<td>6</td>
+<td><code>[]</code></td>
+</tr>
+</tbody>
+</table>
+<p>The weekmask is derived automatically: days with at least one
+interval are treated as business days, so passing
+<code>{"Sun": (10, 18)}</code> includes Sundays without a separate
+<em>weekmask</em> override.</p>
+<p>Example:</p>
+<div class="highlight"><pre><span></span><code><span class="n">bushours</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Sun&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">18</span><span class="p">)}</span>  <span class="c1"># Sundays with custom hours, weekdays 00-24</span>
+</code></pre></div>
+<p>Lunch break on Monday, early Friday close:</p>
+<div class="highlight"><pre><span></span><code><span class="n">bushours</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Mon&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">17</span><span class="p">)],</span> <span class="s2">&quot;Fri&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">13</span><span class="p">)}</span>
+</code></pre></div>
+<p>FX Trading Hours:</p>
+<div class="highlight"><pre><span></span><code><span class="n">bushours</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;Sun&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span>
+    <span class="c1"># Monday - Thursday 00:00-24:00</span>
+    <span class="s2">&quot;Fri&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">22</span><span class="p">),</span>
+<span class="p">}</span>
+</code></pre></div>
+</li>
+</ul>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="tuple">tuple</span>[<span title="busdayaxis._scale.HourValue">HourValue</span>, <span title="busdayaxis._scale.HourValue">HourValue</span>]</code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>(0, 24)</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>weekmask</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Which weekdays are business days (<code>"1"</code> = on, <code>"0"</code> = off).
+Passed to :func:<code>numpy.is_busday</code>. When <code>None</code> (default):</p>
+<ul>
+<li>For dict <em>bushours</em>: derived automatically — days with at least one
+  interval become business days.</li>
+<li>For uniform <em>bushours</em> (tuple or list of tuples): <code>"1111100"</code> (Mon–Fri).</li>
+</ul>
+<p>Use a string of 7 characters (Mon–Sun), a space-separated list of
+three-letter day names, or any format accepted by <code>numpy.is_busday</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">weekmask</span><span class="o">=</span><span class="s2">&quot;1111100&quot;</span>              <span class="c1"># Mon–Fri (default)</span>
+<span class="n">weekmask</span><span class="o">=</span><span class="s2">&quot;Mon Tue Wed Thu Fri&quot;</span>  <span class="c1"># equivalent</span>
+<span class="n">weekmask</span><span class="o">=</span><span class="s2">&quot;Sun Mon Tue Wed Thu&quot;</span>  <span class="c1"># Middle-Eastern work week</span>
+<span class="n">weekmask</span><span class="o">=</span><span class="s2">&quot;1111111&quot;</span>              <span class="c1"># every day is a business day</span>
+</code></pre></div>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code>str, array-like, or None</code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>None</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>holidays</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Extra non-business dates, regardless of <em>weekmask</em>. Dates on these
+days are collapsed to zero width on the axis, identical to weekends.
+Accepts any format understood by :func:<code>numpy.is_busday</code> (ISO strings,
+<code>datetime.date</code>, <code>numpy.datetime64</code>). Default <code>None</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="n">holidays</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;2025-01-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2025-12-25&quot;</span><span class="p">]</span>
+</code></pre></div>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="array">array</span> - <span title="like">like</span> or None</code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>None</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>busdaycal</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Pre-built calendar combining a weekmask and holiday list. When set,
+<em>weekmask</em> and <em>holidays</em> are ignored. Useful when reusing the same
+calendar across multiple axes. Default <code>None</code>.</p>
+<p>Note that <code>busdaycal</code> only controls <em>which days</em> are business days;
+it does not affect <em>bushours</em>. The two parameters are independent.</p>
+<div class="highlight"><pre><span></span><code><span class="n">cal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">busdaycalendar</span><span class="p">(</span><span class="n">weekmask</span><span class="o">=</span><span class="s2">&quot;Mon Tue Wed Thu Fri&quot;</span><span class="p">,</span>
+                        <span class="n">holidays</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;2025-01-01&quot;</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">busdaycal</span><span class="o">=</span><span class="n">cal</span><span class="p">)</span>
+</code></pre></div>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="numpy">numpy</span>.<span title="numpy.busdaycalendar">busdaycalendar</span> or None</code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>None</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<details class="note" open>
+  <summary>Notes</summary>
+  <ul>
+<li><strong>Clipping:</strong> Timestamps outside <code>bushours</code> are clipped to the nearest
+  session boundary during the forward transform. For example, with
+  <code>bushours=(9, 17)</code>, both 08:30 and 09:00 map to the same axis
+  position (the session open). With multiple intervals, times in a gap
+  (e.g. during a lunch break) are clipped to the end of the preceding
+  interval. The transform is therefore not perfectly invertible: the
+  inverse always returns a time on a session boundary or within a session.</li>
+<li>
+<p><strong>Timezone handling:</strong> The scale expects timezone-naive inputs and treats
+  them as wall-clock time. If your data carries timezone info (e.g. a
+  UTC-aware <code>pandas.DatetimeIndex</code>), convert to the market's local
+  timezone and strip the tzinfo before plotting::</p>
+<p>dates = dates_utc.tz_convert("America/New_York").tz_localize(None)</p>
+</li>
+</ul>
+</details>
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <p>Compress weekends only (Mon–Fri default):</p>
+<div class="highlight"><pre><span></span><code><span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>Compress overnight gaps as well as weekends:</p>
+<div class="highlight"><pre><span></span><code><span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">))</span>
+</code></pre></div>
+<p>Collapse a lunch break (12:00–13:00) in addition to overnight gaps:</p>
+<div class="highlight"><pre><span></span><code><span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">[(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">17</span><span class="p">)])</span>
+</code></pre></div>
+<p>Per-day hours — Friday early close, Monday with a lunch break:</p>
+<div class="highlight"><pre><span></span><code><span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Mon&quot;</span><span class="p">:</span> <span class="p">[(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">17</span><span class="p">)],</span> <span class="s2">&quot;Fri&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">13</span><span class="p">)})</span>
+</code></pre></div>
+<p>Show Sundays with custom hours; weekmask derived automatically (Sat excluded):</p>
+<div class="highlight"><pre><span></span><code><span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Sun&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">18</span><span class="p">)})</span>
+</code></pre></div>
+<p>FX-style session: Sunday open 22:00, Friday close 22:00, full days otherwise:</p>
+<div class="highlight"><pre><span></span><code><span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Sun&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span> <span class="s2">&quot;Fri&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">22</span><span class="p">)})</span>
+</code></pre></div>
+<p>Middle-Eastern work week (Sun–Thu) with a holiday:</p>
+<div class="highlight"><pre><span></span><code><span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">weekmask</span><span class="o">=</span><span class="s2">&quot;Sun Mon Tue Wed Thu&quot;</span><span class="p">,</span>
+              <span class="n">holidays</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;2025-01-01&quot;</span><span class="p">])</span>
+</code></pre></div>
+<p>Reuse a pre-built <code>numpy.busdaycalendar</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="n">cal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">busdaycalendar</span><span class="p">(</span><span class="n">weekmask</span><span class="o">=</span><span class="s2">&quot;1111100&quot;</span><span class="p">,</span> <span class="n">holidays</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;2025-12-25&quot;</span><span class="p">])</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">busdaycal</span><span class="o">=</span><span class="n">cal</span><span class="p">)</span>
+</code></pre></div>
+<p>Custom tick placement with <code>BusdayLocator</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.dates</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mdates</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">))</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">xaxis</span><span class="o">.</span><span class="n">set_major_locator</span><span class="p">(</span>
+    <span class="n">BusdayLocator</span><span class="p">(</span><span class="n">mdates</span><span class="o">.</span><span class="n">HourLocator</span><span class="p">(</span><span class="n">byhour</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">18</span><span class="p">)))</span>
+<span class="p">)</span>
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="busdayaxis.register_scale" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">register_scale</span>
+
+
+<a href="#busdayaxis.register_scale" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">register_scale</span><span class="p">()</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Register the <code>"busday"</code> scale with Matplotlib.</p>
+<p>Called automatically on <code>import busdayaxis</code>, so explicit calls are
+not required. The function is idempotent — calling it again has no effect
+and existing code that calls it explicitly continues to work.</p>
+<p>After registration, <code>ax.set_xscale("busday", ...)</code> is available for the
+lifetime of the Python session. The keyword arguments <code>bushours</code>,
+<code>weekmask</code>, <code>holidays</code>, and <code>busdaycal</code> are forwarded directly to
+<a href="https://saemeon.github.io/busdayaxis/api/#busdayaxis.BusdayScale"><code>busdayaxis.BusdayScale</code></a>;
+<code>axis</code> is injected by Matplotlib automatically and cannot be passed.</p>
+
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">busdayaxis</span>          <span class="c1"># scale is registered automatically</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">date_range</span><span class="p">(</span><span class="s2">&quot;2025-01-01&quot;</span><span class="p">,</span> <span class="n">periods</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="s2">&quot;D&quot;</span><span class="p">)</span>
+<span class="n">values</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">dates</span><span class="p">,</span> <span class="n">values</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">))</span>  <span class="c1"># kwargs forwarded to BusdayScale</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="locator">Locator<a class="headerlink" href="#locator" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="busdayaxis.AutoDateLocator" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">AutoDateLocator</span>
+
+
+<a href="#busdayaxis.AutoDateLocator" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">AutoDateLocator</span><span class="p">(</span><span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            BusdayLocator (busdayaxis._locator.BusdayLocator)" href="#busdayaxis.BusdayLocator">BusdayLocator</a></code></p>
+
+
+
+        <p>Business-day-aware wrapper around <code>matplotlib.dates.AutoDateLocator</code>.</p>
+<p>All keyword arguments are forwarded to <code>~matplotlib.dates.AutoDateLocator</code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="busdayaxis.BusdayLocator" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">BusdayLocator</span>
+
+
+<a href="#busdayaxis.BusdayLocator" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">BusdayLocator</span><span class="p">(</span><span class="n">base_locator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="matplotlib.dates">mdates</span>.<span title="matplotlib.dates.DateLocator">DateLocator</span></code></p>
+
+
+
+        <p>Tick locator that filters out ticks outside business hours and business days.</p>
+<p>Wraps any Matplotlib date locator and discards ticks that fall on
+non-business days or outside the active session defined by <code>bushours</code>.</p>
+<p>The locator reads the business-hours and weekmask configuration from the
+axis automatically (set by <code>BusdayScale</code>), so it stays in sync with the
+scale without any extra configuration.</p>
+<p>The <code>"busday"</code> scale is registered automatically on <code>import busdayaxis</code>.
+<code>BusdayLocator</code> is set automatically when you call <code>ax.set_xscale("busday")</code>.</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">PARAMETER</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>base_locator</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>The underlying datetime locator that proposes tick candidates.
+If None, falls back to <code>AutoDateLocator</code>.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="matplotlib">matplotlib</span>.<span title="matplotlib.dates">dates</span>.<span title="matplotlib.dates.DateLocator">DateLocator</span></code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>None</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>keep_midnight_ticks</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Controls whether ticks at midnight (00:00) on business days are kept
+even when they fall outside <code>bushours</code>. When <code>None</code> (default), this
+is determined automatically: midnight ticks are kept for
+daily-granularity locators (e.g. <code>DayLocator</code>) so that day labels
+remain properly aligned, and suppressed for finer locators (e.g.
+<code>HourLocator</code>) where they would appear outside the visible session.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="bool">bool</span> or None</code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>None</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <p>Hourly ticks during business hours (9–17)::</p>
+<div class="highlight"><pre><span></span><code>ax.set_xscale(&quot;busday&quot;, bushours=(9, 17))
+ax.xaxis.set_major_locator(
+    BusdayLocator(mdates.HourLocator())
+)
+</code></pre></div>
+<p>Daily ticks on business days only::</p>
+<div class="highlight"><pre><span></span><code>ax.xaxis.set_major_locator(BusdayLocator(mdates.DayLocator()))
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="busdayaxis.DayLocator" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">DayLocator</span>
+
+
+<a href="#busdayaxis.DayLocator" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">DayLocator</span><span class="p">(</span><span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            BusdayLocator (busdayaxis._locator.BusdayLocator)" href="#busdayaxis.BusdayLocator">BusdayLocator</a></code></p>
+
+
+
+        <p>Business-day-aware wrapper around <code>matplotlib.dates.DayLocator</code>.</p>
+<p>Places one tick per day (or every <em>interval</em> days), then discards any that
+fall on non-business days. Midnight ticks are always kept because daily
+ticks are placed at day boundaries.</p>
+<p>All keyword arguments are forwarded to <code>~matplotlib.dates.DayLocator</code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="busdayaxis.HourLocator" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">HourLocator</span>
+
+
+<a href="#busdayaxis.HourLocator" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">HourLocator</span><span class="p">(</span><span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            BusdayLocator (busdayaxis._locator.BusdayLocator)" href="#busdayaxis.BusdayLocator">BusdayLocator</a></code></p>
+
+
+
+        <p>Business-day-aware wrapper around <code>matplotlib.dates.HourLocator</code>.</p>
+<p>Places ticks at the specified hours, then discards any that fall outside
+business days or business hours. Midnight ticks are not kept by default
+because hourly ticks are sub-daily.</p>
+<p>All keyword arguments are forwarded to <code>~matplotlib.dates.HourLocator</code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="busdayaxis.MicrosecondLocator" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">MicrosecondLocator</span>
+
+
+<a href="#busdayaxis.MicrosecondLocator" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">MicrosecondLocator</span><span class="p">(</span><span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            BusdayLocator (busdayaxis._locator.BusdayLocator)" href="#busdayaxis.BusdayLocator">BusdayLocator</a></code></p>
+
+
+
+        <p>Business-day-aware wrapper around <code>matplotlib.dates.MicrosecondLocator</code>.</p>
+<p>Places ticks at the specified microseconds, then discards any that fall
+outside business days or business hours. Midnight ticks are not kept by
+default because microsecond-level ticks are sub-daily.</p>
+<p>All keyword arguments are forwarded to <code>~matplotlib.dates.MicrosecondLocator</code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="busdayaxis.MidBusdayLocator" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">MidBusdayLocator</span>
+
+
+<a href="#busdayaxis.MidBusdayLocator" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="matplotlib.dates">mdates</span>.<span title="matplotlib.dates.DateLocator">DateLocator</span></code></p>
+
+
+
+        <p>Places one tick at the midpoint of the business hours for each business day.</p>
+<p>Useful for centering day labels within each session, even when business
+hours vary by weekday or differ from the standard 9–17 window.</p>
+
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <p>Center day labels as minor ticks::</p>
+<div class="highlight"><pre><span></span><code>ax.set_xscale(&quot;busday&quot;, bushours=(9, 17))
+ax.xaxis.set_minor_locator(busdayaxis.MidBusdayLocator())
+ax.xaxis.set_minor_formatter(mdates.DateFormatter(&quot;%a&quot;))
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="busdayaxis.MinuteLocator" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">MinuteLocator</span>
+
+
+<a href="#busdayaxis.MinuteLocator" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">MinuteLocator</span><span class="p">(</span><span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            BusdayLocator (busdayaxis._locator.BusdayLocator)" href="#busdayaxis.BusdayLocator">BusdayLocator</a></code></p>
+
+
+
+        <p>Business-day-aware wrapper around <code>matplotlib.dates.MinuteLocator</code>.</p>
+<p>Places ticks at the specified minutes, then discards any that fall outside
+business days or business hours. Midnight ticks are not kept by default
+because minute-level ticks are sub-daily.</p>
+<p>All keyword arguments are forwarded to <code>~matplotlib.dates.MinuteLocator</code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="busdayaxis.SecondLocator" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">SecondLocator</span>
+
+
+<a href="#busdayaxis.SecondLocator" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">SecondLocator</span><span class="p">(</span><span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            BusdayLocator (busdayaxis._locator.BusdayLocator)" href="#busdayaxis.BusdayLocator">BusdayLocator</a></code></p>
+
+
+
+        <p>Business-day-aware wrapper around <code>matplotlib.dates.SecondLocator</code>.</p>
+<p>Places ticks at the specified seconds, then discards any that fall outside
+business days or business hours. Midnight ticks are not kept by default
+because second-level ticks are sub-daily.</p>
+<p>All keyword arguments are forwarded to <code>~matplotlib.dates.SecondLocator</code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h3 id="busdayaxis.WeekdayLocator" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-class"></code>            <span class="doc doc-object-name doc-class-name">WeekdayLocator</span>
+
+
+<a href="#busdayaxis.WeekdayLocator" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">WeekdayLocator</span><span class="p">(</span><span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+            <p class="doc doc-class-bases">
+              Bases: <code><a class="autorefs autorefs-internal" title="            BusdayLocator (busdayaxis._locator.BusdayLocator)" href="#busdayaxis.BusdayLocator">BusdayLocator</a></code></p>
+
+
+
+        <p>Business-day-aware wrapper around <code>matplotlib.dates.WeekdayLocator</code>.</p>
+<p>Places ticks on specified weekdays, then discards any that fall on
+non-business days (e.g. public holidays). Midnight ticks are always kept
+because weekday ticks are placed at day boundaries.</p>
+<p>All keyword arguments are forwarded to <code>~matplotlib.dates.WeekdayLocator</code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+  </div>
+
+    </div>
+
+</div><h2 id="utilities">Utilities<a class="headerlink" href="#utilities" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-module">
+
+
+
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="busdayaxis.mark_gaps" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">mark_gaps</span>
+
+
+<a href="#busdayaxis.mark_gaps" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">mark_gaps</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s1">&#39;vline&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Mark session-boundary gaps on a <code>"busday"</code>-scale axis.</p>
+<p>Draws a visual indicator at every point where the axis collapses a gap
+(end of a session, overnight, weekend, holiday). Useful for signalling
+to the reader that time has been removed.</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">PARAMETER</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>ax</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Axis that must already use the <code>"busday"</code> scale.</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="matplotlib">matplotlib</span>.<span title="matplotlib.axes">axes</span>.<span title="matplotlib.axes.Axes">Axes</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>style</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Visual style:</p>
+<ul>
+<li><code>"vline"</code> — a thin vertical line at each seam.</li>
+<li><code>"broken"</code> — two diagonal slash marks at the top and bottom of
+  the axes at each seam (traditional broken-axis convention).</li>
+<li><code>"both"</code> — vline and broken marks combined.</li>
+</ul>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code>(&#39;vline&#39;, &#39;broken&#39;, &#39;both&#39;)</code>
+                  </span>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>&#34;vline&#34;</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>**kwargs</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Forwarded to the underlying artists. Useful keys:</p>
+<ul>
+<li><code>color</code> (default <code>"gray"</code> for vline, <code>"k"</code> for broken)</li>
+<li><code>linewidth</code> (default <code>0.8</code> for vline, <code>1.5</code> for broken)</li>
+<li><code>linestyle</code> — vline only (default <code>"--"</code>)</li>
+<li><code>alpha</code></li>
+<li><code>zorder</code></li>
+<li><code>size</code> — broken only, size of the slash marks in points
+  (default <code>10</code>)</li>
+</ul>
+              </div>
+              <p>
+                  <span class="doc-param-default">
+                    <b>DEFAULT:</b>
+                      <code>{}</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">RETURNS</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <span class="doc-returns-annotation">
+                    <code>list of matplotlib artists</code>
+                </span>
+            </td>
+            <td class="doc-returns-details">
+              <div class="doc-md-description">
+                <p>All artists added to the axes, so the caller can adjust them later.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <div class="highlight"><pre><span></span><code><span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">17</span><span class="p">))</span>
+<span class="n">busdayaxis</span><span class="o">.</span><span class="n">mark_gaps</span><span class="p">(</span><span class="n">ax</span><span class="p">)</span>                          <span class="c1"># thin dashed vlines</span>
+<span class="n">busdayaxis</span><span class="o">.</span><span class="n">mark_gaps</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;broken&quot;</span><span class="p">)</span>          <span class="c1"># slash marks only</span>
+<span class="n">busdayaxis</span><span class="o">.</span><span class="n">mark_gaps</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">style</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;steelblue&quot;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.4</span><span class="p">)</span>
+</code></pre></div>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="busdayaxis.holidays_from_exchange" class="doc doc-heading">
+<code class="doc-symbol doc-symbol-heading doc-symbol-function"></code>            <span class="doc doc-object-name doc-function-name">holidays_from_exchange</span>
+
+
+<a href="#busdayaxis.holidays_from_exchange" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">holidays_from_exchange</span><span class="p">(</span><span class="n">calendar</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+</code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return non-trading weekdays as ISO date strings for use with
+<code>holidays=</code>.</p>
+<p>Extracts trading days from an <code>exchange_calendars</code> or
+<code>pandas_market_calendars</code> calendar object and returns all weekdays in
+<code>[start, end]</code> that are <em>not</em> trading days — i.e. the holidays and
+irregular closures you can pass directly to <code>holidays=</code>.</p>
+<p>The function duck-types the calendar object and tries all known calling
+conventions, so no hard dependency on either library is introduced:
+<code>pandas_market_calendars</code> uses <code>schedule(start_date=, end_date=)</code>,
+while <code>exchange_calendars</code> exposes <code>sessions_in_range(start, end)</code>.</p>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">PARAMETER</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>calendar</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Any object that exposes either a <code>schedule()</code> method returning a
+DataFrame (<code>pandas_market_calendars</code> style) or a
+<code>sessions_in_range()</code> method returning a <code>DatetimeIndex</code>
+(<code>exchange_calendars</code> style).</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code>exchange_calendars or pandas_market_calendars calendar</code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>start</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Inclusive date range to scan (e.g. <code>"2024-01-01"</code>).</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="str">str</span> or <span title="datetime">datetime</span> - <span title="like">like</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>end</code>
+            </td>
+            <td class="doc-param-details">
+              <div class="doc-md-description">
+                <p>Inclusive date range to scan (e.g. <code>"2024-01-01"</code>).</p>
+              </div>
+              <p>
+                  <span class="doc-param-annotation">
+                    <b>TYPE:</b>
+                      <code><span title="str">str</span> or <span title="datetime">datetime</span> - <span title="like">like</span></code>
+                  </span>
+              </p>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<table>
+      <thead>
+        <tr>
+          <th><span class="doc-section-title">RETURNS</span></th>
+          <th><span>DESCRIPTION</span></th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <span class="doc-returns-annotation">
+                    <code><span title="list">list</span>[<span title="str">str</span>]</code>
+                </span>
+            </td>
+            <td class="doc-returns-details">
+              <div class="doc-md-description">
+                <p>ISO date strings (<code>"YYYY-MM-DD"</code>) of weekdays in <code>[start, end]</code>
+that are not trading sessions.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+<p><span class="doc-section-title">Examples:</span></p>
+    <p>With <code>exchange_calendars</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">exchange_calendars</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">xcals</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">busdayaxis</span>
+
+<span class="n">cal</span> <span class="o">=</span> <span class="n">xcals</span><span class="o">.</span><span class="n">get_calendar</span><span class="p">(</span><span class="s2">&quot;XNYS&quot;</span><span class="p">)</span>
+<span class="n">holidays</span> <span class="o">=</span> <span class="n">busdayaxis</span><span class="o">.</span><span class="n">holidays_from_exchange</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="s2">&quot;2025-01-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2025-12-31&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">holidays</span><span class="o">=</span><span class="n">holidays</span><span class="p">)</span>
+</code></pre></div>
+<p>With <code>pandas_market_calendars</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pandas_market_calendars</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mcal</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">busdayaxis</span>
+
+<span class="n">cal</span> <span class="o">=</span> <span class="n">mcal</span><span class="o">.</span><span class="n">get_calendar</span><span class="p">(</span><span class="s2">&quot;NYSE&quot;</span><span class="p">)</span>
+<span class="n">holidays</span> <span class="o">=</span> <span class="n">busdayaxis</span><span class="o">.</span><span class="n">holidays_from_exchange</span><span class="p">(</span><span class="n">cal</span><span class="p">,</span> <span class="s2">&quot;2025-01-01&quot;</span><span class="p">,</span> <span class="s2">&quot;2025-12-31&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xscale</span><span class="p">(</span><span class="s2">&quot;busday&quot;</span><span class="p">,</span> <span class="n">holidays</span><span class="o">=</span><span class="n">holidays</span><span class="p">)</span>
+</code></pre></div>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2026 Simon Niederberger
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/saemeon/busdayaxis" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.width.wide", "content.code.annotate", "content.code.copy", "content.tabs.link", "navigation.top", "navigation.tracking", "content.action.edit", "search.highlight", "search.suggest", "navigation.indexes"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "default": "latest", "provider": "mike"}}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
