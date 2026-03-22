@@ -651,3 +651,109 @@ def test_inverse_per_day_dict_with_closed_day():
     inv = _busday_float_to_datetime(sat_fwd, d, cal, cum, w)
     assert inv is not None
     assert len(inv) == 1
+
+
+# ── Edge-case tests ─────────────────────────────────────────────────────────
+
+
+def test_forward_single_value():
+    """Forward transform works with a single datetime (not a list)."""
+    result = _fwd((0, 24), [dt.datetime(1970, 1, 1)])
+    assert len(result) == 1
+    assert result[0] == pytest.approx(0.0)
+
+
+def test_forward_empty_array():
+    """Forward transform with an empty list returns an empty array."""
+    import numpy as np
+
+    result = _fwd((0, 24), np.array([], dtype="datetime64[ns]"))
+    assert len(result) == 0
+
+
+def test_inverse_empty_array():
+    """Inverse transform with an empty array returns an empty array."""
+    import numpy as np
+
+    result = _inv((9, 17), np.array([], dtype=float))
+    assert len(result) == 0
+
+
+def test_forward_zero_width_bushours():
+    """bushours=(12, 12) is a zero-width session — all times collapse."""
+    result = _fwd((12, 12), [dt.datetime(1970, 1, 1, 10), dt.datetime(1970, 1, 1, 14)])
+    assert result[0] == pytest.approx(result[1])
+
+
+def test_forward_full_day_bushours():
+    """bushours=(0, 24) is equivalent to no intraday compression."""
+    dates = [dt.datetime(1970, 1, 1, 0), dt.datetime(1970, 1, 1, 12)]
+    result = _fwd((0, 24), dates)
+    assert result[0] == pytest.approx(0.0)
+    assert result[1] == pytest.approx(0.5)  # 12/24 of the day
+
+
+def test_forward_negative_epoch_dates():
+    """Forward transform handles pre-epoch dates (before 1970-01-01)."""
+    # 1969-12-31 is a Wednesday (weekday 2)
+    result = _fwd((0, 24), [dt.datetime(1969, 12, 31, 12)])
+    assert result[0] < 0  # should be negative (before epoch)
+
+
+def test_coerce_intervals_list_with_bad_item():
+    """A list item that isn't a 2-element pair raises."""
+    with pytest.raises(ValueError, match="each interval must be a"):
+        _coerce_intervals([(9, 12), "bad"])  # type: ignore[list-item]
+
+
+def test_normalize_bushours_string_weekday_keys():
+    """All 7 string weekday names are accepted as dict keys."""
+    bushours = {
+        "Mon": (9, 17),
+        "Tue": (9, 17),
+        "Wed": (9, 17),
+        "Thu": (9, 17),
+        "Fri": (9, 17),
+        "Sat": (10, 14),
+        "Sun": (10, 14),
+    }
+    result = _normalize_bushours(bushours)
+    assert len(result) == 7
+    for i in range(7):
+        assert len(result[i]) == 1
+
+
+def test_normalize_bushours_out_of_range_int_key():
+    """Integer key outside 0-6 raises."""
+    with pytest.raises(ValueError, match="expected int 0-6"):
+        _normalize_bushours({7: (9, 17)})  # type: ignore[dict-item]
+
+
+def test_busday_scale_dict_bushours_derives_weekmask():
+    """Dict bushours auto-derives weekmask from active days."""
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    dates = pd.date_range("2025-01-05", periods=14, freq="D")  # Sun-Sat x2
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(len(dates)))
+    ax.set_xscale("busday", bushours={"Sun": (10, 18), "Mon": (9, 17)})
+    # Mon explicitly set, Tue-Fri default to full day, Sat default to closed, Sun set
+    scale = ax.xaxis._scale
+    assert scale._busday_kwargs["weekmask"] == "1111101"
+    plt.close(fig)
+
+
+def test_forward_2d_shape_preserved():
+    """Forward transform preserves 2D array shape."""
+    import numpy as np
+
+    dates = np.array(
+        [["1970-01-01", "1970-01-02"], ["1970-01-05", "1970-01-06"]],
+        dtype="datetime64[ns]",
+    )
+    d = _normalize_bushours((0, 24))
+    w = _total_durations(d)
+    cal, cum = _build_weighted_calendar(w, weekmask="1111100")
+    result = _datetime_to_busday_float(dates, d, cal, cum, w, weekmask="1111100")
+    assert result.shape == (2, 2)

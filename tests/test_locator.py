@@ -344,3 +344,96 @@ def test_mid_busday_locator_multi_interval():
     assert mdates.num2date(ticks[0]).hour == 13  # midpoint of (9+17)/2
 
     plt.close(fig)
+
+
+# ── Locator subclass behavior tests ─────────────────────────────────────────
+
+
+def test_weekday_locator_filters_holidays():
+    """WeekdayLocator skips holidays even if they fall on a weekday."""
+    import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    import busdayaxis
+
+    busdayaxis.register_scale()
+    # Mon 2025-01-06 is a normal day; make Wed 2025-01-08 a holiday
+    dates = pd.date_range("2025-01-06", periods=5, freq="D")
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(5))
+    ax.set_xscale("busday", holidays=["2025-01-08"])
+    ax.xaxis.set_major_locator(busdayaxis.WeekdayLocator())
+    ax.set_xlim(
+        mdates.date2num(pd.Timestamp("2025-01-06")),
+        mdates.date2num(pd.Timestamp("2025-01-10 23:59")),
+    )
+
+    ticks = ax.xaxis.get_major_locator()()
+    tick_days = [mdates.num2date(t).day for t in ticks]
+    assert 8 not in tick_days  # Wed holiday filtered
+
+    plt.close(fig)
+
+
+def test_minute_locator_filters_outside_bushours():
+    """MinuteLocator only returns ticks within business hours."""
+    import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    import busdayaxis
+
+    busdayaxis.register_scale()
+    dates = pd.date_range("2025-01-06 08:00", periods=180, freq="min")
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(len(dates)))
+    ax.set_xscale("busday", bushours=(9, 12))
+    ax.xaxis.set_major_locator(
+        busdayaxis.MinuteLocator(byminute=[0, 30], keep_midnight_ticks=False)
+    )
+    ax.set_xlim(
+        mdates.date2num(pd.Timestamp("2025-01-06 08:00")),
+        mdates.date2num(pd.Timestamp("2025-01-06 13:00")),
+    )
+
+    ticks = ax.xaxis.get_major_locator()()
+    hours = {mdates.num2date(t).hour for t in ticks}
+    assert all(9 <= h < 12 for h in hours)
+
+    plt.close(fig)
+
+
+def test_auto_date_locator_on_busday_axis():
+    """AutoDateLocator produces ticks only on business days."""
+    import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+    import pandas as pd
+
+    import busdayaxis
+
+    busdayaxis.register_scale()
+    dates = pd.date_range("2025-01-01", periods=30, freq="D")
+    fig, ax = plt.subplots()
+    ax.plot(dates, range(len(dates)))
+    ax.set_xscale("busday")
+    ax.xaxis.set_major_locator(busdayaxis.AutoDateLocator())
+
+    ticks = ax.xaxis.get_major_locator()()
+    import numpy as np
+
+    for t in ticks:
+        d = mdates.num2date(t).replace(tzinfo=None)
+        day64 = np.datetime64(d.date(), "D")
+        assert np.is_busday(day64)
+
+    plt.close(fig)
+
+
+def test_locator_nonsingular():
+    """BusdayLocator.nonsingular delegates to base locator."""
+    import busdayaxis
+
+    locator = busdayaxis.DayLocator()
+    result = locator.nonsingular(0.0, 0.0)
+    assert result[0] < result[1]  # should expand singular range
