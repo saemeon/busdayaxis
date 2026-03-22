@@ -1,0 +1,42 @@
+name: Deploy Docs
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: uv sync --group doc
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Deploy docs (latest)
+        if: github.event_name == 'push'
+        run: uv run mike deploy --push --update-aliases dev latest
+
+      - name: Deploy docs (release)
+        if: github.event_name == 'release'
+        run: |
+          VERSION="${GITHUB_REF#refs/tags/v}"
+          uv run mike deploy --push --update-aliases "$VERSION" latest
+          uv run mike set-default latest --push
