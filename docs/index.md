@@ -148,22 +148,22 @@ fully typed, so IDEs provide parameter completion and inline documentation.
 ```python
 from busdayaxis import BusdayScale
 
-ax.set_xscale(BusdayScale(ax.xaxis))  # compress weekends (Mon–Fri default)
+ax.set_xscale(BusdayScale())  # compress weekends (Mon–Fri default)
 # or
-ax.set_xscale(BusdayScale(ax.xaxis, bushours=(9, 17)))  # single session, all days
+ax.set_xscale(BusdayScale(bushours=(9, 17)))  # single session, all days
 # or
-ax.set_xscale(BusdayScale(ax.xaxis, bushours=[(9, 12), (13, 17)]))  # morning + afternoon
+ax.set_xscale(BusdayScale(bushours=[(9, 12), (13, 17)]))  # morning + afternoon
 # or
 ax.set_xscale(  # per-day business hours, with a lunch break on Mondays
-    BusdayScale(ax.xaxis, bushours={"Mon": [(9, 12), (13, 17)], "Fri": (9, 13)})
+    BusdayScale(bushours={"Mon": [(9, 12), (13, 17)], "Fri": (9, 13)})
 )
 # or
 ax.set_xscale(  # custom week mask and holidays
-    BusdayScale(ax.xaxis, weekmask="Sun Mon Tue Wed Thu", holidays=["2025-01-01"])
+    BusdayScale(weekmask="Sun Mon Tue Wed Thu", holidays=["2025-01-01"])
 )
 ```
 
-The default `BusdayScale(ax.xaxis)` is equivalent to `ax.set_xscale("busday")`: both compress Saturdays and Sundays while leaving all other time visible.
+The default `BusdayScale()` is equivalent to `ax.set_xscale("busday")`: both compress Saturdays and Sundays while leaving all other time visible.
 
 ### Custom tick placement
 

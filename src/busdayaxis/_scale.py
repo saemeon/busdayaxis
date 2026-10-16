@@ -4,9 +4,11 @@
 from __future__ import annotations
 
 import datetime as dt
-from collections.abc import Mapping, Sequence
+import functools
+from collections.abc import Callable, Mapping, Sequence
 from typing import TYPE_CHECKING, Protocol, cast
 
+import matplotlib.axis as maxis
 import matplotlib.dates as mdates
 import matplotlib.scale as mscale
 import matplotlib.transforms as mtransforms
@@ -284,6 +286,27 @@ def _busday_float_to_datetime(
     return datetimes
 
 
+def _accept_legacy_axis(init: Callable[..., None]) -> Callable[..., None]:
+    """Let a scale ``__init__`` without an *axis* parameter accept one anyway.
+
+    Matplotlib >= 3.11 inspects the constructor signature and calls the scale
+    without *axis* when the parameter is absent; it emits a
+    ``PendingDeprecationWarning`` when it is present. Older Matplotlib always
+    passes *axis* positionally. This wrapper drops a leading ``Axis`` (or
+    ``None``) argument so both conventions, and direct calls such as
+    ``BusdayScale(ax.xaxis, ...)``, keep working. ``functools.wraps`` makes
+    ``inspect.signature`` report the wrapped, axis-free signature.
+    """
+
+    @functools.wraps(init)
+    def wrapper(self, *args, **kwargs) -> None:
+        if args and (args[0] is None or isinstance(args[0], maxis.Axis)):
+            args = args[1:]
+        init(self, *args, **kwargs)
+
+    return wrapper
+
+
 #####################################################################
 # Classes
 #####################################################################
@@ -381,15 +404,14 @@ class BusdayScale(mscale.ScaleBase):
     corresponds to active time.
 
     Registered as the ``"busday"`` scale automatically on ``import busdayaxis``.
-    All parameters below **except** ``axis`` can be passed directly to
-    ``ax.set_xscale("busday", ...)``. ``axis`` is injected automatically by
-    Matplotlib and must not be passed explicitly.
+    All parameters below can be passed directly to
+    ``ax.set_xscale("busday", ...)``.
+
+    For backward compatibility, a leading ``matplotlib.axis.Axis`` argument
+    (e.g. ``BusdayScale(ax.xaxis, ...)``) is accepted and ignored.
 
     Parameters
     ----------
-    axis : matplotlib.axis.Axis
-        Injected automatically by Matplotlib. Do not pass this via
-        ``ax.set_xscale``.
     bushours : tuple[HourValue, HourValue]
                 | list[tuple[HourValue, HourValue]]
                 | Mapping[WeekdayKey, tuple[HourValue, HourValue]
@@ -599,9 +621,9 @@ class BusdayScale(mscale.ScaleBase):
 
     name = "busday"
 
+    @_accept_legacy_axis
     def __init__(
         self,
-        axis: Axis,
         bushours: tuple[HourValue, HourValue]
         | Sequence[tuple[HourValue, HourValue]]
         | Mapping[
@@ -638,7 +660,8 @@ class BusdayScale(mscale.ScaleBase):
 
         self._busday_kwargs = busday_kwargs
 
-        super().__init__(axis)
+        # ScaleBase ignores *axis*; pass None so this works on all versions.
+        super().__init__(None)
 
     def get_transform(self) -> BusdayTransform:
         return BusdayTransform(
@@ -687,8 +710,7 @@ def register_scale() -> None:
     After registration, ``ax.set_xscale("busday", ...)`` is available for the
     lifetime of the Python session. The keyword arguments ``bushours``,
     ``weekmask``, ``holidays``, and ``busdaycal`` are forwarded directly to
-    [`busdayaxis.BusdayScale`](https://saemeon.github.io/busdayaxis/api/#busdayaxis.BusdayScale);
-    ``axis`` is injected by Matplotlib automatically and cannot be passed.
+    [`busdayaxis.BusdayScale`](https://saemeon.github.io/busdayaxis/api/#busdayaxis.BusdayScale).
 
     Examples
     --------

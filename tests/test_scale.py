@@ -318,6 +318,53 @@ def test_busday_scale_registration():
     busdayaxis.register_scale()
 
 
+def test_register_scale_emits_no_axis_deprecation_warning():
+    """Matplotlib >= 3.11 warns at registration if the constructor takes *axis*."""
+    import inspect
+    import warnings
+
+    import busdayaxis
+
+    assert "axis" not in inspect.signature(busdayaxis.BusdayScale).parameters
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        busdayaxis.register_scale()
+
+
+@pytest.mark.parametrize("legacy_axis", [False, True])
+def test_busday_scale_accepts_legacy_axis_argument(legacy_axis):
+    """BusdayScale(ax.xaxis, ...) (old style, and what Matplotlib < 3.11 does)
+    behaves identically to BusdayScale(...)."""
+    import matplotlib.dates as mdates
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    from busdayaxis import BusdayScale
+
+    fig, ax = plt.subplots()
+    args = (ax.xaxis,) if legacy_axis else ()
+    scale = BusdayScale(*args, bushours=(9, 17), holidays=["2025-01-07"])
+    ax.set_xscale(scale)
+
+    x = mdates.date2num([dt.datetime(2025, 1, 6, 13), dt.datetime(2025, 1, 8, 9)])
+    reference = BusdayScale(bushours=(9, 17), holidays=["2025-01-07"])
+    np.testing.assert_allclose(
+        ax.xaxis.get_transform().transform(x),
+        reference.get_transform().transform(x),
+    )
+    assert scale._bushours_dict[0] == [(9.0, 17.0)]
+
+    plt.close(fig)
+
+
+def test_busday_scale_accepts_none_axis():
+    """Matplotlib < 3.11 may pass axis=None positionally via scale_factory."""
+    from busdayaxis import BusdayScale
+
+    scale = BusdayScale(None, bushours=(9, 17))
+    assert scale._bushours_dict[0] == [(9.0, 17.0)]
+
+
 def test_busday_scale_with_holidays():
     import matplotlib.pyplot as plt
 

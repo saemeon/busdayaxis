@@ -1,5 +1,18 @@
 # Changelog
 
+## [Unreleased]
+
+- Fix `PendingDeprecationWarning` from Matplotlib 3.11: `BusdayScale` no longer
+  takes an `axis` parameter. Passing one (`BusdayScale(ax.xaxis, ...)`) is still
+  accepted and ignored, so older Matplotlib versions keep working.
+- Update class-based examples in the docs to `BusdayScale(...)` without `ax.xaxis`.
+- Add Python 3.14 to the CI test matrix.
+- Add docs deployment workflow (MkDocs + `mike`).
+- Add Dependabot configuration.
+- Add locator gallery example (`plot_9_locators.py`).
+- Complete the API reference.
+- Increase test coverage.
+
 ## [0.2.1] — 2026-03-20
 
 - Switch to MIT license.
