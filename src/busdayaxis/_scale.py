@@ -18,6 +18,12 @@ if TYPE_CHECKING:
     from matplotlib.axis import Axis
     from numpy.typing import ArrayLike, NDArray
 
+from busdayaxis._dates import (
+    US_PER_DAY,
+    datetime64_to_num,
+    intraday_fraction,
+    num_to_datetime64,
+)
 from busdayaxis._locator import AutoDateLocator, BusdayLocator
 
 WEEKDAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -122,6 +128,13 @@ def _normalize_bushours(
     return {i: intervals for i in range(7)}
 
 
+def _normalize_holidays(holidays: object) -> NDArray[np.datetime64]:
+    """Convert any date-like sequence (ISO strings, ``datetime.date``,
+    ``pandas.Timestamp``, ``DatetimeIndex``, ``datetime64`` of any unit) into
+    the ``datetime64[D]`` array that :func:`numpy.is_busday` requires."""
+    return np.asarray(holidays, dtype="datetime64[us]").astype("datetime64[D]")
+
+
 def _total_durations(
     bushours_dict: dict[int, list[tuple[float, float]]],
 ) -> NDArray[np.float64]:
@@ -188,16 +201,16 @@ def _datetime_to_busday_float(
     session(s), computed as a piecewise-linear compression across all intervals:
     gaps between intervals (e.g. lunch breaks) are collapsed just like
     off-hours.
+
+    ``NaT`` and dates outside the calendar table map to ``nan``.
     """
-    values = np.asarray(values, dtype="datetime64[ns]")
+    values = np.asarray(values, dtype="datetime64[us]")
 
     day = values.astype("datetime64[D]")
-    intraday_s = (
-        (values - day.astype("datetime64[ns]"))
-        .astype("timedelta64[s]")
-        .astype(np.int64)
-    )
-    intraday_fraction = intraday_s / 86400.0
+    valid = ~np.isnat(values) & (day >= calendar_days[0]) & (day <= calendar_days[-1])
+    # Placeholder day for invalid entries so indexing below stays in bounds.
+    day = np.where(valid, day, calendar_days[0])
+    t_frac = np.where(valid, intraday_fraction(values), 0.0)
 
     weekday = _weekday_from_days(day)
 
@@ -207,12 +220,12 @@ def _datetime_to_busday_float(
     # Each interval (s, e) contributes min(max(t - s, 0), e - s): zero before the
     # interval starts, linear growth while inside it, and capped once past it.
     # Summing over all intervals gives the total compressed intraday offset.
-    compressed = np.zeros_like(intraday_fraction)
+    compressed = np.zeros_like(t_frac)
     for wd in range(7):
         mask = weekday == wd
         if not np.any(mask):
             continue
-        t = intraday_fraction[mask]
+        t = t_frac[mask]
         c = np.zeros_like(t)
         for s, e in bushours_dict[wd]:
             s_f, e_f = s / 24.0, e / 24.0
@@ -224,7 +237,7 @@ def _datetime_to_busday_float(
     is_busday = np.is_busday(day, **busday_kwargs)
     intraday = np.where(is_busday, compressed, 0.0)
     busday_float = (business_days + intraday).astype(float)
-    return busday_float
+    return np.where(valid, busday_float, np.nan)
 
 
 def _busday_float_to_datetime(
@@ -240,11 +253,17 @@ def _busday_float_to_datetime(
     outside business hours are clipped during the forward transformation.
     Times in gaps between intervals (e.g. lunch) map to the end of the
     preceding interval.
+
+    ``nan`` and values outside the calendar table map to ``NaT``.
     """
     values = np.asarray(values, dtype=float)
 
     original_shape = values.shape
     values_flat = values.ravel()
+    valid = np.isfinite(values_flat) & (
+        (values_flat >= cumulative[0]) & (values_flat <= cumulative[-1])
+    )
+    values_flat = np.where(valid, values_flat, cumulative[0])
 
     idx = np.searchsorted(cumulative, values_flat, side="right") - 1
     idx = np.clip(idx, 0, len(calendar_days) - 1)
@@ -277,13 +296,11 @@ def _busday_float_to_datetime(
             remaining = np.where(~found, remaining - dur, remaining)
         scaled[mask] = result
 
-    intraday_seconds = (scaled * 86400.0).astype("int64").astype("timedelta64[s]")
+    intraday_us = np.round(scaled * US_PER_DAY).astype(np.int64)
+    datetimes = date_d.astype("datetime64[us]") + intraday_us.astype("timedelta64[us]")
+    datetimes[~valid] = np.datetime64("NaT", "us")
 
-    datetimes = (date_d.astype("datetime64[s]") + intraday_seconds).reshape(
-        original_shape
-    )
-
-    return datetimes
+    return datetimes.reshape(original_shape)
 
 
 def _accept_legacy_axis(init: Callable[..., None]) -> Callable[..., None]:
@@ -345,11 +362,9 @@ class BusdayTransform(_BusdayTransformBase):
     """
 
     def transform_non_affine(self, values: ArrayLike) -> ArrayLike:
-        values = np.asarray(values)
-        # num2date returns tz-aware datetimes; strip tzinfo before numpy conversion
-        dates = [d.replace(tzinfo=None) for d in mdates.num2date(values.ravel())]
+        values = np.asarray(values, dtype=float)
         result = _datetime_to_busday_float(
-            dates,
+            num_to_datetime64(values.ravel()),
             self._bushours_dict,
             self._calendar_days,
             self._calendar_cumulative,
@@ -384,7 +399,7 @@ class InvertedBusdayTransform(_BusdayTransformBase):
             self._calendar_cumulative,
             self._weights,
         )
-        return mdates.date2num(dates).reshape(values.shape)
+        return datetime64_to_num(dates).reshape(values.shape)
 
     def inverted(self) -> BusdayTransform:
         return BusdayTransform(
@@ -556,6 +571,13 @@ class BusdayScale(mscale.ScaleBase):
 
           dates = dates_utc.tz_convert("America/New_York").tz_localize(None)
 
+      ``rcParams["timezone"]`` does not affect the scale or the busdayaxis
+      locators. The default formatter labels in wall-clock time too; if you
+      set your own date formatter, pass ``tz="UTC"`` so labels are not shifted.
+    - **Missing values:** ``NaN``/``NaT`` x values are passed through as
+      ``NaN`` (a gap in the line), like on any other Matplotlib scale. Dates
+      outside 1678–2262 are treated the same way.
+
     Examples
     --------
     Compress weekends only (Mon–Fri default):
@@ -651,7 +673,7 @@ class BusdayScale(mscale.ScaleBase):
                     weekmask = "1111100"
             busday_kwargs["weekmask"] = weekmask
             if holidays is not None:
-                busday_kwargs["holidays"] = holidays
+                busday_kwargs["holidays"] = _normalize_holidays(holidays)
 
         self._calendar_days, self._calendar_cumulative = _build_weighted_calendar(
             self._weights,
@@ -681,6 +703,15 @@ class BusdayScale(mscale.ScaleBase):
         axis_state._busday_kwargs = self._busday_kwargs.copy()
         axis_state._bushours = self._bushours_dict.copy()
 
+        # When datetime data is plotted *after* set_xscale, Matplotlib's date
+        # converter would replace the default locator with a plain
+        # mdates.AutoDateLocator (weekend ticks). Registering the date
+        # converter now makes that later unit update a no-op.
+        get_converter = getattr(axis, "get_converter", None)  # mpl >= 3.10
+        converter = get_converter() if get_converter else axis.converter
+        if converter is None:
+            axis.update_units(dt.datetime(1970, 1, 1))
+
         if not isinstance(axis.get_major_locator(), BusdayLocator):
             majloc = AutoDateLocator()
             majloc.set_axis(axis)
@@ -689,9 +720,10 @@ class BusdayScale(mscale.ScaleBase):
         if not isinstance(axis.get_major_formatter(), mdates.DateFormatter):
             current_locator = axis.get_major_locator()
             if isinstance(current_locator, BusdayLocator):
-                majfmt = mdates.AutoDateFormatter(current_locator.base_locator)
-            else:
-                majfmt = mdates.AutoDateFormatter(current_locator)
+                current_locator = current_locator.base_locator
+            # Datetimes are naive wall-clock time: label them in UTC, not in
+            # rcParams["timezone"], so labels match the plotted values.
+            majfmt = mdates.AutoDateFormatter(current_locator, tz=dt.timezone.utc)
             axis.set_major_formatter(majfmt)
 
     def limit_range_for_scale(

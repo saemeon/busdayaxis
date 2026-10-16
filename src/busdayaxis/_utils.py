@@ -6,8 +6,9 @@ from __future__ import annotations
 import datetime as dt
 from typing import TYPE_CHECKING
 
-import matplotlib.dates as mdates
 import numpy as np
+
+from busdayaxis._dates import datetime64_to_num, num_to_datetime64
 
 if TYPE_CHECKING:
     from matplotlib.artist import Artist
@@ -207,14 +208,9 @@ def _find_gap_positions(ax: Axes, scale) -> list[float]:
     """
     vmin_mpl, vmax_mpl = ax.get_xlim()  # matplotlib date numbers (data coords)
 
-    vmin_dt = mdates.num2date(vmin_mpl).replace(tzinfo=None)
-    vmax_dt = mdates.num2date(vmax_mpl).replace(tzinfo=None)
+    day_min, day_max = num_to_datetime64([vmin_mpl, vmax_mpl]).astype("datetime64[D]")
 
-    days = np.arange(
-        np.datetime64(vmin_dt.date(), "D"),
-        np.datetime64(vmax_dt.date(), "D") + np.timedelta64(1, "D"),
-        dtype="datetime64[D]",
-    )
+    days = np.arange(day_min, day_max + np.timedelta64(1, "D"), dtype="datetime64[D]")
     business_days = days[np.is_busday(days, **scale._busday_kwargs)]
     if len(business_days) == 0:
         return []
@@ -225,7 +221,7 @@ def _find_gap_positions(ax: Axes, scale) -> list[float]:
     gap_positions: set[float] = set()
     for i, (day, wd) in enumerate(zip(business_days, weekdays)):
         intervals = scale._bushours_dict[wd]
-        py_day = day.astype("datetime64[ms]").astype(object)
+        py_day = day.astype("datetime64[us]").astype(object)
         for j, (_, e) in enumerate(intervals):
             close_dt = py_day + dt.timedelta(hours=e)
             is_last_interval = j == len(intervals) - 1
@@ -237,12 +233,12 @@ def _find_gap_positions(ax: Axes, scale) -> list[float]:
                 next_intervals = scale._bushours_dict[next_wd]
                 if next_intervals:
                     next_day = business_days[i + 1]
-                    py_next = next_day.astype("datetime64[ms]").astype(object)
+                    py_next = next_day.astype("datetime64[us]").astype(object)
                     next_open_dt = py_next + dt.timedelta(hours=next_intervals[0][0])
                     if close_dt == next_open_dt:
                         continue
 
-            mpl_num = float(mdates.date2num(close_dt))
+            mpl_num = float(datetime64_to_num(np.datetime64(close_dt, "us")))
             if vmin_mpl <= mpl_num <= vmax_mpl:
                 gap_positions.add(round(mpl_num, 10))
 

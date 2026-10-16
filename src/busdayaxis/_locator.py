@@ -10,6 +10,8 @@ from typing import TYPE_CHECKING
 import matplotlib.dates as mdates
 import numpy as np
 
+from busdayaxis._dates import datetime64_to_num, intraday_fraction, num_to_datetime64
+
 if TYPE_CHECKING:
     from matplotlib.axis import Axis
     from matplotlib.projections.polar import _AxisWrapper
@@ -57,8 +59,10 @@ class BusdayLocator(mdates.DateLocator):
     ----------
     base_locator : matplotlib.dates.DateLocator, optional
         The underlying datetime locator that proposes tick candidates.
-        If None, falls back to ``AutoDateLocator``.
-    keep_midnight_ticks : bool or None, optional
+        If None, falls back to ``AutoDateLocator``. Its timezone is set to UTC
+        because the busday scale treats datetimes as naive wall-clock time;
+        ``rcParams["timezone"]`` and a ``tz=`` argument have no effect.
+    keep_midnight_ticks : bool or None, optional (keyword-only)
         Controls whether ticks at midnight (00:00) on business days are kept
         even when they fall outside ``bushours``. When ``None`` (default), this
         is determined automatically: midnight ticks are kept for
@@ -83,9 +87,14 @@ class BusdayLocator(mdates.DateLocator):
     def __init__(
         self,
         base_locator: mdates.DateLocator | None = None,
+        *,
         keep_midnight_ticks: bool | None = None,
     ) -> None:
         self.base_locator = base_locator or mdates.AutoDateLocator()
+        # The busday scale treats datetimes as naive wall-clock time (stored by
+        # Matplotlib as UTC), so candidates must be generated in UTC rather
+        # than in rcParams["timezone"].
+        self.base_locator.set_tzinfo(dt.timezone.utc)
         self._keep_midnight_ticks = keep_midnight_ticks
 
     def set_axis(self, axis: AxisLike) -> None:
@@ -99,7 +108,7 @@ class BusdayLocator(mdates.DateLocator):
         if len(ticks_arr) == 0:
             return []
 
-        dts = np.array([mdates.num2date(t).replace(tzinfo=None) for t in ticks_arr])
+        dts = num_to_datetime64(ticks_arr)
 
         days = dts.astype("datetime64[D]")
 
@@ -107,10 +116,7 @@ class BusdayLocator(mdates.DateLocator):
         busday_mask = np.is_busday(days, **busday_kwargs)
 
         weekday = (days.view("int64") + 3) % 7  # epoch (1970-01-01) was Thursday = 3
-        intraday_s = (dts.astype("datetime64[s]") - days.astype("datetime64[s]")).view(
-            "int64"
-        )
-        frac = intraday_s / 86400.0
+        frac = intraday_fraction(dts)
 
         bushours_dict = _require_bushours(self.axis)
 
@@ -163,90 +169,123 @@ class BusdayLocator(mdates.DateLocator):
 
 
 class AutoDateLocator(BusdayLocator):
-    def __init__(self, keep_midnight_ticks: bool | None = None, **kwargs) -> None:
+    def __init__(
+        self, *args, keep_midnight_ticks: bool | None = None, **kwargs
+    ) -> None:
         """Business-day-aware wrapper around `matplotlib.dates.AutoDateLocator`.
 
-        All keyword arguments are forwarded to `~matplotlib.dates.AutoDateLocator`.
+        All other arguments are forwarded to `~matplotlib.dates.AutoDateLocator`.
         """
-        super().__init__(mdates.AutoDateLocator(**kwargs), keep_midnight_ticks)
+        super().__init__(
+            mdates.AutoDateLocator(*args, **kwargs),
+            keep_midnight_ticks=keep_midnight_ticks,
+        )
 
 
 class WeekdayLocator(BusdayLocator):
-    def __init__(self, keep_midnight_ticks: bool | None = None, **kwargs) -> None:
+    def __init__(
+        self, *args, keep_midnight_ticks: bool | None = None, **kwargs
+    ) -> None:
         """Business-day-aware wrapper around `matplotlib.dates.WeekdayLocator`.
 
         Places ticks on specified weekdays, then discards any that fall on
         non-business days (e.g. public holidays). Midnight ticks are always kept
         because weekday ticks are placed at day boundaries.
 
-        All keyword arguments are forwarded to `~matplotlib.dates.WeekdayLocator`.
+        All other arguments are forwarded to `~matplotlib.dates.WeekdayLocator`.
         """
-        super().__init__(mdates.WeekdayLocator(**kwargs), keep_midnight_ticks)
+        super().__init__(
+            mdates.WeekdayLocator(*args, **kwargs),
+            keep_midnight_ticks=keep_midnight_ticks,
+        )
 
 
 class DayLocator(BusdayLocator):
-    def __init__(self, keep_midnight_ticks: bool | None = None, **kwargs) -> None:
+    def __init__(
+        self, *args, keep_midnight_ticks: bool | None = None, **kwargs
+    ) -> None:
         """Business-day-aware wrapper around `matplotlib.dates.DayLocator`.
 
         Places one tick per day (or every *interval* days), then discards any that
         fall on non-business days. Midnight ticks are always kept because daily
         ticks are placed at day boundaries.
 
-        All keyword arguments are forwarded to `~matplotlib.dates.DayLocator`.
+        All other arguments are forwarded to `~matplotlib.dates.DayLocator`.
         """
-        super().__init__(mdates.DayLocator(**kwargs), keep_midnight_ticks)
+        super().__init__(
+            mdates.DayLocator(*args, **kwargs), keep_midnight_ticks=keep_midnight_ticks
+        )
 
 
 class HourLocator(BusdayLocator):
-    def __init__(self, keep_midnight_ticks: bool | None = None, **kwargs) -> None:
+    def __init__(
+        self, *args, keep_midnight_ticks: bool | None = None, **kwargs
+    ) -> None:
         """Business-day-aware wrapper around `matplotlib.dates.HourLocator`.
 
         Places ticks at the specified hours, then discards any that fall outside
         business days or business hours. Midnight ticks are not kept by default
         because hourly ticks are sub-daily.
 
-        All keyword arguments are forwarded to `~matplotlib.dates.HourLocator`.
+        All other arguments are forwarded to `~matplotlib.dates.HourLocator`.
         """
-        super().__init__(mdates.HourLocator(**kwargs), keep_midnight_ticks)
+        super().__init__(
+            mdates.HourLocator(*args, **kwargs), keep_midnight_ticks=keep_midnight_ticks
+        )
 
 
 class MinuteLocator(BusdayLocator):
-    def __init__(self, keep_midnight_ticks: bool | None = None, **kwargs) -> None:
+    def __init__(
+        self, *args, keep_midnight_ticks: bool | None = None, **kwargs
+    ) -> None:
         """Business-day-aware wrapper around `matplotlib.dates.MinuteLocator`.
 
         Places ticks at the specified minutes, then discards any that fall outside
         business days or business hours. Midnight ticks are not kept by default
         because minute-level ticks are sub-daily.
 
-        All keyword arguments are forwarded to `~matplotlib.dates.MinuteLocator`.
+        All other arguments are forwarded to `~matplotlib.dates.MinuteLocator`.
         """
-        super().__init__(mdates.MinuteLocator(**kwargs), keep_midnight_ticks)
+        super().__init__(
+            mdates.MinuteLocator(*args, **kwargs),
+            keep_midnight_ticks=keep_midnight_ticks,
+        )
 
 
 class SecondLocator(BusdayLocator):
-    def __init__(self, keep_midnight_ticks: bool | None = None, **kwargs) -> None:
+    def __init__(
+        self, *args, keep_midnight_ticks: bool | None = None, **kwargs
+    ) -> None:
         """Business-day-aware wrapper around `matplotlib.dates.SecondLocator`.
 
         Places ticks at the specified seconds, then discards any that fall outside
         business days or business hours. Midnight ticks are not kept by default
         because second-level ticks are sub-daily.
 
-        All keyword arguments are forwarded to `~matplotlib.dates.SecondLocator`.
+        All other arguments are forwarded to `~matplotlib.dates.SecondLocator`.
         """
-        super().__init__(mdates.SecondLocator(**kwargs), keep_midnight_ticks)
+        super().__init__(
+            mdates.SecondLocator(*args, **kwargs),
+            keep_midnight_ticks=keep_midnight_ticks,
+        )
 
 
 class MicrosecondLocator(BusdayLocator):
-    def __init__(self, keep_midnight_ticks: bool | None = None, **kwargs) -> None:
+    def __init__(
+        self, *args, keep_midnight_ticks: bool | None = None, **kwargs
+    ) -> None:
         """Business-day-aware wrapper around `matplotlib.dates.MicrosecondLocator`.
 
         Places ticks at the specified microseconds, then discards any that fall
         outside business days or business hours. Midnight ticks are not kept by
         default because microsecond-level ticks are sub-daily.
 
-        All keyword arguments are forwarded to `~matplotlib.dates.MicrosecondLocator`.
+        All other arguments are forwarded to `~matplotlib.dates.MicrosecondLocator`.
         """
-        super().__init__(mdates.MicrosecondLocator(**kwargs), keep_midnight_ticks)
+        super().__init__(
+            mdates.MicrosecondLocator(*args, **kwargs),
+            keep_midnight_ticks=keep_midnight_ticks,
+        )
 
 
 class MidBusdayLocator(mdates.DateLocator):
@@ -271,13 +310,10 @@ class MidBusdayLocator(mdates.DateLocator):
         return self.tick_values(vmin, vmax)
 
     def tick_values(self, vmin: float, vmax: float) -> Sequence[float]:
-        dt_min = mdates.num2date(vmin).replace(tzinfo=None)
-        dt_max = mdates.num2date(vmax).replace(tzinfo=None)
+        day_min, day_max = num_to_datetime64([vmin, vmax]).astype("datetime64[D]")
 
         days = np.arange(
-            np.datetime64(dt_min.date(), "D"),
-            np.datetime64(dt_max.date(), "D") + np.timedelta64(1, "D"),
-            dtype="datetime64[D]",
+            day_min, day_max + np.timedelta64(1, "D"), dtype="datetime64[D]"
         )
 
         busday_kwargs = getattr(self.axis, "_busday_kwargs", {})
@@ -298,6 +334,6 @@ class MidBusdayLocator(mdates.DateLocator):
         )
         mid_fracs = (_starts[weekday] + _ends[weekday]) / 2 / 24
 
-        busday_nums = mdates.date2num(busdays.astype("datetime64[ms]").astype(object))
+        busday_nums = datetime64_to_num(busdays)
 
         return np.asarray(busday_nums + mid_fracs, dtype=float).tolist()

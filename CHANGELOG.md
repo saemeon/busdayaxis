@@ -8,8 +8,37 @@
   `PendingDeprecationWarning` about the scale's `axis` parameter. Matplotlib
   plans to remove that parameter in 3.15, so this release keeps the package
   working with upcoming Matplotlib versions.
+- NumPy 2.5 compatibility: no more `DeprecationWarning` about the "generic"
+  datetime unit.
+- Plots are no longer shifted or clipped when `rcParams["timezone"]` is set to
+  something other than UTC. Datetimes are always treated as naive wall-clock
+  time by the scale, the locators, `MidBusdayLocator` and `mark_gaps`, and the
+  default tick labels match the plotted values.
+- Calling `ax.set_xscale("busday")` *before* plotting dates no longer brings
+  back tick marks on weekends and holidays.
+- `NaN`/`NaT` x values no longer crash the plot; they leave a gap in the line,
+  as on any other Matplotlib scale. Dates outside 1678–2262 are treated the
+  same way instead of being placed at wrong positions.
+- `holidays=` now accepts a `pandas.DatetimeIndex`, a `pandas.Series`, lists of
+  `pandas.Timestamp` and `datetime64` arrays of any unit.
+- Sub-second timestamps are no longer rounded to whole seconds, so
+  millisecond data and `MicrosecondLocator` work. Converting axis positions
+  back to dates (e.g. the cursor readout) is now exact instead of up to one
+  second early.
+- `HourLocator([9, 12])`, `WeekdayLocator(MO)` and the other locator wrappers
+  now accept the same positional arguments as their `matplotlib.dates`
+  counterparts. Previously the first argument was silently taken as
+  `keep_midnight_ticks`.
+
+### Performance
+
+- Plotting large series is much faster: transforming 1 million points now
+  takes about 15 ms instead of about 4 s.
 
 ### Changed
+
+- `keep_midnight_ticks` is now keyword-only on all locators, e.g.
+  `BusdayLocator(mdates.DayLocator(), keep_midnight_ticks=True)`.
 
 - `BusdayScale` no longer needs the axis as its first argument. Write
   `ax.set_xscale(BusdayScale(bushours=(9, 17)))` instead of
