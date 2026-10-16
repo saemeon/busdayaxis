@@ -63,9 +63,9 @@
     
       <link rel="stylesheet" href="../sg_gallery-rendered-html.css">
     
-      <link rel="stylesheet" href="../sg_gallery-binder.css">
-    
       <link rel="stylesheet" href="../sg_gallery-dataframe.css">
+    
+      <link rel="stylesheet" href="../sg_gallery-binder.css">
     
     <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
@@ -1699,7 +1699,6 @@
 
 <a href="#busdayaxis.BusdayScale" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="doc-signature highlight"><pre><span></span><code><span class="nf">BusdayScale</span><span class="p">(</span>
-    <span class="n">axis</span><span class="p">,</span>
     <span class="n">bushours</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">24</span><span class="p">),</span>
     <span class="n">weekmask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">holidays</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1718,9 +1717,10 @@
 the defined schedule are collapsed so that every visible unit on the axis
 corresponds to active time.</p>
 <p>Registered as the <code>"busday"</code> scale automatically on <code>import busdayaxis</code>.
-All parameters below <strong>except</strong> <code>axis</code> can be passed directly to
-<code>ax.set_xscale("busday", ...)</code>. <code>axis</code> is injected automatically by
-Matplotlib and must not be passed explicitly.</p>
+All parameters below can be passed directly to
+<code>ax.set_xscale("busday", ...)</code>.</p>
+<p>For backward compatibility, a leading <code>matplotlib.axis.Axis</code> argument
+(e.g. <code>BusdayScale(ax.xaxis, ...)</code>) is accepted and ignored.</p>
 
 
 <table>
@@ -1731,23 +1731,6 @@ Matplotlib and must not be passed explicitly.</p>
         </tr>
       </thead>
       <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>axis</code>
-            </td>
-            <td class="doc-param-details">
-              <div class="doc-md-description">
-                <p>Injected automatically by Matplotlib. Do not pass this via
-<code>ax.set_xscale</code>.</p>
-              </div>
-              <p>
-                  <span class="doc-param-annotation">
-                    <b>TYPE:</b>
-                      <code><span title="matplotlib">matplotlib</span>.<span title="matplotlib.axis">axis</span>.<span title="matplotlib.axis.Axis">Axis</span></code>
-                  </span>
-              </p>
-            </td>
-          </tr>
           <tr class="doc-section-item">
             <td>
                 <code>bushours</code>
@@ -1979,6 +1962,12 @@ it does not affect <em>bushours</em>. The two parameters are independent.</p>
 <p>dates = dates_utc.tz_convert("America/New_York").tz_localize(None)</p>
 </li>
 </ul>
+<p><code>rcParams["timezone"]</code> does not affect the scale or the busdayaxis
+  locators. The default formatter labels in wall-clock time too; if you
+  set your own date formatter, pass <code>tz="UTC"</code> so labels are not shifted.
+- <strong>Missing values:</strong> <code>NaN</code>/<code>NaT</code> x values are passed through as
+  <code>NaN</code> (a gap in the line), like on any other Matplotlib scale. Dates
+  outside 1678–2262 are treated the same way.</p>
 </details>
 
 <p><span class="doc-section-title">Examples:</span></p>
@@ -2066,8 +2055,7 @@ and existing code that calls it explicitly continues to work.</p>
 <p>After registration, <code>ax.set_xscale("busday", ...)</code> is available for the
 lifetime of the Python session. The keyword arguments <code>bushours</code>,
 <code>weekmask</code>, <code>holidays</code>, and <code>busdaycal</code> are forwarded directly to
-<a href="https://saemeon.github.io/busdayaxis/api/#busdayaxis.BusdayScale"><code>busdayaxis.BusdayScale</code></a>;
-<code>axis</code> is injected by Matplotlib automatically and cannot be passed.</p>
+<a href="https://saemeon.github.io/busdayaxis/api/#busdayaxis.BusdayScale"><code>busdayaxis.BusdayScale</code></a>.</p>
 
 
 <p><span class="doc-section-title">Examples:</span></p>
@@ -2133,7 +2121,7 @@ lifetime of the Python session. The keyword arguments <code>bushours</code>,
 
 
 <a href="#busdayaxis.AutoDateLocator" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">AutoDateLocator</span><span class="p">(</span><span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">AutoDateLocator</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2143,7 +2131,7 @@ lifetime of the Python session. The keyword arguments <code>bushours</code>,
 
 
         <p>Business-day-aware wrapper around <code>matplotlib.dates.AutoDateLocator</code>.</p>
-<p>All keyword arguments are forwarded to <code>~matplotlib.dates.AutoDateLocator</code>.</p>
+<p>All other arguments are forwarded to <code>~matplotlib.dates.AutoDateLocator</code>.</p>
 
 
 
@@ -2183,7 +2171,9 @@ lifetime of the Python session. The keyword arguments <code>bushours</code>,
 
 
 <a href="#busdayaxis.BusdayLocator" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">BusdayLocator</span><span class="p">(</span><span class="n">base_locator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">BusdayLocator</span><span class="p">(</span>
+    <span class="n">base_locator</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2217,7 +2207,9 @@ scale without any extra configuration.</p>
             <td class="doc-param-details">
               <div class="doc-md-description">
                 <p>The underlying datetime locator that proposes tick candidates.
-If None, falls back to <code>AutoDateLocator</code>.</p>
+If None, falls back to <code>AutoDateLocator</code>. Its timezone is set to UTC
+because the busday scale treats datetimes as naive wall-clock time;
+<code>rcParams["timezone"]</code> and a <code>tz=</code> argument have no effect.</p>
               </div>
               <p>
                   <span class="doc-param-annotation">
@@ -2247,7 +2239,7 @@ remain properly aligned, and suppressed for finer locators (e.g.
               <p>
                   <span class="doc-param-annotation">
                     <b>TYPE:</b>
-                      <code><span title="bool">bool</span> or None</code>
+                      <code>(<span title="bool">bool</span> or None, <span title="optional">optional</span>(<span title="keyword">keyword</span> - <span title="only">only</span>))</code>
                   </span>
                   <span class="doc-param-default">
                     <b>DEFAULT:</b>
@@ -2309,7 +2301,7 @@ ax.xaxis.set_major_locator(
 
 
 <a href="#busdayaxis.DayLocator" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">DayLocator</span><span class="p">(</span><span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">DayLocator</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2322,7 +2314,7 @@ ax.xaxis.set_major_locator(
 <p>Places one tick per day (or every <em>interval</em> days), then discards any that
 fall on non-business days. Midnight ticks are always kept because daily
 ticks are placed at day boundaries.</p>
-<p>All keyword arguments are forwarded to <code>~matplotlib.dates.DayLocator</code>.</p>
+<p>All other arguments are forwarded to <code>~matplotlib.dates.DayLocator</code>.</p>
 
 
 
@@ -2362,7 +2354,7 @@ ticks are placed at day boundaries.</p>
 
 
 <a href="#busdayaxis.HourLocator" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">HourLocator</span><span class="p">(</span><span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">HourLocator</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2375,7 +2367,7 @@ ticks are placed at day boundaries.</p>
 <p>Places ticks at the specified hours, then discards any that fall outside
 business days or business hours. Midnight ticks are not kept by default
 because hourly ticks are sub-daily.</p>
-<p>All keyword arguments are forwarded to <code>~matplotlib.dates.HourLocator</code>.</p>
+<p>All other arguments are forwarded to <code>~matplotlib.dates.HourLocator</code>.</p>
 
 
 
@@ -2415,7 +2407,9 @@ because hourly ticks are sub-daily.</p>
 
 
 <a href="#busdayaxis.MicrosecondLocator" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">MicrosecondLocator</span><span class="p">(</span><span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">MicrosecondLocator</span><span class="p">(</span>
+    <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2428,7 +2422,7 @@ because hourly ticks are sub-daily.</p>
 <p>Places ticks at the specified microseconds, then discards any that fall
 outside business days or business hours. Midnight ticks are not kept by
 default because microsecond-level ticks are sub-daily.</p>
-<p>All keyword arguments are forwarded to <code>~matplotlib.dates.MicrosecondLocator</code>.</p>
+<p>All other arguments are forwarded to <code>~matplotlib.dates.MicrosecondLocator</code>.</p>
 
 
 
@@ -2526,7 +2520,7 @@ ax.xaxis.set_minor_formatter(mdates.DateFormatter(&quot;%a&quot;))
 
 
 <a href="#busdayaxis.MinuteLocator" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">MinuteLocator</span><span class="p">(</span><span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">MinuteLocator</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2539,7 +2533,7 @@ ax.xaxis.set_minor_formatter(mdates.DateFormatter(&quot;%a&quot;))
 <p>Places ticks at the specified minutes, then discards any that fall outside
 business days or business hours. Midnight ticks are not kept by default
 because minute-level ticks are sub-daily.</p>
-<p>All keyword arguments are forwarded to <code>~matplotlib.dates.MinuteLocator</code>.</p>
+<p>All other arguments are forwarded to <code>~matplotlib.dates.MinuteLocator</code>.</p>
 
 
 
@@ -2579,7 +2573,7 @@ because minute-level ticks are sub-daily.</p>
 
 
 <a href="#busdayaxis.SecondLocator" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">SecondLocator</span><span class="p">(</span><span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">SecondLocator</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2592,7 +2586,7 @@ because minute-level ticks are sub-daily.</p>
 <p>Places ticks at the specified seconds, then discards any that fall outside
 business days or business hours. Midnight ticks are not kept by default
 because second-level ticks are sub-daily.</p>
-<p>All keyword arguments are forwarded to <code>~matplotlib.dates.SecondLocator</code>.</p>
+<p>All other arguments are forwarded to <code>~matplotlib.dates.SecondLocator</code>.</p>
 
 
 
@@ -2632,7 +2626,7 @@ because second-level ticks are sub-daily.</p>
 
 
 <a href="#busdayaxis.WeekdayLocator" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">WeekdayLocator</span><span class="p">(</span><span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">WeekdayLocator</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">keep_midnight_ticks</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div>
 
     <div class="doc doc-contents ">
@@ -2645,7 +2639,7 @@ because second-level ticks are sub-daily.</p>
 <p>Places ticks on specified weekdays, then discards any that fall on
 non-business days (e.g. public holidays). Midnight ticks are always kept
 because weekday ticks are placed at day boundaries.</p>
-<p>All keyword arguments are forwarded to <code>~matplotlib.dates.WeekdayLocator</code>.</p>
+<p>All other arguments are forwarded to <code>~matplotlib.dates.WeekdayLocator</code>.</p>
 
 
 
