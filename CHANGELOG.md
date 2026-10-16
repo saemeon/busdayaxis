@@ -1,17 +1,27 @@
 # Changelog
 
-## [Unreleased]
+## [0.2.2] — 2026-10-16
 
-- Fix `PendingDeprecationWarning` from Matplotlib 3.11: `BusdayScale` no longer
-  takes an `axis` parameter. Passing one (`BusdayScale(ax.xaxis, ...)`) is still
-  accepted and ignored, so older Matplotlib versions keep working.
-- Update class-based examples in the docs to `BusdayScale(...)` without `ax.xaxis`.
-- Add Python 3.14 to the CI test matrix.
-- Add docs deployment workflow (MkDocs + `mike`).
-- Add Dependabot configuration.
-- Add locator gallery example (`plot_9_locators.py`).
-- Complete the API reference.
-- Increase test coverage.
+### Fixed
+
+- Matplotlib 3.11 compatibility: importing `busdayaxis` no longer emits a
+  `PendingDeprecationWarning` about the scale's `axis` parameter. Matplotlib
+  plans to remove that parameter in 3.15, so this release keeps the package
+  working with upcoming Matplotlib versions.
+
+### Changed
+
+- `BusdayScale` no longer needs the axis as its first argument. Write
+  `ax.set_xscale(BusdayScale(bushours=(9, 17)))` instead of
+  `BusdayScale(ax.xaxis, bushours=(9, 17))`. The old form still works, so no
+  code changes are required.
+
+### Documentation
+
+- New gallery example comparing all business-day-aware tick locators.
+- `AutoDateLocator` is now listed in the API reference.
+- Class-based examples updated to the new `BusdayScale(...)` form.
+- Python 3.14 is now tested.
 
 ## [0.2.1] — 2026-03-20
 
