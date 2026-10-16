@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.2.2] — 2026-10-16
+## [0.3.0] — 2026-10-16
 
 ### Fixed
 
@@ -39,7 +39,11 @@
 
 - `keep_midnight_ticks` is now keyword-only on all locators, e.g.
   `BusdayLocator(mdates.DayLocator(), keep_midnight_ticks=True)`.
-
+- Locators with an `interval` (e.g. `HourLocator(interval=4)`) may place their
+  ticks at different hours than before (e.g. 11:00/15:00 instead of
+  10:00/14:00). Matplotlib counts such intervals from the left edge of the
+  axis, which was previously computed one second too early. Pass explicit
+  values such as `HourLocator(byhour=[10, 14])` for fixed tick positions.
 - `BusdayScale` no longer needs the axis as its first argument. Write
   `ax.set_xscale(BusdayScale(bushours=(9, 17)))` instead of
   `BusdayScale(ax.xaxis, bushours=(9, 17))`. The old form still works, so no
