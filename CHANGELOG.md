@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.1] — 2026-10-20
+
+### Fixed
+
+- Passing `keep_midnight_ticks` positionally works again, as in 0.2.1, e.g.
+  `BusdayLocator(mdates.DayLocator(), True)` or `HourLocator(True)`. It now
+  emits a `DeprecationWarning`; use `keep_midnight_ticks=True` instead.
+  Non-bool positional arguments are still forwarded to Matplotlib, so
+  `HourLocator([9, 12])` keeps working.
+
 ## [0.3.0] — 2026-10-16
 
 ### Fixed

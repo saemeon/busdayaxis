@@ -161,9 +161,23 @@ def test_locator_wrappers_forward_positional_args():
     assert day._keep_midnight_ticks is False
 
 
-def test_keep_midnight_ticks_is_keyword_only():
+def test_keep_midnight_ticks_positional_is_deprecated_but_works():
+    # v0.2.1 call forms keep working, with a deprecation warning.
+    with pytest.warns(DeprecationWarning, match="keep_midnight_ticks=True"):
+        loc = busdayaxis.BusdayLocator(mdates.DayLocator(), True)
+    assert loc._keep_midnight_ticks is True
+
+    with pytest.warns(DeprecationWarning, match="keep_midnight_ticks=False"):
+        hour = busdayaxis.HourLocator(False, byhour=[9, 12])
+    assert hour._keep_midnight_ticks is False
+    assert hour.base_locator.rule._rrule._byhour == (9, 12)
+
+
+def test_keep_midnight_ticks_positional_and_keyword_raises():
     with pytest.raises(TypeError):
-        busdayaxis.BusdayLocator(mdates.DayLocator(), True)
+        busdayaxis.BusdayLocator(mdates.DayLocator(), True, keep_midnight_ticks=True)
+    with pytest.raises(TypeError):
+        busdayaxis.HourLocator(True, keep_midnight_ticks=True)
 
 
 # ── sub-second precision ──────────────────────────────────────────────────────

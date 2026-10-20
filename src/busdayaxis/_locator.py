@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import warnings
 from collections.abc import Sequence
 from typing import TYPE_CHECKING
 
@@ -42,6 +43,29 @@ def _require_bushours(axis: AxisLike) -> dict[int, list[tuple[float, float]]]:
     return getattr(axis, "_bushours", _DEFAULT_BUSHOURS)
 
 
+def _legacy_keep_midnight_ticks(
+    args: tuple, keep_midnight_ticks: bool | None
+) -> tuple[tuple, bool | None]:
+    """Accept the v0.2.1 call form ``HourLocator(True)``.
+
+    Up to v0.2.1 the wrappers took ``keep_midnight_ticks`` as their first
+    positional argument. No Matplotlib locator takes a bool there, so a leading
+    bool is still read as ``keep_midnight_ticks`` (with a deprecation warning)
+    and anything else is forwarded to the Matplotlib locator.
+    """
+    if not args or not isinstance(args[0], (bool, np.bool_)):
+        return args, keep_midnight_ticks
+    if keep_midnight_ticks is not None:
+        raise TypeError("keep_midnight_ticks given both positionally and by keyword")
+    warnings.warn(
+        "Passing keep_midnight_ticks positionally is deprecated; "
+        f"use keep_midnight_ticks={bool(args[0])} instead.",
+        DeprecationWarning,
+        stacklevel=3,
+    )
+    return args[1:], bool(args[0])
+
+
 class BusdayLocator(mdates.DateLocator):
     """Tick locator that filters out ticks outside business hours and business days.
 
@@ -62,7 +86,7 @@ class BusdayLocator(mdates.DateLocator):
         If None, falls back to ``AutoDateLocator``. Its timezone is set to UTC
         because the busday scale treats datetimes as naive wall-clock time;
         ``rcParams["timezone"]`` and a ``tz=`` argument have no effect.
-    keep_midnight_ticks : bool or None, optional (keyword-only)
+    keep_midnight_ticks : bool or None, optional
         Controls whether ticks at midnight (00:00) on business days are kept
         even when they fall outside ``bushours``. When ``None`` (default), this
         is determined automatically: midnight ticks are kept for
@@ -87,9 +111,22 @@ class BusdayLocator(mdates.DateLocator):
     def __init__(
         self,
         base_locator: mdates.DateLocator | None = None,
-        *,
+        *args: bool | None,
         keep_midnight_ticks: bool | None = None,
     ) -> None:
+        if args:
+            # v0.2.1 accepted BusdayLocator(base_locator, keep_midnight_ticks).
+            if len(args) > 1 or keep_midnight_ticks is not None:
+                raise TypeError(
+                    "BusdayLocator takes base_locator and keep_midnight_ticks only"
+                )
+            warnings.warn(
+                "Passing keep_midnight_ticks positionally is deprecated; "
+                f"use keep_midnight_ticks={args[0]} instead.",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            keep_midnight_ticks = args[0]
         self.base_locator = base_locator or mdates.AutoDateLocator()
         # The busday scale treats datetimes as naive wall-clock time (stored by
         # Matplotlib as UTC), so candidates must be generated in UTC rather
@@ -176,6 +213,9 @@ class AutoDateLocator(BusdayLocator):
 
         All other arguments are forwarded to `~matplotlib.dates.AutoDateLocator`.
         """
+        args, keep_midnight_ticks = _legacy_keep_midnight_ticks(
+            args, keep_midnight_ticks
+        )
         super().__init__(
             mdates.AutoDateLocator(*args, **kwargs),
             keep_midnight_ticks=keep_midnight_ticks,
@@ -194,6 +234,9 @@ class WeekdayLocator(BusdayLocator):
 
         All other arguments are forwarded to `~matplotlib.dates.WeekdayLocator`.
         """
+        args, keep_midnight_ticks = _legacy_keep_midnight_ticks(
+            args, keep_midnight_ticks
+        )
         super().__init__(
             mdates.WeekdayLocator(*args, **kwargs),
             keep_midnight_ticks=keep_midnight_ticks,
@@ -212,6 +255,9 @@ class DayLocator(BusdayLocator):
 
         All other arguments are forwarded to `~matplotlib.dates.DayLocator`.
         """
+        args, keep_midnight_ticks = _legacy_keep_midnight_ticks(
+            args, keep_midnight_ticks
+        )
         super().__init__(
             mdates.DayLocator(*args, **kwargs), keep_midnight_ticks=keep_midnight_ticks
         )
@@ -229,6 +275,9 @@ class HourLocator(BusdayLocator):
 
         All other arguments are forwarded to `~matplotlib.dates.HourLocator`.
         """
+        args, keep_midnight_ticks = _legacy_keep_midnight_ticks(
+            args, keep_midnight_ticks
+        )
         super().__init__(
             mdates.HourLocator(*args, **kwargs), keep_midnight_ticks=keep_midnight_ticks
         )
@@ -246,6 +295,9 @@ class MinuteLocator(BusdayLocator):
 
         All other arguments are forwarded to `~matplotlib.dates.MinuteLocator`.
         """
+        args, keep_midnight_ticks = _legacy_keep_midnight_ticks(
+            args, keep_midnight_ticks
+        )
         super().__init__(
             mdates.MinuteLocator(*args, **kwargs),
             keep_midnight_ticks=keep_midnight_ticks,
@@ -264,6 +316,9 @@ class SecondLocator(BusdayLocator):
 
         All other arguments are forwarded to `~matplotlib.dates.SecondLocator`.
         """
+        args, keep_midnight_ticks = _legacy_keep_midnight_ticks(
+            args, keep_midnight_ticks
+        )
         super().__init__(
             mdates.SecondLocator(*args, **kwargs),
             keep_midnight_ticks=keep_midnight_ticks,
@@ -282,6 +337,9 @@ class MicrosecondLocator(BusdayLocator):
 
         All other arguments are forwarded to `~matplotlib.dates.MicrosecondLocator`.
         """
+        args, keep_midnight_ticks = _legacy_keep_midnight_ticks(
+            args, keep_midnight_ticks
+        )
         super().__init__(
             mdates.MicrosecondLocator(*args, **kwargs),
             keep_midnight_ticks=keep_midnight_ticks,
